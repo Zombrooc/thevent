@@ -1,7 +1,16 @@
-import { Inter } from "next/font/google";
+import { Inter as FontSans } from "next/font/google";
+import { UserProvider } from "@auth0/nextjs-auth0/client";
+
+import PrelineScript from "@/components/PrelineScript";
+
+import { cn } from "@/lib/utils";
+
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+const fontSans = FontSans({
+  subsets: ["latin"],
+  variable: "--font-sans",
+});
 
 export const metadata = {
   title: "Create Next App",
@@ -11,7 +20,17 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <UserProvider>
+        <body
+          className={cn(
+            "min-h-screen bg-background font-sans antialiased",
+            fontSans.variable
+          )}
+        >
+          {children}
+        </body>
+        <PrelineScript />
+      </UserProvider>
     </html>
   );
 }
