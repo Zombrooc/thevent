@@ -58,14 +58,14 @@ export default async function Navbar() {
           className="hs-collapse hidden overflow-hidden transition-all duration-300 basis-full grow sm:block"
         >
           <div className="flex flex-col gap-y-4 gap-x-0 mt-5 sm:flex-row sm:items-center sm:justify-end sm:gap-y-0 sm:gap-x-7 sm:mt-0 sm:ps-7">
-            <a
+            <Link
               className="font-medium text-blue-600 sm:py-6 dark:text-blue-500"
-              href="#"
+              href="/"
               aria-current="page"
             >
-              Landing
-            </a>
-            <a
+              Home
+            </Link>
+            {/* <a
               className="font-medium text-gray-500 hover:text-gray-400 sm:py-6 dark:text-gray-400 dark:hover:text-gray-500"
               href="#"
             >
@@ -82,14 +82,13 @@ export default async function Navbar() {
               href="#"
             >
               Blog
-            </a>
-
+            </a> */}
             <div className="hs-dropdown [--strategy:static] sm:[--strategy:fixed] [--adaptive:none] sm:[--trigger:hover] sm:py-4">
               <button
                 type="button"
                 className="flex items-center w-full text-gray-500 hover:text-gray-400 font-medium dark:text-gray-400 dark:hover:text-gray-500 "
               >
-                Dropdown
+                Eventos
                 <svg
                   className="ms-2 size-2.5 text-gray-600"
                   width="16"
@@ -176,75 +175,22 @@ export default async function Navbar() {
 
             <div className="pt-3 md:pt-0">
               {session?.user ? (
-                // <div className="hs-dropdown relative inline-flex">
-                //   <button
-                //     id="hs-dropdown-custom-trigger"
-                //     type="button"
-                //     className="hs-dropdown-toggle py-1 ps-1 pe-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-full border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600 [--trigger:hover]"
-                //   >
-                //     <Image
-                //       className="w-8 h-auto rounded-full"
-                //       width="32"
-                //       height="32"
-                //       src={session?.user?.picture}
-                //       alt={session?.user?.name}
-                //     />
-                //     <span className="text-gray-600 font-medium truncate max-w-[7.5rem] dark:text-gray-400">
-                //       {session?.user?.name}
-                //     </span>
-                //     <svg
-                //       className="hs-dropdown-open:rotate-180 size-4"
-                //       xmlns="http://www.w3.org/2000/svg"
-                //       width="24"
-                //       height="24"
-                //       viewBox="0 0 24 24"
-                //       fill="none"
-                //       stroke="currentColor"
-                //       stroke-width="2"
-                //       stroke-linecap="round"
-                //       stroke-linejoin="round"
-                //     >
-                //       <path d="m6 9 6 6 6-6" />
-                //     </svg>
-                //   </button>
-
-                //   <div
-                //     className="hs-dropdown-menu transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 hidden min-w-60 bg-white shadow-md rounded-lg p-2 mt-2 dark:bg-gray-800 dark:border dark:border-gray-700"
-                //     aria-labelledby="hs-dropdown-custom-trigger"
-                //   >
-                //     <a
-                //       className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700"
-                //       href="#"
-                //     >
-                //       Newsletter
-                //     </a>
-                //     <a
-                //       className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700"
-                //       href="#"
-                //     >
-                //       Purchases
-                //     </a>
-                //     <a
-                //       className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700"
-                //       href="#"
-                //     >
-                //       Downloads
-                //     </a>
-                //     <a
-                //       className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700"
-                //       href="#"
-                //     >
-                //       Team Account
-                //     </a>
-                //   </div>
-                // </div>
                 <div className="hs-dropdown relative md:inline-flex hidden">
                   <button
                     id="userInfoDropdown"
                     type="button"
-                    className="hs-dropdown-toggle py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                    className="hs-dropdown-toggle py-2 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
                   >
-                    Actions
+                    <Image
+                      className="w-8 h-auto rounded-full"
+                      width="32"
+                      height="32"
+                      src={session?.user?.picture}
+                      alt={session?.user?.name}
+                    />
+                    <span className="text-gray-600 font-medium truncate max-w-[7.5rem] dark:text-gray-400">
+                      {session?.user?.name}
+                    </span>
                     <svg
                       className="hs-dropdown-open:rotate-180 size-4"
                       xmlns="http://www.w3.org/2000/svg"
@@ -253,9 +199,9 @@ export default async function Navbar() {
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
                     >
                       <path d="m6 9 6 6 6-6" />
                     </svg>
@@ -300,18 +246,18 @@ export default async function Navbar() {
                       </a>
                     </div>
                     <div className="py-2 first:pt-0 last:pb-0">
-                      <a
+                      <Link
                         className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700"
-                        href="#"
+                        href="/settings"
                       >
-                        Account Settings
-                      </a>
-                      <a
+                        Configurações
+                      </Link>
+                      <Link
                         className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700"
-                        href="#"
+                        href="/api/auth/logout"
                       >
-                        Sign out
-                      </a>
+                        Sair
+                      </Link>
                     </div>
                   </div>
                 </div>
@@ -335,7 +281,7 @@ export default async function Navbar() {
                     <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
                     <circle cx="12" cy="7" r="4" />
                   </svg>
-                  Log in
+                  Entrar
                 </Link>
               )}
             </div>
