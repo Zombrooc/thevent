@@ -30,8 +30,8 @@ export default async function Home() {
   return (
     <>
       <div className="relative min-h-full min-w-full bg-white">
-        <div className="z-1 absolute h-full w-full bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)]"></div>
-        <div className="overflow-hidden z-10">
+        <div className="absolute h-full w-full bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)]"></div>
+        <div className="overflow-hidden">
           <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 py-20">
             <div className="relative mx-auto max-w-4xl grid space-y-5 sm:space-y-10">
               <div className="text-center">
