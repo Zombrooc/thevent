@@ -238,7 +238,7 @@ export default async function Navbar() {
                 //     </a>
                 //   </div>
                 // </div>
-                <div className="hs-dropdown relative inline-flex">
+                <div className="hs-dropdown relative md:inline-flex hidden">
                   <button
                     id="userInfoDropdown"
                     type="button"
