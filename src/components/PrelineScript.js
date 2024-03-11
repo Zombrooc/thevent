@@ -1,11 +1,9 @@
 "use client";
 
-import HSAccordion from "@preline/accordion";
 import { usePathname } from "next/navigation";
-import { HSDropdown } from "preline/preline";
 import { useEffect } from "react";
 
-export default function PrelineLoader() {
+export default function PrelineScript() {
   const path = usePathname();
 
   useEffect(() => {
@@ -14,10 +12,9 @@ export default function PrelineLoader() {
 
   useEffect(() => {
     setTimeout(() => {
-      HSAccordion.autoInit();
-      HSDropdown.autoInit();
-    }, 100);
+      window.HSStaticMethods.autoInit();
+    }, 1000);
   }, [path]);
 
-  return <></>;
+  return null;
 }
