@@ -12,6 +12,11 @@ const nextConfig = {
         hostname: "**.gravatar.com",
         pathname: "**",
       },
+      {
+        protocol: "https",
+        hostname: "**.unsplash.com",
+        pathname: "**",
+      },
     ],
   },
 };

@@ -5,8 +5,6 @@ import Image from "next/image";
 export default async function Navbar() {
   const session = await getSession();
 
-  console.log(session.user);
-
   return (
     <header className="flex flex-wrap sm:justify-start sm:flex-nowrap z-50 w-full bg-white border-b border-gray-200 text-sm py-3 sm:py-0 dark:bg-gray-800 dark:border-gray-700">
       <nav
@@ -175,92 +173,126 @@ export default async function Navbar() {
 
             <div className="pt-3 md:pt-0">
               {session?.user ? (
-                <div className="hs-dropdown relative md:inline-flex hidden">
-                  <button
-                    id="userInfoDropdown"
-                    type="button"
-                    className="hs-dropdown-toggle py-2 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                  >
-                    <Image
-                      className="w-8 h-auto rounded-full"
-                      width="32"
-                      height="32"
-                      src={session?.user?.picture}
-                      alt={session?.user?.name}
-                    />
-                    <span className="text-gray-600 font-medium truncate max-w-[7.5rem] dark:text-gray-400">
-                      {session?.user?.name}
-                    </span>
-                    <svg
-                      className="hs-dropdown-open:rotate-180 size-4"
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                <>
+                  <div className="hs-dropdown relative md:inline-flex hidden">
+                    <button
+                      id="userInfoDropdown"
+                      type="button"
+                      className="hs-dropdown-toggle py-2 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
                     >
-                      <path d="m6 9 6 6 6-6" />
-                    </svg>
-                  </button>
+                      <Image
+                        className="w-8 h-auto rounded-full"
+                        width="32"
+                        height="32"
+                        src={session?.user?.picture}
+                        alt={session?.user?.name}
+                      />
+                      <span className="text-gray-600 font-medium truncate max-w-[7.5rem] dark:text-gray-400">
+                        {session?.user?.name}
+                      </span>
+                      <svg
+                        className="hs-dropdown-open:rotate-180 size-4"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="m6 9 6 6 6-6" />
+                      </svg>
+                    </button>
 
-                  <div
-                    className="hs-dropdown-menu hidden transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 z-10 min-w-60 bg-white shadow-md rounded-lg p-2 mt-2 divide-y divide-gray-200 dark:bg-gray-800 dark:border dark:border-gray-700 dark:divide-gray-700"
-                    aria-labelledby="userInfoDropdown"
-                  >
-                    <div className="py-2 first:pt-0 last:pb-0">
-                      <a
-                        className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700"
-                        href="#"
-                      >
-                        Newsletter
-                      </a>
-                      <a
-                        className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700"
-                        href="#"
-                      >
-                        Purchases
-                      </a>
-                      <a
-                        className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700"
-                        href="#"
-                      >
-                        Downloads
-                      </a>
-                      <a
-                        className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700"
-                        href="#"
-                      >
-                        Team Account
-                      </a>
-                    </div>
-                    <div className="py-2 first:pt-0 last:pb-0">
-                      <a
-                        className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700"
-                        href="#"
-                      >
-                        Upgrade License
-                      </a>
-                    </div>
-                    <div className="py-2 first:pt-0 last:pb-0">
-                      <Link
-                        className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700"
-                        href="/settings"
-                      >
-                        Configurações
-                      </Link>
-                      <Link
-                        className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700"
-                        href="/api/auth/logout"
-                      >
-                        Sair
-                      </Link>
+                    <div
+                      className="hs-dropdown-menu hidden transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 z-10 min-w-60 bg-white shadow-md rounded-lg p-2 mt-2 divide-y divide-gray-200 dark:bg-gray-800 dark:border dark:border-gray-700 dark:divide-gray-700"
+                      aria-labelledby="userInfoDropdown"
+                    >
+                      <div className="py-2 first:pt-0 last:pb-0">
+                        <a
+                          className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700"
+                          href="#"
+                        >
+                          Newsletter
+                        </a>
+                        <a
+                          className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700"
+                          href="#"
+                        >
+                          Purchases
+                        </a>
+                        <a
+                          className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700"
+                          href="#"
+                        >
+                          Downloads
+                        </a>
+                        <a
+                          className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700"
+                          href="#"
+                        >
+                          Team Account
+                        </a>
+                      </div>
+                      <div className="py-2 first:pt-0 last:pb-0">
+                        <a
+                          className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700"
+                          href="#"
+                        >
+                          Upgrade License
+                        </a>
+                      </div>
+                      <div className="py-2 first:pt-0 last:pb-0">
+                        <Link
+                          className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700"
+                          href="/settings"
+                        >
+                          Configurações
+                        </Link>
+                        <Link
+                          className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700"
+                          href="/api/auth/logout"
+                        >
+                          Sair
+                        </Link>
+                      </div>
                     </div>
                   </div>
-                </div>
+                  <div className="block md:hidden">
+                    <div className="py-3">
+                      <div className="flex items-center gap-x-3">
+                        <Image
+                          className="flex-shrink-0 inline-block size-10 rounded-full ring-2 ring-white dark:ring-gray-800"
+                          src={session?.user?.picture}
+                          alt="Image Description"
+                          width={40}
+                          height={40}
+                        />
+                        <div className="grow">
+                          <h4 className="font-semibold text-gray-800 dark:text-white">
+                            {session?.user?.given_name +
+                              " " +
+                              session?.user?.family_name}{" "}
+                          </h4>
+                          <p className="text-sm text-gray-500">
+                            {session?.user?.email}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <hr />
+                    <div className="py-2 px-4 flex justify-between items-center">
+                      <button
+                        type="button"
+                        className=" py-1.5 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-full border border-transparent hover:bg-zinc-100 hover:text-red-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                      >
+                        Sair
+                      </button>
+                    </div>
+                  </div>
+                </>
               ) : (
                 <Link
                   className="py-2.5 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
