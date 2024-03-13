@@ -16,7 +16,7 @@ import { Overview } from "./_components/overview";
 import { RecentSales } from "./_components/recent-sales";
 import { Search } from "./_components/search";
 import TeamSwitcher from "./_components/team-switcher";
-import { UserNav } from "./_components/user-nav";
+import { UserNav } from "@/components/user-nav";
 
 export const metadata = {
   title: "Dashboard",
