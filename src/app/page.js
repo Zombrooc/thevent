@@ -32,11 +32,11 @@ import beachTennisBackgroundImage from "@/assets/beachtennis.jpg";
 import SearchEventInput from "./_components/search-event-input";
 
 export default async function Home() {
-  const { user } = await getSession();
+  const session = await getSession();
 
   return (
     <>
-      <Navbar user={user} />
+      <Navbar user={session?.user} />
       <div className="min-h-full min-w-full ">
         <div className="overflow-hidden">
           <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 pt-12">
