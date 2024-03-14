@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import Image from "next/image";
+import { getSession } from "@auth0/nextjs-auth0";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -23,7 +24,8 @@ export const metadata = {
   description: "Example dashboard app built using the components.",
 };
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const { user } = await getSession();
   return (
     <>
       <div className="flex flex-col">
@@ -33,7 +35,7 @@ export default function DashboardPage() {
             <MainNav className="mx-6" />
             <div className="ml-auto flex items-center space-x-4">
               <Search />
-              <UserNav />
+              <UserNav user={user} />
             </div>
           </div>
         </div>

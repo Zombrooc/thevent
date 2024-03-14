@@ -2,6 +2,7 @@ import Image from "next/image";
 
 import { Separator } from "@/components/ui/separator";
 import { SidebarNav } from "./_components/sidebar-nav";
+import Navbar from "@/components/Navbar";
 
 export const metadata = {
   title: "Forms",
@@ -11,29 +12,30 @@ export const metadata = {
 const sidebarNavItems = [
   {
     title: "Profile",
-    href: "/settings/",
+    href: "/app/settings/",
   },
   {
     title: "Account",
-    href: "/settings/account",
+    href: "/app/settings/account",
   },
   {
     title: "Appearance",
-    href: "/settings/appearance",
+    href: "/app/settings/appearance",
   },
   {
     title: "Notifications",
-    href: "/settings/notifications",
+    href: "/app/settings/notifications",
   },
   {
     title: "Display",
-    href: "/settings/display",
+    href: "/app/settings/display",
   },
 ];
 
 export default function SettingsLayout({ children }) {
   return (
     <>
+      <Navbar />
       <div className="md:hidden">
         <Image
           src="/forms-light.png"

@@ -20,7 +20,7 @@ const userOptions = [
   },
   {
     name: "Configurações",
-    src: "/app/setting",
+    src: "/app/settings",
   },
 ];
 
