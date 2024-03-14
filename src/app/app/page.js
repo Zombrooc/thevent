@@ -25,7 +25,7 @@ export const metadata = {
 };
 
 export default async function DashboardPage() {
-  const { user } = await getSession();
+  const session = await getSession();
   return (
     <>
       <div className="flex flex-col">
@@ -35,7 +35,7 @@ export default async function DashboardPage() {
             <MainNav className="mx-6" />
             <div className="ml-auto flex items-center space-x-4">
               <Search />
-              <UserNav user={user} />
+              <UserNav user={session?.user} />
             </div>
           </div>
         </div>
