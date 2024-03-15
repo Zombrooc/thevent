@@ -53,7 +53,6 @@ function classNames(...classes) {
 }
 
 export default function Navbar({ user }) {
-  console.log(user);
   return (
     <Disclosure as="nav">
       {({ open }) => (
@@ -62,7 +61,7 @@ export default function Navbar({ user }) {
             <div className="relative flex h-16 items-center justify-between">
               <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
                 {/* Mobile menu button*/}
-                <Disclosure.Button className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+                <Disclosure.Button className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-primary hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
                   <span className="absolute -inset-0.5" />
                   <span className="sr-only">Open main menu</span>
                   {open ? (
@@ -154,7 +153,7 @@ export default function Navbar({ user }) {
                 ) : (
                   <Link
                     href="/api/auth/login"
-                    className="text-sm font-semibold leading-6 text-gray-800 ml-3"
+                    className="text-sm font-semibold leading-6 text-gray-800 ml-3 hover:bg-primary hover:text-white py-2 px-4 rounded-md"
                   >
                     Entrar <span aria-hidden="true">&rarr;</span>
                   </Link>
@@ -227,7 +226,7 @@ export default function Navbar({ user }) {
             </div>
           </div>
 
-          {/* <Disclosure.Panel className="sm:hidden">
+          <Disclosure.Panel className="sm:hidden">
             <div className="space-y-1 px-2 pb-3 pt-2">
               {navigation.map((item) => (
                 <Disclosure.Button
@@ -246,7 +245,7 @@ export default function Navbar({ user }) {
                 </Disclosure.Button>
               ))}
             </div>
-          </Disclosure.Panel> */}
+          </Disclosure.Panel>
         </>
       )}
     </Disclosure>

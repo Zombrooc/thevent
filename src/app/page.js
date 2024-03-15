@@ -63,7 +63,7 @@ export default async function Home() {
         </div>
       </div>
 
-      <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
+      <div className=" px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto max-w-7xl sm:px-6 lg:px-8o">
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-10">
           <div className="group flex flex-col h-full bg-white border border-gray-200 shadow-sm rounded-xl dark:bg-slate-900 dark:border-gray-700 dark:shadow-slate-700/[.7]">
             <div className="aspect-w-12 aspect-h-7 sm:aspect-none rounded-xl overflow-hidden">
