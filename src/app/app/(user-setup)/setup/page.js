@@ -38,75 +38,32 @@ const FormSchema = z.object({
 
 import { Checkbox } from "@/components/ui/checkbox";
 
+import { updateUserRoleAndAcceptRecievePromotions } from "./actions";
+import { useUser } from "@auth0/nextjs-auth0/client";
+
 export default function Setup() {
+  const { user } = useUser();
+
   const form = useForm({
     resolver: zodResolver(FormSchema),
   });
 
-  function onSubmit(data) {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
+  async function onSubmit(data) {
+    try {
+      await updateUserRoleAndAcceptRecievePromotions(data, user);
+      toast({
+        title: "Dados enviados com sucesso!",
+        description: "Suas informações foram atualizadas.",
+      });
+    } catch (error) {
+      toast({
+        title: "Erro ao enviar os dados",
+        description: "Não foi possível atualizar suas informações.",
+      });
+    }
   }
 
   return (
-    // <form
-    //   className="space-y-6"
-    //   action="#"
-    //   method="POST"
-    //   onSubmit={form.handleSubmit((data) => console.log(data))}
-    // >
-    //   <div>
-    //     <Label>Qual seu objetivo ao acessar o site?</Label>
-
-    //     <Select
-    //       value={selected}
-    //       onChange={setSelected}
-    //       renderValue={(selected) => (
-    //         <div className="flex items-center justify-between w-full px-3 py-1.5 text-left bg-white rounded-md shadow-sm text-gray-900 ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-    //           <span className="flex items-center">
-    //             <span className="ml-3 block truncate">{selected.name}</span>
-    //           </span>
-    //         </div>
-    //       )}
-    //     >
-    //       <SelectItem value="organizer">
-    //         Divulgar e vender ingressos do meu evento
-    //       </SelectItem>
-    //       <SelectItem value="competitor">
-    //         Encontrar eventos para participar e competir
-    //       </SelectItem>
-    //     </Select>
-    //   </div>
-
-    //   <div>
-    //     <div className="items-top flex space-x-2">
-    //       <Checkbox id="awardsPartners" />
-    //       <div className="grid gap-1.5 leading-none">
-    //         <Label
-    //           htmlFor="awardsPartners"
-    //           className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-    //         >
-    //           Accept terms and conditions
-    //         </Label>
-    //         <p className="text-sm text-muted-foreground">
-    //           You agree to our Terms of Service and Privacy Policy.
-    //         </p>
-    //       </div>
-    //     </div>
-    //   </div>
-    //   <Button
-    //     type="submit"
-    //     className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-    //   >
-    //     Continuar
-    //   </Button>
-    // </form>
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <FormField

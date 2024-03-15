@@ -15,7 +15,7 @@ import {
 import { UserNav } from "./user-nav";
 
 const navigation = [
-  { name: "Inicío", href: "#", current: true },
+  { name: "Inicío", href: "/", current: true },
   {
     name: "Evento",
     sub: [
