@@ -50,11 +50,16 @@ export default function Setup() {
 
   async function onSubmit(data) {
     try {
-      await updateUserRoleAndAcceptRecievePromotions(data, user);
+      const { redirectURL } = await updateUserRoleAndAcceptRecievePromotions(
+        data,
+        user
+      );
       toast({
         title: "Dados enviados com sucesso!",
         description: "Suas informações foram atualizadas.",
       });
+
+      redirect(redirectURL);
     } catch (error) {
       toast({
         title: "Erro ao enviar os dados",
