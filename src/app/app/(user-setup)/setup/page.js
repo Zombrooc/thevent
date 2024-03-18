@@ -39,10 +39,12 @@ const FormSchema = z.object({
 import { Checkbox } from "@/components/ui/checkbox";
 
 import { updateUserRoleAndAcceptRecievePromotions } from "./actions";
-import { useUser } from "@auth0/nextjs-auth0/client";
+import { useSearchParams } from "next/navigation";
 
 export default function Setup() {
-  const { user } = useUser();
+  const searchParams = useSearchParams();
+
+  const session_token = searchParams.get("session_token");
 
   const form = useForm({
     resolver: zodResolver(FormSchema),
@@ -50,16 +52,11 @@ export default function Setup() {
 
   async function onSubmit(data) {
     try {
-      const { redirectURL } = await updateUserRoleAndAcceptRecievePromotions(
-        data,
-        user
-      );
+      await updateUserRoleAndAcceptRecievePromotions(data, session_token);
       toast({
         title: "Dados enviados com sucesso!",
         description: "Suas informações foram atualizadas.",
       });
-
-      redirect(redirectURL);
     } catch (error) {
       toast({
         title: "Erro ao enviar os dados",
