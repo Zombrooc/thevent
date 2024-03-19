@@ -1,9 +1,13 @@
 "use client";
-
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import Link from "next/link";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
-import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import {
+  Bars3Icon,
+  BellIcon,
+  XMarkIcon,
+  PlusIcon,
+} from "@heroicons/react/24/outline";
 
 import {
   DropdownMenu,
@@ -53,6 +57,8 @@ function classNames(...classes) {
 }
 
 export default function Navbar({ user }) {
+  console.log(user);
+
   return (
     <Disclosure as="nav">
       {({ open }) => (
@@ -132,7 +138,14 @@ export default function Navbar({ user }) {
                   </div>
                 </div>
               </div>
-              <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+              <div className="absolute inset-y-0 right-0 flex items-center sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+                <Link
+                  href="/"
+                  className="flex justify-center items-center text-sm font-semibold leading-6 mr-2 bg-primary text-white py-2 px-4 rounded-md"
+                >
+                  <PlusIcon className="h-6 w-6 mr-2" aria-hidden="true" /> Criar
+                  Evento
+                </Link>
                 <DropdownMenu>
                   <DropdownMenuTrigger className="relative rounded-full p-1 text-gray-700 hover:bg-primary hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                     <span className="absolute -inset-1.5" />
