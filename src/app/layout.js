@@ -32,6 +32,7 @@ export default function RootLayout({ children }) {
           {children}
         </UserProvider>
         {/* <Footer /> */}
+        <Analytics />
       </body>
     </html>
   );
