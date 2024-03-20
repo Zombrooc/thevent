@@ -1,5 +1,3 @@
-import { Metadata } from "next";
-import Image from "next/image";
 import { getSession } from "@auth0/nextjs-auth0";
 
 import { Button } from "@/components/ui/button";

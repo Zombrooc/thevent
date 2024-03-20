@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+
 export default function UserSetupLayout({ children }) {
   return (
     <div className="h-screen flex flex-col justify-center items-center px-6 py-12 lg:px-8 ">
@@ -11,7 +13,7 @@ export default function UserSetupLayout({ children }) {
 
       <div className="flex flex-1 items-center justify-center">
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-md bg-white p-6 rounded-lg shadow-lg border-border transform -translate-y-1/4">
-          {children}
+          <Suspense>{children}</Suspense>
         </div>
       </div>
     </div>
