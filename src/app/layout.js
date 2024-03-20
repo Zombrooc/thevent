@@ -1,7 +1,8 @@
 import { Inter as FontSans } from "next/font/google";
-import "./globals.css";
-
 import { UserProvider } from "@auth0/nextjs-auth0/client";
+import { Analytics } from "@vercel/analytics/react";
+
+import "./globals.css";
 
 import { cn } from "@/lib/utils";
 
