@@ -18,6 +18,54 @@ import {
 
 import { UserNav } from "./user-nav";
 
+import { Button } from "@/components/ui/button";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+
+import { useForm } from "react-hook-form";
+
+import { Label } from "@/components/ui/label";
+
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+  SelectValue,
+} from "@/components/ui/select";
+
+import {
+  Form,
+  FormItem,
+  FormField,
+  FormLabel,
+  FormDescription,
+  FormMessage,
+  FormControl,
+} from "@/components/ui/form";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+
+import { toast } from "@/components/ui/use-toast";
+
+const FormSchema = z.object({
+  role: z.string({
+    required_error: "Selecione um objetivo.",
+  }),
+  awardsPartnerGroup: z.boolean().default(false).optional(),
+});
+
+import { Checkbox } from "@/components/ui/checkbox";
+
 const navigation = [
   { name: "Inicío", href: "/", current: true },
   {
@@ -57,7 +105,33 @@ function classNames(...classes) {
 }
 
 export default function Navbar({ user }) {
-  console.log(user);
+  const form = useForm({
+    resolver: zodResolver(FormSchema),
+  });
+
+  async function onSubmit(data) {
+    try {
+      const { success, redirectUrl } =
+        await updateUserRoleAndAcceptRecievePromotions(
+          data,
+          session_token,
+          state
+        );
+
+      if (success) {
+        toast({
+          title: "Dados enviados com sucesso!",
+          description: "Suas informações foram atualizadas.",
+        });
+        redirect(redirectUrl);
+      }
+    } catch (error) {
+      toast({
+        title: "Erro ao enviar os dados",
+        description: "Não foi possível atualizar suas informações.",
+      });
+    }
+  }
 
   return (
     <Disclosure as="nav">
@@ -139,13 +213,103 @@ export default function Navbar({ user }) {
                 </div>
               </div>
               <div className="absolute inset-y-0 right-0 flex items-center sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                <Link
-                  href="/"
-                  className="flex justify-center items-center text-sm font-semibold leading-6 mr-2 bg-primary text-white py-2 px-4 rounded-md"
-                >
-                  <PlusIcon className="h-6 w-6 mr-2" aria-hidden="true" /> Criar
-                  Evento
-                </Link>
+                <Drawer>
+                  <DrawerTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="flex justify-center items-center text-sm font-semibold leading-6 mr-2 bg-primary text-white py-2 px-4 rounded-md hover:bg-violet-800 hover:text-white"
+                    >
+                      Criar evento
+                    </Button>
+                  </DrawerTrigger>
+                  <DrawerContent>
+                    <div className="mx-auto w-full max-w-2xl">
+                      <DrawerHeader>
+                        <DrawerTitle>Crie seu evento</DrawerTitle>
+                      </DrawerHeader>
+                      <Form {...form}>
+                        <form
+                          onSubmit={form.handleSubmit(onSubmit)}
+                          className="space-y-6"
+                        >
+                          <div className="p-4 pb-0">
+                            <FormField
+                              control={form.control}
+                              name="role"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>
+                                    Qual seu maior objetivo na plataforma?
+                                  </FormLabel>
+                                  <Select
+                                    onValueChange={field.onChange}
+                                    defaultValue={field.value}
+                                    className="w-full"
+                                  >
+                                    <FormControl>
+                                      <SelectTrigger>
+                                        <SelectValue placeholder="Selecione seu objetivo" />
+                                      </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                      <SelectItem value="organizer">
+                                        Divulgar e vender ingressos do meu
+                                        evento
+                                      </SelectItem>
+                                      <SelectItem value="competitor">
+                                        Procurar eventos para participar e
+                                        competir
+                                      </SelectItem>
+                                      <SelectItem value="awards-supplier">
+                                        Fornecer premiações para os
+                                        organizadores
+                                      </SelectItem>
+                                    </SelectContent>
+                                  </Select>
+
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={form.control}
+                              name="awardsPartnerGroup"
+                              render={({ field }) => (
+                                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                                  <FormControl>
+                                    <Checkbox
+                                      checked={field.value}
+                                      onCheckedChange={field.onChange}
+                                    />
+                                  </FormControl>
+                                  <div className="space-y-1 leading-none">
+                                    <FormLabel>
+                                      Receber orçamentos de premiações
+                                    </FormLabel>
+
+                                    <FormDescription>
+                                      Ao criar o evento receba orçamentos de
+                                      diversas empresas parceiras
+                                    </FormDescription>
+                                  </div>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                          <DrawerFooter>
+                            <Button className="bg-primary text-white">
+                              Criar Evento
+                            </Button>
+                            <DrawerClose asChild>
+                              <Button variant="outline">Cancel</Button>
+                            </DrawerClose>
+                          </DrawerFooter>
+                        </form>
+                      </Form>
+                    </div>
+                  </DrawerContent>
+                </Drawer>
                 <DropdownMenu>
                   <DropdownMenuTrigger className="relative rounded-full p-1 text-gray-700 hover:bg-primary hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                     <span className="absolute -inset-1.5" />
