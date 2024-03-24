@@ -1,11 +1,14 @@
 import { Suspense } from "react";
+import Image from "next/image";
 
 export default function UserSetupLayout({ children }) {
   return (
     <div className="h-screen flex flex-col justify-center items-center px-6 py-12 lg:px-8 ">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <img
+        <Image
           className="mx-auto h-10 w-auto"
+          width="auto"
+          height="40"
           src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
           alt="Your Company"
         />

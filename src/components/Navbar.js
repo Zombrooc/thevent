@@ -65,6 +65,7 @@ const FormSchema = z.object({
 });
 
 import { Checkbox } from "@/components/ui/checkbox";
+import Image from "next/image";
 
 const navigation = [
   { name: "Inicío", href: "/", current: true },
@@ -153,8 +154,10 @@ export default function Navbar({ user }) {
               </div>
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                 <div className="flex flex-shrink-0 items-center">
-                  <img
+                  <Image
                     className="h-8 w-auto"
+                    width="32"
+                    height="32"
                     src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
                     alt="Your Company"
                   />
@@ -213,103 +216,13 @@ export default function Navbar({ user }) {
                 </div>
               </div>
               <div className="absolute inset-y-0 right-0 flex items-center sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                <Drawer>
-                  <DrawerTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className="flex justify-center items-center text-sm font-semibold leading-6 mr-2 bg-primary text-white py-2 px-4 rounded-md hover:bg-violet-800 hover:text-white"
-                    >
-                      Criar evento
-                    </Button>
-                  </DrawerTrigger>
-                  <DrawerContent>
-                    <div className="mx-auto w-full max-w-2xl">
-                      <DrawerHeader>
-                        <DrawerTitle>Crie seu evento</DrawerTitle>
-                      </DrawerHeader>
-                      <Form {...form}>
-                        <form
-                          onSubmit={form.handleSubmit(onSubmit)}
-                          className="space-y-6"
-                        >
-                          <div className="p-4 pb-0">
-                            <FormField
-                              control={form.control}
-                              name="role"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>
-                                    Qual seu maior objetivo na plataforma?
-                                  </FormLabel>
-                                  <Select
-                                    onValueChange={field.onChange}
-                                    defaultValue={field.value}
-                                    className="w-full"
-                                  >
-                                    <FormControl>
-                                      <SelectTrigger>
-                                        <SelectValue placeholder="Selecione seu objetivo" />
-                                      </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>
-                                      <SelectItem value="organizer">
-                                        Divulgar e vender ingressos do meu
-                                        evento
-                                      </SelectItem>
-                                      <SelectItem value="competitor">
-                                        Procurar eventos para participar e
-                                        competir
-                                      </SelectItem>
-                                      <SelectItem value="awards-supplier">
-                                        Fornecer premiações para os
-                                        organizadores
-                                      </SelectItem>
-                                    </SelectContent>
-                                  </Select>
-
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                            <FormField
-                              control={form.control}
-                              name="awardsPartnerGroup"
-                              render={({ field }) => (
-                                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                                  <FormControl>
-                                    <Checkbox
-                                      checked={field.value}
-                                      onCheckedChange={field.onChange}
-                                    />
-                                  </FormControl>
-                                  <div className="space-y-1 leading-none">
-                                    <FormLabel>
-                                      Receber orçamentos de premiações
-                                    </FormLabel>
-
-                                    <FormDescription>
-                                      Ao criar o evento receba orçamentos de
-                                      diversas empresas parceiras
-                                    </FormDescription>
-                                  </div>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                          </div>
-                          <DrawerFooter>
-                            <Button className="bg-primary text-white">
-                              Criar Evento
-                            </Button>
-                            <DrawerClose asChild>
-                              <Button variant="outline">Cancel</Button>
-                            </DrawerClose>
-                          </DrawerFooter>
-                        </form>
-                      </Form>
-                    </div>
-                  </DrawerContent>
-                </Drawer>
+                <Link
+                  href="/app/create-event"
+                  variant="outline"
+                  className="flex justify-center items-center text-sm font-semibold leading-6 mr-2 bg-primary text-white py-2 px-4 rounded-md hover:bg-violet-800 hover:text-white"
+                >
+                  Criar evento
+                </Link>
                 <DropdownMenu>
                   <DropdownMenuTrigger className="relative rounded-full p-1 text-gray-700 hover:bg-primary hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                     <span className="absolute -inset-1.5" />
