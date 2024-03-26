@@ -12,9 +12,9 @@ import {
 } from "lucide-react";
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { Input } from "@/components/ui/input";
-import { Progress } from "@/components/ui/progress";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { Input } from "../ui/input";
+import ProgressBar from "../ui/progress";
+import { ScrollArea } from "../ui/scroll-area";
 
 const FileTypes = {
   Image: "image",
@@ -154,7 +154,7 @@ export default function ImageUpload() {
         ...acceptedFiles.map((file) => {
           return {
             progress: 0,
-            File: file,
+            File,
             source: null,
           };
         }),
@@ -185,7 +185,7 @@ export default function ImageUpload() {
     // } catch (error) {
     //   console.error("Error uploading files: ", error);
     // }
-  }, []);
+  });
 
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
@@ -194,7 +194,7 @@ export default function ImageUpload() {
       <div>
         <label
           {...getRootProps()}
-          className="relative mt-2 flex justify-center px-6 py-10 flex-col items-center w-full rounded-lg border border-dashed border-gray-900/25 cursor-pointer bg-gray-50 hover:bg-gray-100 "
+          className="relative flex flex-col items-center justify-center w-full py-6 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 "
         >
           <div className=" text-center">
             <div className=" border p-2 rounded-md max-w-min mx-auto">
@@ -202,10 +202,10 @@ export default function ImageUpload() {
             </div>
 
             <p className="mt-2 text-sm text-gray-600">
-              <span className="font-semibold">Arraste e Solte</span>
+              <span className="font-semibold">Drag files</span>
             </p>
             <p className="text-xs text-gray-500">
-              ou clique para enviar seu arquivo. Ele deve ter menos de 10MB
+              Click to upload files &#40;files should be under 10 MB &#41;
             </p>
           </div>
         </label>
@@ -246,7 +246,7 @@ export default function ImageUpload() {
                             {fileUploadProgress.progress}%
                           </span>
                         </div>
-                        <Progress
+                        <ProgressBar
                           progress={fileUploadProgress.progress}
                           className={
                             getFileIconAndColor(fileUploadProgress.File).color
