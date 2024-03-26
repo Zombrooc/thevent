@@ -7,14 +7,14 @@ import { CalendarIcon } from "@radix-ui/react-icons";
 import { addDays, format } from "date-fns";
 import { DateRange } from "react-day-picker";
 
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Plate, PlateContent } from "@udecode/plate-common";
+import { Calendar } from "@/components/ui/calendar";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 import {
   Form,
@@ -31,6 +31,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { toast } from "@/components/ui/use-toast";
+import ImageUpload from "@/components/ImageUpload";
 
 const FormSchema = z.object({
   dob: z.date({
@@ -79,7 +80,8 @@ export default function CreateEvent() {
               >
                 Imagem do evento
               </label>
-              <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
+              <ImageUpload />
+              {/* <div className="rounded-lg border border-dashed border-gray-900/25 mt-2 flex justify-center px-6 py-10">
                 <div className="text-center">
                   <PhotoIcon
                     className="mx-auto h-12 w-12 text-gray-300"
@@ -104,7 +106,7 @@ export default function CreateEvent() {
                     PNG, JPG, GIF de até 10MB
                   </p>
                 </div>
-              </div>
+              </div> */}
               <p className="mt-3 text-sm leading-6 text-gray-600">
                 Essa imagem será exibida para os competidores ao procurar pelo
                 seu evento. Por isso lembre-se de criar uma arte chamativa e
@@ -143,16 +145,16 @@ export default function CreateEvent() {
                 Descrição
               </label>
               <div className="mt-2">
-                {/* <textarea
+                <textarea
                   id="about"
                   name="about"
                   rows={3}
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   defaultValue={""}
-                /> */}
-                <Plate>
+                />
+                {/* <Plate>
                   <PlateContent placeholder="Type..." />
-                </Plate>
+                </Plate> */}
               </div>
               <p className="mt-3 text-sm leading-6 text-gray-600">
                 Escreve um poucos sobre o seu evento.
@@ -367,7 +369,7 @@ export default function CreateEvent() {
                     <PopoverTrigger asChild>
                       <Button
                         id="date"
-                        variant={"outline"}
+                        variant="outline"
                         className={cn(
                           "w-[300px] justify-start text-left font-normal",
                           !date && "text-muted-foreground"
