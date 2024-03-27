@@ -56,6 +56,9 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        gridTemplateRows: {
+          "[auto,auto,1fr]": "auto auto 1fr",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -78,5 +81,9 @@ module.exports = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate"), require("@tailwindcss/forms")],
+  plugins: [
+    require("tailwindcss-animate"),
+    require("@tailwindcss/forms"),
+    require("@tailwindcss/aspect-ratio"),
+  ],
 };

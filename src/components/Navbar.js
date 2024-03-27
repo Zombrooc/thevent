@@ -1,13 +1,8 @@
 "use client";
-import { Fragment, useState } from "react";
+
 import Link from "next/link";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
-import {
-  Bars3Icon,
-  BellIcon,
-  XMarkIcon,
-  PlusIcon,
-} from "@heroicons/react/24/outline";
+import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
 import {
   DropdownMenu,
@@ -18,57 +13,12 @@ import {
 
 import { UserNav } from "./user-nav";
 
-import { Button } from "@/components/ui/button";
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
-
-import { useForm } from "react-hook-form";
-
-import { Label } from "@/components/ui/label";
-
-import {
-  Select,
-  SelectTrigger,
-  SelectContent,
-  SelectItem,
-  SelectValue,
-} from "@/components/ui/select";
-
-import {
-  Form,
-  FormItem,
-  FormField,
-  FormLabel,
-  FormDescription,
-  FormMessage,
-  FormControl,
-} from "@/components/ui/form";
-
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-
-import { toast } from "@/components/ui/use-toast";
-
-const FormSchema = z.object({
-  role: z.string({
-    required_error: "Selecione um objetivo.",
-  }),
-  awardsPartnerGroup: z.boolean().default(false).optional(),
-});
-
-import { Checkbox } from "@/components/ui/checkbox";
 import Image from "next/image";
+import { cn } from "@/lib/utils";
+import { usePathname } from "next/navigation";
 
 const navigation = [
-  { name: "Inicío", href: "/", current: true },
+  { name: "Inicío", href: "/" },
   {
     name: "Evento",
     sub: [
@@ -101,38 +51,10 @@ const navigation = [
   },
 ];
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
-
 export default function Navbar({ user }) {
-  const form = useForm({
-    resolver: zodResolver(FormSchema),
-  });
+  const pathname = usePathname();
 
-  async function onSubmit(data) {
-    try {
-      const { success, redirectUrl } =
-        await updateUserRoleAndAcceptRecievePromotions(
-          data,
-          session_token,
-          state
-        );
-
-      if (success) {
-        toast({
-          title: "Dados enviados com sucesso!",
-          description: "Suas informações foram atualizadas.",
-        });
-        redirect(redirectUrl);
-      }
-    } catch (error) {
-      toast({
-        title: "Erro ao enviar os dados",
-        description: "Não foi possível atualizar suas informações.",
-      });
-    }
-  }
+  const isCurrentPage = (href) => pathname === href;
 
   return (
     <Disclosure as="nav">
@@ -165,18 +87,21 @@ export default function Navbar({ user }) {
                 <div className="hidden sm:ml-6 sm:block">
                   <div className="flex space-x-4">
                     {navigation.map((item) => {
+                      const isCurrent = item.href
+                        ? isCurrentPage(item.href)
+                        : false;
                       if (item.href) {
                         return (
                           <Link
                             key={item.name}
                             href={item.href}
-                            className={classNames(
-                              item.current
+                            className={cn(
+                              isCurrent
                                 ? "bg-primary text-white"
                                 : "text-gray-700 hover:bg-primary hover:text-white",
                               "rounded-md px-3 py-2 text-sm font-medium"
                             )}
-                            aria-current={item.current ? "page" : undefined}
+                            aria-current={isCurrent ? "page" : undefined}
                           >
                             {item.name}
                           </Link>
@@ -192,14 +117,14 @@ export default function Navbar({ user }) {
                                 return (
                                   <Link href={subItem.href} key={subItem.name}>
                                     <DropdownMenuItem
-                                      className={classNames(
-                                        subItem.current
+                                      className={cn(
+                                        isCurrent
                                           ? "bg-primary text-white"
                                           : "text-gray-700 hover:bg-primary hover:text-white",
                                         "rounded-md px-3 py-2 text-sm font-medium"
                                       )}
                                       aria-current={
-                                        subItem.current ? "page" : undefined
+                                        isCurrent ? "page" : undefined
                                       }
                                     >
                                       {subItem.name}
@@ -216,13 +141,15 @@ export default function Navbar({ user }) {
                 </div>
               </div>
               <div className="absolute inset-y-0 right-0 flex items-center sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                <Link
-                  href="/app/create-event"
-                  variant="outline"
-                  className="flex justify-center items-center text-sm font-semibold leading-6 mr-2 bg-primary text-white py-2 px-4 rounded-md hover:bg-violet-800 hover:text-white"
-                >
-                  Criar evento
-                </Link>
+                {pathname !== "/app/create-event" && (
+                  <Link
+                    href="/app/create-event"
+                    variant="outline"
+                    className="flex justify-center items-center text-sm font-semibold leading-6 mr-2 bg-primary text-white py-2 px-4 rounded-md hover:bg-violet-800 hover:text-white"
+                  >
+                    Criar evento
+                  </Link>
+                )}
                 <DropdownMenu>
                   <DropdownMenuTrigger className="relative rounded-full p-1 text-gray-700 hover:bg-primary hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                     <span className="absolute -inset-1.5" />
@@ -274,7 +201,7 @@ export default function Navbar({ user }) {
                         {({ active }) => (
                           <a
                             href="#"
-                            className={classNames(
+                            className={cn(
                               active ? "bg-gray-100" : "",
                               "block px-4 py-2 text-sm text-gray-700"
                             )}
@@ -287,7 +214,7 @@ export default function Navbar({ user }) {
                         {({ active }) => (
                           <a
                             href="#"
-                            className={classNames(
+                            className={cn(
                               active ? "bg-gray-100" : "",
                               "block px-4 py-2 text-sm text-gray-700"
                             )}
@@ -300,7 +227,7 @@ export default function Navbar({ user }) {
                         {({ active }) => (
                           <a
                             href="#"
-                            className={classNames(
+                            className={cn(
                               active ? "bg-gray-100" : "",
                               "block px-4 py-2 text-sm text-gray-700"
                             )}
@@ -323,7 +250,7 @@ export default function Navbar({ user }) {
                   key={item.name}
                   as="a"
                   href={item.href}
-                  className={classNames(
+                  className={cn(
                     item.current
                       ? "bg-primary text-white"
                       : "text-gray-300 hover:bg-primary hover:text-white",

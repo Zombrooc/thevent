@@ -3,7 +3,6 @@
 import { PhotoIcon, UserCircleIcon } from "@heroicons/react/24/solid";
 
 import * as React from "react";
-import { CalendarIcon } from "@radix-ui/react-icons";
 import { addDays, format } from "date-fns";
 import { DateRange } from "react-day-picker";
 
@@ -15,6 +14,18 @@ import { Plate, PlateContent } from "@udecode/plate-common";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { Fragment } from "react";
+import {
+  BriefcaseIcon,
+  CalendarIcon,
+  CheckIcon,
+  ChevronDownIcon,
+  CurrencyDollarIcon,
+  LinkIcon,
+  MapPinIcon,
+  PencilIcon,
+} from "@heroicons/react/20/solid";
+import { Menu, Transition } from "@headlessui/react";
 
 import {
   Form,
@@ -33,6 +44,14 @@ import {
 import { toast } from "@/components/ui/use-toast";
 import ImageUpload from "@/components/ImageUpload";
 import { PlusIcon } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 const FormSchema = z.object({
   dob: z.date({
@@ -82,32 +101,7 @@ export default function CreateEvent() {
                 Imagem do evento
               </label>
               <ImageUpload />
-              {/* <div className="rounded-lg border border-dashed border-gray-900/25 mt-2 flex justify-center px-6 py-10">
-                <div className="text-center">
-                  <PhotoIcon
-                    className="mx-auto h-12 w-12 text-gray-300"
-                    aria-hidden="true"
-                  />
-                  <div className="mt-4 flex text-sm leading-6 text-gray-600">
-                    <label
-                      htmlFor="file-upload"
-                      className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
-                    >
-                      <span>Enviar imagem</span>
-                      <input
-                        id="file-upload"
-                        name="file-upload"
-                        type="file"
-                        className="sr-only"
-                      />
-                    </label>
-                    <p className="pl-1">ou arraste e solte</p>
-                  </div>
-                  <p className="text-xs leading-5 text-gray-600">
-                    PNG, JPG, GIF de até 10MB
-                  </p>
-                </div>
-              </div> */}
+
               <p className="mt-3 text-sm leading-6 text-gray-600">
                 Essa imagem será exibida para os competidores ao procurar pelo
                 seu evento. Por isso lembre-se de criar uma arte chamativa e
@@ -123,9 +117,6 @@ export default function CreateEvent() {
               </label>
               <div className="mt-2">
                 <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-full">
-                  {/* <span className="flex select-none items-center pl-3 text-gray-500 sm:text-sm">
-                    workcation.com/
-                  </span> */}
                   <input
                     type="text"
                     name="username"
@@ -158,27 +149,6 @@ export default function CreateEvent() {
                 Escreve um poucos sobre o seu evento.
               </p>
             </div>
-
-            {/* <div className="col-span-full">
-              <label
-                htmlFor="photo"
-                className="block text-sm font-medium leading-6 text-gray-900"
-              >
-                Photo
-              </label>
-              <div className="mt-2 flex items-center gap-x-3">
-                <UserCircleIcon
-                  className="h-12 w-12 text-gray-300"
-                  aria-hidden="true"
-                />
-                <button
-                  type="button"
-                  className="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-                >
-                  Change
-                </button>
-              </div>
-            </div> */}
           </div>
         </div>
 
@@ -191,81 +161,6 @@ export default function CreateEvent() {
           </p>
 
           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-            {/* <div className="sm:col-span-3">
-              <label
-                htmlFor="first-name"
-                className="block text-sm font-medium leading-6 text-gray-900"
-              >
-                First name
-              </label>
-              <div className="mt-2">
-                <input
-                  type="text"
-                  name="first-name"
-                  id="first-name"
-                  autoComplete="given-name"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                />
-              </div>
-            </div>
-
-            <div className="sm:col-span-3">
-              <label
-                htmlFor="last-name"
-                className="block text-sm font-medium leading-6 text-gray-900"
-              >
-                Last name
-              </label>
-              <div className="mt-2">
-                <input
-                  type="text"
-                  name="last-name"
-                  id="last-name"
-                  autoComplete="family-name"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                />
-              </div>
-            </div>
-
-            <div className="sm:col-span-4">
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium leading-6 text-gray-900"
-              >
-                Email address
-              </label>
-              <div className="mt-2">
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                />
-              </div>
-            </div> */}
-
-            {/* <div className="sm:col-span-3">
-              <label
-                htmlFor="country"
-                className="block text-sm font-medium leading-6 text-gray-900"
-              >
-                Country
-              </label>
-              <div className="mt-2">
-                <select
-                  id="country"
-                  name="country"
-                  autoComplete="country-name"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
-                >
-                  <option>United States</option>
-                  <option>Canada</option>
-                  <option>Mexico</option>
-                </select>
-              </div>
-            </div> */}
-
             <div className="col-span-full">
               <label
                 htmlFor="street-address"
@@ -300,7 +195,6 @@ export default function CreateEvent() {
                 />
               </div>
             </div>
-
             <div className="sm:col-span-2 sm:col-start-1">
               <label
                 htmlFor="city"
@@ -318,7 +212,6 @@ export default function CreateEvent() {
                 />
               </div>
             </div>
-
             <div className="sm:col-span-2">
               <label
                 htmlFor="region"
@@ -336,7 +229,6 @@ export default function CreateEvent() {
                 />
               </div>
             </div>
-
             <div className="sm:col-span-2">
               <label
                 htmlFor="postal-code"
@@ -359,7 +251,7 @@ export default function CreateEvent() {
                 htmlFor="postal-code"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
-                CEP
+                Data do Evento
               </label>
               <div className="mt-2">
                 <div className={cn("grid gap-2")}>
@@ -415,48 +307,199 @@ export default function CreateEvent() {
 
           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8">
             <div className="flex justify-center">
-              <button
-                type="button"
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              >
-                <PlusIcon className="mr-2 -ml-1 h-5 w-5" aria-hidden="true" />
-                Criar ingresso
-              </button>
+              <Dialog>
+                <DialogTrigger className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                  <PlusIcon className="mr-2 -ml-1 h-5 w-5" aria-hidden="true" />
+                  Criar ingresso
+                </DialogTrigger>
+                <DialogContent className="max-w-4xl">
+                  <DialogHeader>
+                    <DialogTitle>Criar ingresso</DialogTitle>
+                    <DialogDescription>
+                      <div className="space-y-5">
+                        <div>
+                          <div className="mt-3 grid grid-cols-1 gap-x-3 gap-y-3 sm:grid-cols-6">
+                            <div className="sm:col-span-3 sm:col-start-1">
+                              <label
+                                htmlFor="ticketName"
+                                className="block text-xs font-medium leading-6 text-gray-900"
+                              >
+                                Nome do Ingresso
+                              </label>
+                              <div className="mt-1">
+                                <input
+                                  type="text"
+                                  name="ticketName"
+                                  id="ticketName"
+                                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                />
+                              </div>
+                            </div>
+                            <div className="sm:col-span-3">
+                              <label
+                                htmlFor="ticketPrice"
+                                className="block text-xs font-medium leading-6 text-gray-900"
+                              >
+                                Valor
+                              </label>
+                              <div className="mt-1">
+                                <input
+                                  type="number"
+                                  name="ticketPrice"
+                                  id="ticketPrice"
+                                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                />
+                              </div>
+                            </div>
+
+                            <div className="col-span-full">
+                              <label
+                                htmlFor="ticketDescription"
+                                className="block text-xs font-medium leading-6 text-gray-900"
+                              >
+                                Descrição
+                              </label>
+                              <div className="mt-1">
+                                <textarea
+                                  id="ticketDescription"
+                                  name="ticketDescription"
+                                  rows={3}
+                                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                  placeholder="Openbar, VIP, etc."
+                                />
+                              </div>
+                              <p className="text-xs leading-6 text-gray-600">
+                                Descreve sobre esse ingresso e diga o que esse
+                                ingresso permite.
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div>
+                          <h2 className="text-xs font-semibold leading-7 text-gray-900">
+                            Ínicio das vendas
+                          </h2>
+                          <div className="grid grid-cols-1 gap-x-3 gap-y-3 sm:grid-cols-6">
+                            <div className="sm:col-span-2">
+                              <div className="mt-2">
+                                <div className={cn("grid gap-2")}>
+                                  <Popover>
+                                    <PopoverTrigger asChild>
+                                      <Button
+                                        id="date"
+                                        variant="outline"
+                                        className={cn(
+                                          "w-[300px] justify-start text-left font-normal",
+                                          !date && "text-muted-foreground"
+                                        )}
+                                      >
+                                        <CalendarIcon className="mr-2 h-4 w-4" />
+                                        {date?.from ? (
+                                          date.to ? (
+                                            <>
+                                              {format(date.from, "LLL dd, y")} -{" "}
+                                              {format(date.to, "LLL dd, y")}
+                                            </>
+                                          ) : (
+                                            format(date.from, "LLL dd, y")
+                                          )
+                                        ) : (
+                                          <span>Pick a date</span>
+                                        )}
+                                      </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent
+                                      className="w-auto p-0"
+                                      align="start"
+                                    >
+                                      <Calendar
+                                        initialFocus
+                                        mode="range"
+                                        defaultMonth={date?.from}
+                                        selected={date}
+                                        onSelect={setDate}
+                                        numberOfMonths={2}
+                                      />
+                                    </PopoverContent>
+                                  </Popover>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="mt-6 flex items-center justify-end gap-x-6">
+                        <button
+                          type="button"
+                          className="text-sm font-semibold leading-6 text-gray-900"
+                        >
+                          Cancelar
+                        </button>
+                        <button
+                          type="submit"
+                          className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                        >
+                          Salvar
+                        </button>
+                      </div>
+                    </DialogDescription>
+                  </DialogHeader>
+                </DialogContent>
+              </Dialog>
             </div>
-            <div className="flex items-center justify-center">
-              <div className="bg-white shadow-xl rounded-lg p-8">
-                <h3 className="text-xl font-semibold mb-4">
-                  Detalhes do Ingresso
-                </h3>
-                <ul>
-                  <li>
-                    <strong>Nome:</strong> Ingresso VIP
-                  </li>
-                  <li>
-                    <strong>Descrição:</strong> Acesso total ao evento, com
-                    direito a brindes exclusivos.
-                  </li>
-                  <li>
-                    <strong>Lote:</strong> 1
-                  </li>
-                  <li>
-                    <strong>Data de Início das Vendas:</strong> 20 de Outubro de
-                    2022
-                  </li>
-                  <li>
-                    <strong>Quantidade Criada:</strong> 100
-                  </li>
-                  <li>
-                    <strong>Valor:</strong> R$ 150,00
-                  </li>
-                  <li>
-                    <strong>Valor Pago pelo Comprador:</strong> R$ 150,00
-                  </li>
-                  <li>
-                    <strong>Valor Recebido pelo Organizador:</strong> R$ 145,00
-                    (após taxas)
-                  </li>
-                </ul>
+            <div className="col-span-full mt-2">
+              <div className="lg:flex lg:items-center lg:justify-between">
+                <div className="min-w-0 flex-1">
+                  <h2 className="text-md font-bold leading-7 text-gray-900 sm:truncate sm:text-xl sm:tracking-tight">
+                    Back End Developer
+                  </h2>
+                  <div className="mt-1 flex flex-col sm:mt-0 sm:flex-row sm:flex-wrap sm:space-x-6">
+                    <div className="mt-2 flex items-center text-xs text-gray-500">
+                      <BriefcaseIcon
+                        className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                        aria-hidden="true"
+                      />
+                      Full-time
+                    </div>
+                    <div className="mt-2 flex items-center text-xs text-gray-500">
+                      <MapPinIcon
+                        className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                        aria-hidden="true"
+                      />
+                      Remote
+                    </div>
+                    <div className="mt-2 flex items-center text-xs text-gray-500">
+                      <CurrencyDollarIcon
+                        className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                        aria-hidden="true"
+                      />
+                      $120k &ndash; $140k
+                    </div>
+                    <div className="mt-2 flex items-center text-xs text-gray-500">
+                      <CalendarIcon
+                        className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                        aria-hidden="true"
+                      />
+                      Closing on January 9, 2020
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-5 flex lg:ml-4 lg:mt-0">
+                  <span className="sm:ml-3">
+                    <button
+                      type="button"
+                      className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-xs font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    >
+                      <CheckIcon
+                        className="-ml-0.5 mr-1.5 h-5 w-5"
+                        aria-hidden="true"
+                      />
+                      Publish
+                    </button>
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -603,13 +646,13 @@ export default function CreateEvent() {
           type="button"
           className="text-sm font-semibold leading-6 text-gray-900"
         >
-          Cancel
+          Cencelar
         </button>
         <button
           type="submit"
           className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
-          Save
+          Criar evento
         </button>
       </div>
     </form>
