@@ -1,197 +1,93 @@
 "use client";
 
-import axios, { AxiosProgressEvent, CancelTokenSource } from "axios";
-import {
-  AudioWaveform,
-  File,
-  FileImage,
-  FolderArchive,
-  UploadCloud,
-  Video,
-  X,
-} from "lucide-react";
+import { useEffect } from "react";
+import { FileImage, UploadCloud, X } from "lucide-react";
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { Input } from "../ui/input";
-import ProgressBar from "../ui/progress";
-import { ScrollArea } from "../ui/scroll-area";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { Progress } from "@/components/ui/progress";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
-const FileTypes = {
-  Image: "image",
-  Pdf: "pdf",
-  Audio: "audio",
-  Video: "video",
-  Other: "other",
-};
-
-const ImageColor = {
-  bgColor: "bg-purple-600",
-  fillColor: "fill-purple-600",
-};
-
-const PdfColor = {
-  bgColor: "bg-blue-400",
-  fillColor: "fill-blue-400",
-};
-
-const AudioColor = {
-  bgColor: "bg-yellow-400",
-  fillColor: "fill-yellow-400",
-};
-
-const VideoColor = {
-  bgColor: "bg-green-400",
-  fillColor: "fill-green-400",
-};
-
-const OtherColor = {
-  bgColor: "bg-gray-400",
-  fillColor: "fill-gray-400",
-};
+import { storage } from "@/lib/firebase";
+import { useEventCreation } from "@/context/eventCreation/state";
+import Image from "next/image";
 
 export default function ImageUpload() {
-  const [uploadedFiles, setUploadedFiles] = useState([]);
-  const [filesToUpload, setFilesToUpload] = useState([]);
+  const [uploadedFile, setUploadedFile] = useState(null);
+  const [fileToUpload, setFileToUpload] = useState(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
-  const getFileIconAndColor = (file) => {
-    if (file.type.includes(FileTypes.Image)) {
-      return {
-        icon: <FileImage size={40} className={ImageColor.fillColor} />,
-        color: ImageColor.bgColor,
-      };
-    }
+  const { bannerImage, setBannerImage } = useEventCreation();
 
-    if (file.type.includes(FileTypes.Pdf)) {
-      return {
-        icon: <File size={40} className={PdfColor.fillColor} />,
-        color: PdfColor.bgColor,
-      };
-    }
+  const uploadImageToFirebase = async (file) => {
+    const storageRef = ref(storage, `images/${file.name}`);
+    const uploadTask = uploadBytesResumable(storageRef, file);
 
-    if (file.type.includes(FileTypes.Audio)) {
-      return {
-        icon: <AudioWaveform size={40} className={AudioColor.fillColor} />,
-        color: AudioColor.bgColor,
-      };
-    }
-
-    if (file.type.includes(FileTypes.Video)) {
-      return {
-        icon: <Video size={40} className={VideoColor.fillColor} />,
-        color: VideoColor.bgColor,
-      };
-    }
-
-    return {
-      icon: <FolderArchive size={40} className={OtherColor.fillColor} />,
-      color: OtherColor.bgColor,
-    };
-  };
-
-  // feel free to mode all these functions to separate utils
-  // here is just for simplicity
-  const onUploadProgress = (progressEvent, file, cancelSource) => {
-    const progress = Math.round(
-      (progressEvent.loaded / (progressEvent.total ?? 0)) * 100
-    );
-
-    if (progress === 100) {
-      setUploadedFiles((prevUploadedFiles) => {
-        return [...prevUploadedFiles, file];
-      });
-
-      setFilesToUpload((prevUploadProgress) => {
-        return prevUploadProgress.filter((item) => item.File !== file);
-      });
-
-      return;
-    }
-
-    setFilesToUpload((prevUploadProgress) => {
-      return prevUploadProgress.map((item) => {
-        if (item.File.name === file.name) {
-          return {
-            ...item,
-            progress,
-            source: cancelSource,
-          };
-        } else {
-          return item;
-        }
-      });
-    });
-  };
-
-  const uploadImageToCloudinary = async (
-    formData,
-    onUploadProgress,
-    cancelSource
-  ) => {
-    return axios.post(
-      `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUD_NAME}/image/upload`,
-      formData,
-      {
-        onUploadProgress,
-        cancelToken: cancelSource.token,
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        setUploadProgress(Math.round(progress));
+      },
+      (error) => {
+        console.error("Upload failed: ", error);
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          setUploadedFile(downloadURL);
+          setBannerImage(downloadURL);
+          setFileToUpload(null);
+        });
       }
     );
   };
 
-  const removeFile = (file) => {
-    setFilesToUpload((prevUploadProgress) => {
-      return prevUploadProgress.filter((item) => item.File !== file);
-    });
+  const [uploadTask, setUploadTask] = useState(null);
 
-    setUploadedFiles((prevUploadedFiles) => {
-      return prevUploadedFiles.filter((item) => item !== file);
-    });
+  const cancelUpload = () => {
+    if (uploadTask) {
+      uploadTask.cancel();
+      setUploadProgress(0);
+      setFileToUpload(null);
+      alert("Upload cancelado com sucesso!");
+    }
   };
 
-  const onDrop = useCallback(async (acceptedFiles) => {
-    setFilesToUpload((prevUploadProgress) => {
-      return [
-        ...prevUploadProgress,
-        ...acceptedFiles.map((file) => {
-          return {
-            progress: 0,
-            File,
-            source: null,
-          };
-        }),
-      ];
-    });
+  useEffect(() => {
+    return () => {
+      if (uploadTask) {
+        uploadTask.cancel();
+      }
+    };
+  }, [uploadTask]);
 
-    // cloudinary upload
+  const onDrop = useCallback((acceptedFiles) => {
+    const file = acceptedFiles[0];
+    if (file) {
+      setFileToUpload({
+        File: file,
+        progress: 0,
+      });
+      uploadImageToFirebase(file);
+    }
+  }, []);
 
-    // const fileUploadBatch = acceptedFiles.map((file) => {
-    //   const formData = new FormData();
-    //   formData.append("file", file);
-    //   formData.append(
-    //     "upload_preset",
-    //     process.env.NEXT_PUBLIC_UPLOAD_PRESET as string
-    //   );
-
-    //   const cancelSource = axios.CancelToken.source();
-    //   return uploadImageToCloudinary(
-    //     formData,
-    //     (progressEvent) => onUploadProgress(progressEvent, file, cancelSource),
-    //     cancelSource
-    //   );
-    // });
-
-    // try {
-    //   await Promise.all(fileUploadBatch);
-    //   alert("All files uploaded successfully");
-    // } catch (error) {
-    //   console.error("Error uploading files: ", error);
-    // }
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    maxFiles: 1,
+    accept: {
+      "image/jpeg": [],
+      "image/png": [],
+      "image/gif": [],
+      "image/webp": [],
+    },
+    maxSize: 10485760, // 10MB em bytes
   });
-
-  const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
   return (
     <div>
-      <div>
+      {/* <div>
         <label
           {...getRootProps()}
           className="relative flex flex-col items-center justify-center w-full py-6 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 "
@@ -202,109 +98,126 @@ export default function ImageUpload() {
             </div>
 
             <p className="mt-2 text-sm text-gray-600">
-              <span className="font-semibold">Drag files</span>
-            </p>
-            <p className="text-xs text-gray-500">
-              Click to upload files &#40;files should be under 10 MB &#41;
+              <span className="font-semibold">Arraste um arquivo aqui</span> ou
+              clique para selecionar um arquivo
             </p>
           </div>
         </label>
 
-        <Input
+        <input
           {...getInputProps()}
           id="dropzone-file"
-          accept="image/png, image/jpeg"
           type="file"
           className="hidden"
         />
+      </div> */}
+
+      <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
+        <div className="text-center">
+          <svg
+            className="mx-auto h-12 w-12 text-gray-300"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              fillRule="evenodd"
+              d="M1.5 6a2.25 2.25 0 012.25-2.25h16.5A2.25 2.25 0 0122.5 6v12a2.25 2.25 0 01-2.25 2.25H3.75A2.25 2.25 0 011.5 18V6zM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0021 18v-1.94l-2.69-2.689a1.5 1.5 0 00-2.12 0l-.88.879.97.97a.75.75 0 11-1.06 1.06l-5.16-5.159a1.5 1.5 0 00-2.12 0L3 16.061zm10.125-7.81a1.125 1.125 0 112.25 0 1.125 1.125 0 01-2.25 0z"
+              clipRule="evenodd"
+            />
+          </svg>
+          <div className="mt-4 flex text-sm leading-6 text-gray-600">
+            <label
+              {...getRootProps()}
+              htmlFor="file-upload"
+              className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
+            >
+              <span>Upload a file</span>
+              <input
+                {...getInputProps()}
+                name="file-upload"
+                className="sr-only"
+                id="dropzone-file"
+                type="file"
+              />
+            </label>
+
+            <p className="pl-1">or drag and drop</p>
+          </div>
+          <p className="text-xs leading-5 text-gray-600">
+            PNG, JPG, GIF up to 10MB
+          </p>
+        </div>
       </div>
 
-      {filesToUpload.length > 0 && (
+      {fileToUpload && (
         <div>
           <ScrollArea className="h-40">
             <p className="font-medium my-2 mt-6 text-muted-foreground text-sm">
-              Files to upload
+              Arquivo para enviar
             </p>
             <div className="space-y-2 pr-3">
-              {filesToUpload.map((fileUploadProgress) => {
-                return (
-                  <div
-                    key={fileUploadProgress.File.lastModified}
-                    className="flex justify-between gap-2 rounded-lg overflow-hidden border border-slate-100 group hover:pr-0 pr-2"
-                  >
-                    <div className="flex items-center flex-1 p-2">
-                      <div className="text-white">
-                        {getFileIconAndColor(fileUploadProgress.File).icon}
-                      </div>
-
-                      <div className="w-full ml-2 space-y-1">
-                        <div className="text-sm flex justify-between">
-                          <p className="text-muted-foreground ">
-                            {fileUploadProgress.File.name.slice(0, 25)}
-                          </p>
-                          <span className="text-xs">
-                            {fileUploadProgress.progress}%
-                          </span>
-                        </div>
-                        <ProgressBar
-                          progress={fileUploadProgress.progress}
-                          className={
-                            getFileIconAndColor(fileUploadProgress.File).color
-                          }
-                        />
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => {
-                        if (fileUploadProgress.source)
-                          fileUploadProgress.source.cancel("Upload cancelled");
-                        removeFile(fileUploadProgress.File);
-                      }}
-                      className="bg-red-500 text-white transition-all items-center justify-center cursor-pointer px-2 hidden group-hover:flex"
-                    >
-                      <X size={20} />
-                    </button>
+              <div className="flex justify-between gap-2 rounded-lg overflow-hidden border border-slate-100">
+                <div className="flex items-center flex-1 p-2">
+                  <div className="text-white">
+                    <FileImage size={40} className="fill-current" />
                   </div>
-                );
-              })}
+
+                  <div className="w-full ml-2 space-y-1">
+                    <div className="text-sm flex justify-between">
+                      <p className="text-muted-foreground ">
+                        {fileToUpload.File.name.slice(0, 25)}
+                      </p>
+                      <span className="text-xs">{uploadProgress}%</span>
+                    </div>
+                    <Progress
+                      value={Number(uploadProgress)}
+                      // className="bg-blue-600"
+                    />
+                  </div>
+                </div>
+                <button
+                  onClick={() => {
+                    setFileToUpload(null);
+                    cancelUpload();
+                  }}
+                  className="bg-red-500 text-white px-2"
+                >
+                  <X size={20} />
+                </button>
+              </div>
             </div>
           </ScrollArea>
         </div>
       )}
 
-      {uploadedFiles.length > 0 && (
+      {bannerImage && (
         <div>
           <p className="font-medium my-2 mt-6 text-muted-foreground text-sm">
-            Uploaded Files
+            Arquivo enviado
           </p>
           <div className="space-y-2 pr-3">
-            {uploadedFiles.map((file) => {
-              return (
-                <div
-                  key={file.lastModified}
-                  className="flex justify-between gap-2 rounded-lg overflow-hidden border border-slate-100 group hover:pr-0 pr-2 hover:border-slate-300 transition-all"
-                >
-                  <div className="flex items-center flex-1 p-2">
-                    <div className="text-white">
-                      {getFileIconAndColor(file).icon}
-                    </div>
-                    <div className="w-full ml-2 space-y-1">
-                      <div className="text-sm flex justify-between">
-                        <p className="text-muted-foreground ">
-                          {file.name.slice(0, 25)}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => removeFile(file)}
-                    className="bg-red-500 text-white transition-all items-center justify-center px-2 hidden group-hover:flex"
-                  >
-                    <X size={20} />
-                  </button>
-                </div>
-              );
-            })}
+            <div className="flex justify-between gap-2 rounded-lg overflow-hidden border border-slate-100">
+              <div className="flex items-center flex-1 p-2">
+                <Image
+                  src={bannerImage}
+                  alt="Uploaded image"
+                  width={40}
+                  height={40}
+                  objectFit="cover"
+                  className="w-10 h-10 object-cover"
+                />
+                <p className="ml-2 text-muted-foreground text-sm">
+                  Imagem enviada com sucesso!
+                </p>
+              </div>
+              <button
+                onClick={() => setFileToUpload(null)}
+                className="bg-red-500 text-white px-2"
+              >
+                <X size={20} />
+              </button>
+            </div>
           </div>
         </div>
       )}

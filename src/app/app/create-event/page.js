@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/popover";
 import { toast } from "@/components/ui/use-toast";
 import ImageUpload from "@/components/ImageUpload";
+import { PlusIcon } from "lucide-react";
 
 const FormSchema = z.object({
   dob: z.date({
@@ -152,9 +153,6 @@ export default function CreateEvent() {
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   defaultValue={""}
                 />
-                {/* <Plate>
-                  <PlateContent placeholder="Type..." />
-                </Plate> */}
               </div>
               <p className="mt-3 text-sm leading-6 text-gray-600">
                 Escreve um poucos sobre o seu evento.
@@ -287,7 +285,7 @@ export default function CreateEvent() {
             </div>
             <div className="col-span-full">
               <label
-                htmlFor="street-address"
+                htmlFor="localName"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
                 Nome do local
@@ -295,9 +293,9 @@ export default function CreateEvent() {
               <div className="mt-2">
                 <input
                   type="text"
-                  name="street-address"
-                  id="street-address"
-                  autoComplete="street-address"
+                  name="localName"
+                  id="localName"
+                  autoComplete="localName"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
@@ -402,6 +400,63 @@ export default function CreateEvent() {
                     </PopoverContent>
                   </Popover>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="border-b border-gray-900/10 pb-12">
+          <h2 className="text-base font-semibold leading-7 text-gray-900">
+            Criar ingressos
+          </h2>
+          <p className="mt-1 text-sm leading-6 text-gray-600">
+            Diga pra gente qual será o local e data do seu evento
+          </p>
+
+          <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8">
+            <div className="flex justify-center">
+              <button
+                type="button"
+                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                <PlusIcon className="mr-2 -ml-1 h-5 w-5" aria-hidden="true" />
+                Criar ingresso
+              </button>
+            </div>
+            <div className="flex items-center justify-center">
+              <div className="bg-white shadow-xl rounded-lg p-8">
+                <h3 className="text-xl font-semibold mb-4">
+                  Detalhes do Ingresso
+                </h3>
+                <ul>
+                  <li>
+                    <strong>Nome:</strong> Ingresso VIP
+                  </li>
+                  <li>
+                    <strong>Descrição:</strong> Acesso total ao evento, com
+                    direito a brindes exclusivos.
+                  </li>
+                  <li>
+                    <strong>Lote:</strong> 1
+                  </li>
+                  <li>
+                    <strong>Data de Início das Vendas:</strong> 20 de Outubro de
+                    2022
+                  </li>
+                  <li>
+                    <strong>Quantidade Criada:</strong> 100
+                  </li>
+                  <li>
+                    <strong>Valor:</strong> R$ 150,00
+                  </li>
+                  <li>
+                    <strong>Valor Pago pelo Comprador:</strong> R$ 150,00
+                  </li>
+                  <li>
+                    <strong>Valor Recebido pelo Organizador:</strong> R$ 145,00
+                    (após taxas)
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
