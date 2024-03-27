@@ -53,6 +53,9 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+
 const FormSchema = z.object({
   dob: z.date({
     required_error: "A date of birth is required.",
@@ -87,65 +90,61 @@ export default function CreateEvent() {
           <h2 className="text-base font-semibold leading-7 text-gray-900">
             Criar evento
           </h2>
-          <p className="mt-1 text-sm leading-6 text-gray-600">
+          <p className="mt-1 text-xs leading-6 text-gray-600">
             Preencha as informações a seguir para que possamos ver esse evento
             acontecer
           </p>
 
           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
             <div className="col-span-full">
-              <label
+              <Label
                 htmlFor="cover-photo"
-                className="block text-sm font-medium leading-6 text-gray-900"
+                className="block text-xs font-medium leading-6 text-gray-900"
               >
                 Imagem do evento
-              </label>
+              </Label>
               <ImageUpload />
 
-              <p className="mt-3 text-sm leading-6 text-gray-600">
+              <p className="mt-3 text-xs leading-6 text-gray-600">
                 Essa imagem será exibida para os competidores ao procurar pelo
                 seu evento. Por isso lembre-se de criar uma arte chamativa e
                 contendo as principais informações do seu evento.
               </p>
             </div>
             <div className="sm:col-span-4">
-              <label
-                htmlFor="username"
-                className="block text-sm font-medium leading-6 text-gray-900"
+              <Label
+                htmlFor="eventName"
+                className="block text-xs font-medium leading-6 text-gray-900"
               >
                 Nome do Evento
-              </label>
-              <div className="mt-2">
-                <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-full">
-                  <input
-                    type="text"
-                    name="username"
-                    id="username"
-                    autoComplete="username"
-                    className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                    placeholder="janesmith"
-                  />
-                </div>
+              </Label>
+              <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-full">
+                <Input
+                  type="text"
+                  name="eventName"
+                  id="eventName"
+                  className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-xs sm:leading-6"
+                  placeholder="1º Campeonato de Xadrez de Rio Verde"
+                />
               </div>
             </div>
-
             <div className="col-span-full">
-              <label
-                htmlFor="about"
-                className="block text-sm font-medium leading-6 text-gray-900"
+              <Label
+                htmlFor="eventDescription"
+                className="block text-xs font-medium leading-6 text-gray-900"
               >
                 Descrição
-              </label>
-              <div className="mt-2">
+              </Label>
+              <div>
                 <textarea
-                  id="about"
-                  name="about"
+                  id="eventDescription"
+                  name="eventDescription"
                   rows={3}
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
                   defaultValue={""}
                 />
               </div>
-              <p className="mt-3 text-sm leading-6 text-gray-600">
+              <p className="text-xs leading-6 text-gray-600">
                 Escreve um poucos sobre o seu evento.
               </p>
             </div>
@@ -156,142 +155,128 @@ export default function CreateEvent() {
           <h2 className="text-base font-semibold leading-7 text-gray-900">
             Local e Data
           </h2>
-          <p className="mt-1 text-sm leading-6 text-gray-600">
+          <p className="mt-1 text-xs leading-6 text-gray-600">
             Diga pra gente qual será o local e data do seu evento
           </p>
 
           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
             <div className="col-span-full">
-              <label
+              <Label
                 htmlFor="street-address"
-                className="block text-sm font-medium leading-6 text-gray-900"
+                className="block text-xs font-medium leading-6 text-gray-900"
               >
                 Endereço
-              </label>
-              <div className="mt-2">
-                <input
-                  type="text"
-                  name="street-address"
-                  id="street-address"
-                  autoComplete="street-address"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                />
-              </div>
+              </Label>
+              <Input
+                type="text"
+                name="street-address"
+                id="street-address"
+                autoComplete="street-address"
+                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
+              />
             </div>
             <div className="col-span-full">
-              <label
+              <Label
                 htmlFor="localName"
-                className="block text-sm font-medium leading-6 text-gray-900"
+                className="block text-xs font-medium leading-6 text-gray-900"
               >
                 Nome do local
-              </label>
-              <div className="mt-2">
-                <input
-                  type="text"
-                  name="localName"
-                  id="localName"
-                  autoComplete="localName"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                />
-              </div>
+              </Label>
+              <Input
+                type="text"
+                name="localName"
+                id="localName"
+                autoComplete="localName"
+                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
+              />
             </div>
             <div className="sm:col-span-2 sm:col-start-1">
-              <label
+              <Label
                 htmlFor="city"
-                className="block text-sm font-medium leading-6 text-gray-900"
+                className="block text-xs font-medium leading-6 text-gray-900"
               >
                 Cidade
-              </label>
-              <div className="mt-2">
-                <input
-                  type="text"
-                  name="city"
-                  id="city"
-                  autoComplete="address-level2"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                />
-              </div>
+              </Label>
+              <Input
+                type="text"
+                name="city"
+                id="city"
+                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
+              />
             </div>
             <div className="sm:col-span-2">
-              <label
-                htmlFor="region"
-                className="block text-sm font-medium leading-6 text-gray-900"
+              <Label
+                htmlFor="state"
+                className="block text-xs font-medium leading-6 text-gray-900"
               >
                 Estado
-              </label>
-              <div className="mt-2">
-                <input
-                  type="text"
-                  name="region"
-                  id="region"
-                  autoComplete="address-level1"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                />
-              </div>
+              </Label>
+              <Input
+                type="text"
+                name="state"
+                id="state"
+                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
+              />
             </div>
             <div className="sm:col-span-2">
-              <label
-                htmlFor="postal-code"
-                className="block text-sm font-medium leading-6 text-gray-900"
+              <Label
+                htmlFor="zipCode"
+                className="block text-xs font-medium leading-6 text-gray-900"
               >
                 CEP
-              </label>
-              <div className="mt-2">
-                <input
-                  type="text"
-                  name="postal-code"
-                  id="postal-code"
-                  autoComplete="postal-code"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                />
-              </div>
+              </Label>
+              <Input
+                type="text"
+                name="zipCode"
+                id="zipCode"
+                autoComplete="zipCode"
+                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
+              />
             </div>
             <div className="sm:col-span-2">
-              <label
-                htmlFor="postal-code"
-                className="block text-sm font-medium leading-6 text-gray-900"
+              <Label
+                htmlFor="eventDate"
+                className="block text-xs font-medium leading-6 text-gray-900"
               >
                 Data do Evento
-              </label>
-              <div className="mt-2">
-                <div className={cn("grid gap-2")}>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        id="date"
-                        variant="outline"
-                        className={cn(
-                          "w-[300px] justify-start text-left font-normal",
-                          !date && "text-muted-foreground"
-                        )}
-                      >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {date?.from ? (
-                          date.to ? (
-                            <>
-                              {format(date.from, "LLL dd, y")} -{" "}
-                              {format(date.to, "LLL dd, y")}
-                            </>
-                          ) : (
-                            format(date.from, "LLL dd, y")
-                          )
+              </Label>
+              <div className={cn("grid gap-2")}>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      id="date"
+                      variant="outline"
+                      className={cn(
+                        "w-[300px] justify-start text-left font-normal",
+                        !date && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {date?.from ? (
+                        date.to ? (
+                          <>
+                            {format(date.from, "LLL dd, y")} -{" "}
+                            {format(date.to, "LLL dd, y")}
+                          </>
                         ) : (
-                          <span>Pick a date</span>
-                        )}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        initialFocus
-                        mode="range"
-                        defaultMonth={date?.from}
-                        selected={date}
-                        onSelect={setDate}
-                        numberOfMonths={2}
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </div>
+                          format(date.from, "LLL dd, y")
+                        )
+                      ) : (
+                        <span>Pick a date</span>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      initialFocus
+                      mode="range"
+                      defaultMonth={date?.from}
+                      selected={date}
+                      onSelect={setDate}
+                      numberOfMonths={2}
+                    />
+                  </PopoverContent>
+                </Popover>
               </div>
             </div>
           </div>
@@ -301,14 +286,14 @@ export default function CreateEvent() {
           <h2 className="text-base font-semibold leading-7 text-gray-900">
             Criar ingressos
           </h2>
-          <p className="mt-1 text-sm leading-6 text-gray-600">
+          <p className="mt-1 text-xs leading-6 text-gray-600">
             Diga pra gente qual será o local e data do seu evento
           </p>
 
-          <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8">
-            <div className="flex justify-center">
+          <div className="mt-2 grid grid-cols-1 gap-x-6 gap-y-8">
+            <div className="flex">
               <Dialog>
-                <DialogTrigger className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <DialogTrigger className="inline-flex items-center px-4 py-2 border border-transparent text-xs font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                   <PlusIcon className="mr-2 -ml-1 h-5 w-5" aria-hidden="true" />
                   Criar ingresso
                 </DialogTrigger>
@@ -320,51 +305,54 @@ export default function CreateEvent() {
                         <div>
                           <div className="mt-3 grid grid-cols-1 gap-x-3 gap-y-3 sm:grid-cols-6">
                             <div className="sm:col-span-3 sm:col-start-1">
-                              <label
+                              <Label
                                 htmlFor="ticketName"
                                 className="block text-xs font-medium leading-6 text-gray-900"
                               >
                                 Nome do Ingresso
-                              </label>
+                              </Label>
                               <div className="mt-1">
-                                <input
+                                <Input
                                   type="text"
                                   name="ticketName"
                                   id="ticketName"
-                                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
                                 />
                               </div>
                             </div>
                             <div className="sm:col-span-3">
-                              <label
+                              <Label
                                 htmlFor="ticketPrice"
                                 className="block text-xs font-medium leading-6 text-gray-900"
                               >
                                 Valor
-                              </label>
+                              </Label>
                               <div className="mt-1">
-                                <input
+                                <Input
                                   type="number"
                                   name="ticketPrice"
                                   id="ticketPrice"
-                                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
                                 />
                               </div>
+                              <p className="text-xs leading-6 text-gray-600 muted">
+                                Você recebe:
+                              </p>
                             </div>
 
                             <div className="col-span-full">
-                              <label
+                              <Label
                                 htmlFor="ticketDescription"
                                 className="block text-xs font-medium leading-6 text-gray-900"
                               >
                                 Descrição
-                              </label>
+                              </Label>
                               <div className="mt-1">
                                 <textarea
                                   id="ticketDescription"
                                   name="ticketDescription"
                                   rows={3}
-                                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
                                   placeholder="Openbar, VIP, etc."
                                 />
                               </div>
@@ -433,13 +421,13 @@ export default function CreateEvent() {
                       <div className="mt-6 flex items-center justify-end gap-x-6">
                         <button
                           type="button"
-                          className="text-sm font-semibold leading-6 text-gray-900"
+                          className="text-xs font-semibold leading-6 text-gray-900"
                         >
                           Cancelar
                         </button>
                         <button
                           type="submit"
-                          className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                          className="rounded-md bg-indigo-600 px-3 py-2 text-xs font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                         >
                           Salvar
                         </button>
@@ -509,33 +497,33 @@ export default function CreateEvent() {
           <h2 className="text-base font-semibold leading-7 text-gray-900">
             Notifications
           </h2>
-          <p className="mt-1 text-sm leading-6 text-gray-600">
+          <p className="mt-1 text-xs leading-6 text-gray-600">
             Nós sempre vamos te informar sobre mudanças importantes, mas você
             escolhe sobre o que mais quer ouvir.
           </p>
 
           <div className="mt-10 space-y-10">
             <fieldset>
-              <legend className="text-sm font-semibold leading-6 text-gray-900">
+              <legend className="text-xs font-semibold leading-6 text-gray-900">
                 By Email
               </legend>
               <div className="mt-6 space-y-6">
                 <div className="relative flex gap-x-3">
                   <div className="flex h-6 items-center">
-                    <input
+                    <Input
                       id="comments"
                       name="comments"
                       type="checkbox"
                       className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
                     />
                   </div>
-                  <div className="text-sm leading-6">
-                    <label
+                  <div className="text-xs leading-6">
+                    <Label
                       htmlFor="comments"
                       className="font-medium text-gray-900"
                     >
                       Comments
-                    </label>
+                    </Label>
                     <p className="text-gray-500">
                       Get notified when someones posts a comment on a posting.
                     </p>
@@ -543,20 +531,20 @@ export default function CreateEvent() {
                 </div>
                 <div className="relative flex gap-x-3">
                   <div className="flex h-6 items-center">
-                    <input
+                    <Input
                       id="candidates"
                       name="candidates"
                       type="checkbox"
                       className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
                     />
                   </div>
-                  <div className="text-sm leading-6">
-                    <label
+                  <div className="text-xs leading-6">
+                    <Label
                       htmlFor="candidates"
                       className="font-medium text-gray-900"
                     >
                       Candidates
-                    </label>
+                    </Label>
                     <p className="text-gray-500">
                       Get notified when a candidate applies for a job.
                     </p>
@@ -564,20 +552,20 @@ export default function CreateEvent() {
                 </div>
                 <div className="relative flex gap-x-3">
                   <div className="flex h-6 items-center">
-                    <input
+                    <Input
                       id="offers"
                       name="offers"
                       type="checkbox"
                       className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
                     />
                   </div>
-                  <div className="text-sm leading-6">
-                    <label
+                  <div className="text-xs leading-6">
+                    <Label
                       htmlFor="offers"
                       className="font-medium text-gray-900"
                     >
                       Offers
-                    </label>
+                    </Label>
                     <p className="text-gray-500">
                       Get notified when a candidate accepts or rejects an offer.
                     </p>
@@ -586,54 +574,54 @@ export default function CreateEvent() {
               </div>
             </fieldset>
             <fieldset>
-              <legend className="text-sm font-semibold leading-6 text-gray-900">
+              <legend className="text-xs font-semibold leading-6 text-gray-900">
                 Push Notifications
               </legend>
-              <p className="mt-1 text-sm leading-6 text-gray-600">
+              <p className="mt-1 text-xs leading-6 text-gray-600">
                 These are delivered via SMS to your mobile phone.
               </p>
               <div className="mt-6 space-y-6">
                 <div className="flex items-center gap-x-3">
-                  <input
+                  <Input
                     id="push-everything"
                     name="push-notifications"
                     type="radio"
                     className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
                   />
-                  <label
+                  <Label
                     htmlFor="push-everything"
-                    className="block text-sm font-medium leading-6 text-gray-900"
+                    className="block text-xs font-medium leading-6 text-gray-900"
                   >
                     Everything
-                  </label>
+                  </Label>
                 </div>
                 <div className="flex items-center gap-x-3">
-                  <input
+                  <Input
                     id="push-email"
                     name="push-notifications"
                     type="radio"
                     className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
                   />
-                  <label
+                  <Label
                     htmlFor="push-email"
-                    className="block text-sm font-medium leading-6 text-gray-900"
+                    className="block text-xs font-medium leading-6 text-gray-900"
                   >
                     Same as email
-                  </label>
+                  </Label>
                 </div>
                 <div className="flex items-center gap-x-3">
-                  <input
+                  <Input
                     id="push-nothing"
                     name="push-notifications"
                     type="radio"
                     className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
                   />
-                  <label
+                  <Label
                     htmlFor="push-nothing"
-                    className="block text-sm font-medium leading-6 text-gray-900"
+                    className="block text-xs font-medium leading-6 text-gray-900"
                   >
                     No push notifications
-                  </label>
+                  </Label>
                 </div>
               </div>
             </fieldset>
@@ -644,13 +632,13 @@ export default function CreateEvent() {
       <div className="mt-6 flex items-center justify-end gap-x-6">
         <button
           type="button"
-          className="text-sm font-semibold leading-6 text-gray-900"
+          className="text-xs font-semibold leading-6 text-gray-900"
         >
           Cencelar
         </button>
         <button
           type="submit"
-          className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          className="rounded-md bg-indigo-600 px-3 py-2 text-xs font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
           Criar evento
         </button>
