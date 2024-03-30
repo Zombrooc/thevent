@@ -1,4 +1,5 @@
 import Navbar from "@/components/Navbar";
+
 import { getSession } from "@auth0/nextjs-auth0";
 
 export default async function CreateEventLayout({ children }) {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { FileImage, UploadCloud, X } from "lucide-react";
+import { FileImage, X } from "lucide-react";
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
@@ -9,15 +9,12 @@ import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 import { storage } from "@/lib/firebase";
-import { useEventCreation } from "@/context/eventCreation/state";
 import Image from "next/image";
 
-export default function ImageUpload() {
+export default function ImageUpload({ imageUrl, setNewImageURL }) {
   const [uploadedFile, setUploadedFile] = useState(null);
   const [fileToUpload, setFileToUpload] = useState(null);
   const [uploadProgress, setUploadProgress] = useState(0);
-
-  const { bannerImage, setBannerImage } = useEventCreation();
 
   const uploadImageToFirebase = async (file) => {
     const storageRef = ref(storage, `images/${file.name}`);
@@ -36,7 +33,7 @@ export default function ImageUpload() {
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           setUploadedFile(downloadURL);
-          setBannerImage(downloadURL);
+          setNewImageURL(downloadURL);
           setFileToUpload(null);
         });
       }
@@ -132,7 +129,7 @@ export default function ImageUpload() {
               htmlFor="file-upload"
               className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
             >
-              <span>Upload a file</span>
+              <span>Envie um arquivo</span>
               <input
                 {...getInputProps()}
                 name="file-upload"
@@ -142,10 +139,10 @@ export default function ImageUpload() {
               />
             </label>
 
-            <p className="pl-1">or drag and drop</p>
+            <p className="pl-1">ou arraste e solte</p>
           </div>
           <p className="text-xs leading-5 text-gray-600">
-            PNG, JPG, GIF up to 10MB
+            PNG, JPG, GIF, Webp de até 10MB
           </p>
         </div>
       </div>
@@ -191,7 +188,7 @@ export default function ImageUpload() {
         </div>
       )}
 
-      {bannerImage && (
+      {imageUrl && (
         <div>
           <p className="font-medium my-2 mt-6 text-muted-foreground text-sm">
             Arquivo enviado
@@ -200,7 +197,7 @@ export default function ImageUpload() {
             <div className="flex justify-between gap-2 rounded-lg overflow-hidden border border-slate-100">
               <div className="flex items-center flex-1 p-2">
                 <Image
-                  src={bannerImage}
+                  src={imageUrl}
                   alt="Uploaded image"
                   width={40}
                   height={40}
