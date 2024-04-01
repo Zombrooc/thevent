@@ -94,6 +94,7 @@ export default function CreateTicket({ tickets, setNewTickets }) {
   async function onSubmit(values) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
+    event.preventDefault(); // Isso previne o comportamento padrão de envio do formulário
 
     const newTickets = tickets.concat({ ...values });
     console.log(newTickets);
@@ -265,42 +266,6 @@ export default function CreateTicket({ tickets, setNewTickets }) {
                         </FormItem>
                       )}
                     />
-                    {/* <Popover>
-                      <PopoverTrigger asChild>
-                        <Button
-                          id="date"
-                          variant="outline"
-                          className={cn(
-                            "w-[300px] justify-start text-left font-normal",
-                            !date && "text-muted-foreground"
-                          )}
-                        >
-                          <CalendarIcon className="mr-2 h-4 w-4" />
-                          {date?.from ? (
-                            date.to ? (
-                              <>
-                                {format(date.from, "LLL dd, y")} -{" "}
-                                {format(date.to, "LLL dd, y")}
-                              </>
-                            ) : (
-                              format(date.from, "LLL dd, y")
-                            )
-                          ) : (
-                            <span>Pick a date</span>
-                          )}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          initialFocus
-                          mode="range"
-                          defaultMonth={date?.from}
-                          selected={date}
-                          onSelect={setDate}
-                          numberOfMonths={2}
-                        />
-                      </PopoverContent>
-                    </Popover> */}
                   </div>
                 </div>
 
@@ -308,6 +273,7 @@ export default function CreateTicket({ tickets, setNewTickets }) {
                   <DialogClose asChild>
                     <Button
                       type="button"
+                      variant="ghost"
                       className="text-xs font-semibold leading-6 text-gray-900"
                     >
                       Cancelar
