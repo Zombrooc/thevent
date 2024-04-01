@@ -8,7 +8,7 @@ const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro-latest" });
 const basicGenerationTemplate = async (prompt) => {
   const result = await model.generateContent(prompt);
   const rawResponse = await result.response;
-  const textResponse = response.text();
+  const textResponse = rawResponse.text();
 
   return {
     rawResponse,
