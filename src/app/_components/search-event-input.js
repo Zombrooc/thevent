@@ -25,7 +25,7 @@ export default function SearchEventInput() {
       <div className="flex-[0_0_auto]">
         <Button
           type="submit"
-          className="size-[40px] p-1 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-primary text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+          className="size-[40px] p-1 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent "
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

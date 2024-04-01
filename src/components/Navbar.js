@@ -80,7 +80,7 @@ export default function Navbar({ user }) {
                     className="h-8 w-auto"
                     width="32"
                     height="32"
-                    src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
+                    src="https://tailwindui.com/img/logos/mark.svg?color=amber&shade=400"
                     alt="Your Company"
                   />
                 </div>
@@ -145,7 +145,7 @@ export default function Navbar({ user }) {
                   <Link
                     href="/app/create-event"
                     variant="outline"
-                    className="flex justify-center items-center text-sm font-semibold leading-6 mr-2 bg-primary text-white py-2 px-4 rounded-md hover:bg-violet-800 hover:text-white"
+                    className="flex justify-center items-center text-sm font-semibold leading-6 mr-2 bg-primary text-white py-2 px-4 rounded-md "
                   >
                     Criar evento
                   </Link>

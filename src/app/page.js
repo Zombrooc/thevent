@@ -58,7 +58,7 @@ export default async function Home() {
               />
             </div> */}
             <div className="p-4 md:p-6">
-              <h3 className="text-lg font-semibold text-blue-600 dark:text-blue-500 dark:hover:text-white">
+              <h3 className="text-lg font-semibold text-primary">
                 CORRIDA/CAMINHADA MOVIMENTA IJACI
               </h3>
               <span className="block mb-1 text-xs font-semibold uppercase text-slate-700 dark:text-blue-300">
@@ -77,7 +77,7 @@ export default async function Home() {
                 Detalhes
               </a>
               <a
-                className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-ee-xl bg-blue-600 text-white shadow-sm hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:bg-blue-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                className="w-full py-3 px-4 bg-primary inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-ee-xl text-slate-900 shadow-sm disabled:opacity-50 disabled:pointer-events-none dark:bg-blue-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
                 href="#"
               >
                 Comprar Ingresso

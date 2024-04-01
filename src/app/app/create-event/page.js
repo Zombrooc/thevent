@@ -1,32 +1,20 @@
 "use client";
 
-import { PhotoIcon, UserCircleIcon } from "@heroicons/react/24/solid";
-
 import { useState } from "react";
-import { addDays, format } from "date-fns";
-import { DateRange } from "react-day-picker";
+import { addDays } from "date-fns";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useFieldArray } from "react-hook-form";
 import { z } from "zod";
 
-import { Plate, PlateContent } from "@udecode/plate-common";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Fragment } from "react";
 import {
-  BriefcaseIcon,
   CalendarIcon,
   CheckIcon,
-  ChevronDownIcon,
   CurrencyDollarIcon,
-  LinkIcon,
-  MapPinIcon,
-  PencilIcon,
 } from "@heroicons/react/20/solid";
-import { Menu, Transition } from "@headlessui/react";
-
 import {
   Form,
   FormControl,
@@ -36,19 +24,21 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { TagInput } from "@/components/Tag/tagInput";
+import React from "react";
+
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { toast, useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import ImageUpload from "@/components/ImageUpload";
 
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import CreateTicket from "./_components/CreateTicket";
 
 import moment from "moment";
 import { Textarea } from "@/components/ui/textarea";
@@ -68,9 +58,18 @@ const FormSchema = z.object({
     .max(3000, {
       message: "A descrição do evento deve ter no máximo 3000 caracteres.",
     }),
+
   streetAddress: z.string().min(1, {
     message: "A rua deve ter pelo menos 1 caractere.",
     required_error: "A rua é obrigatória.",
+  }),
+  number: z.string().min(1, {
+    message: "O número do local deve ter pelo menos 1 caractere.",
+    required_error: "O número do local é obrigatório.",
+  }),
+  neighborhood: z.string().min(1, {
+    message: "O bairro deve ter pelo menos 1 caractere.",
+    required_error: "O bairro é obrigatório.",
   }),
   localName: z.string().min(1, {
     message: "O nome do local deve ter pelo menos 1 caractere.",
@@ -130,6 +129,14 @@ const FormSchema = z.object({
         }),
     })
   ),
+  tags: z
+    .array(
+      z.object({
+        id: z.string().min(1, "O ID da tag é obrigatório."),
+        text: z.string().min(1, "O texto da tag é obrigatório."),
+      })
+    )
+    .min(1, "Pelo menos uma tag é necessária."),
 });
 
 export default function CreateEvent() {
@@ -138,8 +145,9 @@ export default function CreateEvent() {
 
   const { toast } = useToast();
 
-  const setNewTickets = (newTickets) => setTickets(newTickets);
   const setNewBannerImage = (bannerImage) => setBannerImage(bannerImage);
+
+  const [tags, setTags] = React.useState([]);
 
   const form = useForm({
     resolver: zodResolver(FormSchema),
@@ -148,6 +156,8 @@ export default function CreateEvent() {
       eventDescription: "",
       streetAddress: "",
       localName: "",
+      neighborhood: "",
+      number: "",
       city: "",
       state: "",
       postalCode: "",
@@ -156,8 +166,11 @@ export default function CreateEvent() {
         to: addDays(new Date(), 60),
       },
       tickets: [],
+      tags: [],
     },
   });
+
+  const { setValue } = form;
 
   const { fields, append, remove } = useFieldArray({
     name: "tickets",
@@ -266,28 +279,7 @@ export default function CreateEvent() {
                 Diga pra gente qual será o local e data do seu evento
               </p>
 
-              <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                <div className="col-span-full">
-                  <FormField
-                    control={form.control}
-                    name="streetAddress"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="block text-xs font-medium leading-6 text-gray-900">
-                          Endereço
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
-                            type="text"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
+              <div className="mt-10 grid grid-cols-1 gap-x-3 gap-y-3 sm:grid-cols-6">
                 <div className="col-span-full">
                   <FormField
                     control={form.control}
@@ -309,7 +301,70 @@ export default function CreateEvent() {
                     )}
                   />
                 </div>
-                <div className="sm:col-span-2 sm:col-start-1">
+                <div className="col-span-5">
+                  <FormField
+                    control={form.control}
+                    name="streetAddress"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="block text-xs font-medium leading-6 text-gray-900">
+                          Endereço
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
+                            type="text"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="col-span-1">
+                  <FormField
+                    control={form.control}
+                    name="number"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="block text-xs font-medium leading-6 text-gray-900">
+                          Número
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
+                            type="text"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="col-span-2">
+                  <FormField
+                    control={form.control}
+                    name="neighborhood"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="block text-xs font-medium leading-6 text-gray-900">
+                          Bairro
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            type="text"
+                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="col-span-3">
                   <FormField
                     control={form.control}
                     name="city"
@@ -330,7 +385,9 @@ export default function CreateEvent() {
                     )}
                   />
                 </div>
-                <div className="sm:col-span-2">
+
+                {/* <div className="sm:col-span-2 sm:col-start-1"></div> */}
+                <div className="sm:col-span-1">
                   <FormField
                     control={form.control}
                     name="state"
@@ -372,7 +429,7 @@ export default function CreateEvent() {
                     )}
                   />
                 </div>
-                <div className="sm:col-span-2">
+                <div className="sm:col-span-full">
                   <FormField
                     control={form.control}
                     name="eventDateStartEnd"
@@ -438,11 +495,11 @@ export default function CreateEvent() {
                                     />
                                   </PopoverContent>
                                 </Popover>
+                                <FormMessage />
                               </div>
                             </div>
                           </div>
                         </div>
-                        <FormMessage />
                       </FormItem>
                     )}
                   />
@@ -473,21 +530,20 @@ export default function CreateEvent() {
                     })
                   }
                 >
-                  {" "}
-                  Novo Ingresso{" "}
+                  Novo Ingresso
                 </Button>
                 <div className="flex flex-col">
                   {/* <CreateTicket
                     tickets={tickets}
                     setNewTickets={setNewTickets}
                   /> */}
-                  <div className="space-y-5">
+                  <div className="space-y-4">
                     {fields.map((_, index) => (
                       <div
-                        className="border border-gray-900/10 p-4 rounded"
+                        className="relative border border-gray-900/10 p-4 rounded"
                         key={index}
                       >
-                        <div className="mt-3 grid grid-cols-1 gap-x-3 gap-y-3 sm:grid-cols-6">
+                        <div className="grid grid-cols-1 gap-x-3 gap-y-3 sm:grid-cols-6">
                           <FormField
                             control={form.control}
                             name={`tickets.${index}.ticketName`}
@@ -640,12 +696,13 @@ export default function CreateEvent() {
                           />
                         </div>
                         <Button
+                          type="button"
                           variant="destructive"
-                          className="w-full mt-5"
+                          className="w-10 h-10 absolute -right-4 -top-4 flex justify-center align-center"
                           onClick={() => remove(index)}
+                          size="icon"
                         >
-                          <TrashIcon className="mr-2 h-4 w-4" /> Remover
-                          ingresso
+                          <TrashIcon className="h-6 w-6" />
                         </Button>
                       </div>
                     ))}
@@ -713,6 +770,52 @@ export default function CreateEvent() {
                     ))}
                 </div>
               </div>
+            </div>
+
+            <div className="border-b border-gray-900/10 pb-12">
+              <FormField
+                control={form.control}
+                name="tags"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col items-start">
+                    <FormLabel className="text-xs font-semibold leading-7 text-gray-900">
+                      Tags
+                    </FormLabel>
+                    <FormControl>
+                      <TagInput
+                        {...field}
+                        placeholder="Corrida, Tênis, Muay Thai, Beach Tennis, ..."
+                        tags={tags}
+                        className="sm:min-w-[450px]"
+                        setTags={(newTags) => {
+                          setTags(newTags);
+                          setValue("tags", newTags);
+                        }}
+                        maxTags={5}
+                        minTags={1}
+                        showCount
+                        truncate={6}
+                        clearAll
+                        onClearAll={() => {
+                          setTags([]);
+                        }}
+                        // enableAutocomplete
+                        // autocompleteOptions={autoCompleteOptions}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Adicione tags que representem o seu evento para facilitar
+                      a busca por parte dos usuários. Separe cada tag por
+                      espaço. As tags funcionam como palavras-chave, como
+                      "Corrida", "BeachTennis", "Trilhão", etc., que ajudam a
+                      categorizar o evento e torná-lo mais acessível a quem
+                      procura atividades específicas. A escolha correta das tags
+                      é essencial para aumentar a visibilidade do seu evento.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
 
             {/* <div className="border-b border-gray-900/10 pb-12">
@@ -854,10 +957,7 @@ export default function CreateEvent() {
           </div>
 
           <div className="mt-6 flex flex-col items-center justify-end gap-x-6">
-            <Button
-              type="submit"
-              className="w-full rounded-md bg-indigo-600 px-3 py-2 text-xs font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            >
+            <Button type="submit" className="w-full">
               Criar evento
             </Button>
             <Button
