@@ -33,7 +33,7 @@ const eventDescriptionGeneration = async (data) => {
 };
 
 const metadataImprovement = async () => {
-  const prompt = "Exemplo de Prompt para textImprovement";
+  const prompt = "Hello world";
 
   const { rawResponse, textResponse } = await basicGenerationTemplate(prompt);
 
@@ -41,3 +41,11 @@ const metadataImprovement = async () => {
 };
 
 export { textImprovement, eventDescriptionGeneration, metadataImprovement };
+
+const metadataGenerationFromScratch = async (description) => {
+  const prompt = `"${description}. Analisando o texto anterior crie metatags para uma plataforma de eventos, essas metatags serão usadas melhorar o SEO da plataforma. Lembre-se de retornar a resposta em português e também no formato JSON`;
+
+  const { rawResponse, textResponse } = await basicGenerationTemplate(prompt);
+
+  return { rawResponse, textResponse };
+};
