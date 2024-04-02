@@ -14,50 +14,42 @@ datasource db {
   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
-model Event {
-  id          String    @id @unique @default(cuid())
-  name        String
-  address     Address   @relation(fields: [addressId], references: [id])
-  eventDate   DateTime  @updatedAt
-  description String
-  imageUrls   String[]
-  addressId   String
-  UserInfo    UserInfo? @relation(fields: [userInfoId], references: [id])
-  userInfoId  String?
-  Ticket      Ticket[]
-}
-
-model UserInfo {
-  id          String    @id @unique
-  birthday    DateTime?
-  cpf         String?
-  address     Address[]
-  events      Event[]
-  tickets     Ticket[]
-  auth0UserId String    @unique
-}
-
 model Address {
-  id           String    @id @unique @default(cuid())
-  street       String
-  number       Int?
-  neighborhood String
-  city         String
-  state        String
-  cep          String
-  Event        Event[]
-  UserInfo     UserInfo? @relation(fields: [userInfoId], references: [id])
-  userInfoId   String?
+  id            String  @id @unique @default(cuid())
+  streetAddress String
+  number        Int?
+  neighborhood  String
+  city          String
+  state         String
+  postalCode    String
+  localName     String
+  Event         Event[]
 }
 
 model Ticket {
-  id          String    @id @unique @default(cuid())
-  event       Event     @relation(fields: [eventId], references: [id])
-  price       Float
-  isPaid      Boolean?  @default(false)
-  checkInDone Boolean?  @default(false)
-  qrCodeURL   String
-  UserInfo    UserInfo? @relation(fields: [userInfoId], references: [id])
-  userInfoId  String?
-  eventId     String
+  id                   String   @id @unique @default(cuid())
+  ticketPrice          Float
+  isPaid               Boolean? @default(false)
+  checkInDone          Boolean? @default(false)
+  qrCodeURL            String
+  ticketName           String
+  ticketDescription    String
+  ticketStockAvailable Int
+  startSellingAt       DateTime
+  endSellingAt         DateTime
+  Event                Event?   @relation(fields: [eventId], references: [id])
+  eventId              String?
+}
+
+model Event {
+  id               String   @id @unique @default(cuid())
+  eventName        String
+  eventDescription String
+  eventDateStart   String
+  eventDateEnd     String
+  tags             String[]
+  address          Address? @relation(fields: [addressId], references: [id])
+  tickets          Ticket[]
+  bannerImage      String
+  addressId        String?
 }
