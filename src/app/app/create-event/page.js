@@ -43,6 +43,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import moment from "moment";
 import { Textarea } from "@/components/ui/textarea";
 import { TrashIcon } from "@radix-ui/react-icons";
+import { createEventAction } from "./_actions/createEventAction";
 
 const FormSchema = z.object({
   eventName: z.string().min(1, {
@@ -118,6 +119,9 @@ const FormSchema = z.object({
         .max(200, {
           message: "A descrição do ingresso deve ter no máximo 300 caracteres.",
         }),
+      ticketStockAvailable: z.string().min(1, {
+        message: "A quantidade de ingressos disponíveis deve ser pelo menos 1.",
+      }),
       startEndingSelling: z
         .object({
           from: z.date({ message: "Data de início inválida." }),
@@ -139,15 +143,20 @@ const FormSchema = z.object({
     .min(1, "Pelo menos uma tag é necessária."),
 });
 
+import { useUser } from "@auth0/nextjs-auth0/client";
 export default function CreateEvent() {
-  const [tickets, setTickets] = useState([]);
+  const { user, error, isLoading } = useUser();
+
+  // if (isLoading) return <div>Loading...</div>;
+  // if (error) return <div>{error.message}</div>;
+
   const [bannerImage, setBannerImage] = useState(null);
 
-  const { toast } = useToast();
+  // const { toast } = useToast();
 
   const setNewBannerImage = (bannerImage) => setBannerImage(bannerImage);
 
-  const [tags, setTags] = React.useState([]);
+  const [tags, setTags] = useState([]);
 
   const form = useForm({
     resolver: zodResolver(FormSchema),
@@ -177,15 +186,38 @@ export default function CreateEvent() {
     control: form.control,
   });
 
-  function onSubmit(data) {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
+  async function onSubmit(data) {
+    console.log(data);
+    const eventData = {
+      eventName: data.eventName,
+      eventDescription: data.eventDescription,
+
+      eventDateStartEnd: data.eventDateStartEnd,
+    };
+
+    const address = {
+      streetAddress: data.streetAddress,
+      localName: data.localName,
+      neighborhood: data.neighborhood,
+      number: data.number,
+      city: data.city,
+      state: data.state,
+      postalCode: data.postalCode,
+    };
+
+    const ticketsData = data.tickets;
+    const tagsData = data.tags.map((tag) => {
+      return tag.text;
     });
+
+    // const response = await createEventAction(
+    //   bannerImage,
+    //   eventData,
+    //   ticketsData,
+    //   tagsData,
+    //   address,
+    //   user
+    // );
   }
 
   return (
@@ -484,14 +516,9 @@ export default function CreateEvent() {
                                       mode="range"
                                       selected={field.value}
                                       onSelect={field.onChange}
-                                      // disabled={(date) =>
-                                      //   date > new Date() ||
-                                      //   date < new Date("1900-01-01")
-                                      // }
                                       disabled={(date) => date < new Date()}
                                       defaultMonth={field.value?.from}
                                       numberOfMonths={2}
-                                      // initialFocus
                                     />
                                   </PopoverContent>
                                 </Popover>
@@ -730,70 +757,6 @@ export default function CreateEvent() {
                       </div>
                     ))}
                   </div>
-                </div>
-                <div className="col-span-full ">
-                  {tickets &&
-                    tickets.map((ticket, index) => (
-                      <div
-                        className="mt-2 lg:flex lg:items-center lg:justify-between"
-                        key={index}
-                      >
-                        <div className="min-w-0 flex-1">
-                          <h2 className="text-md font-bold leading-7 text-gray-900 sm:truncate sm:text-xl sm:tracking-tight">
-                            {ticket.ticketName}
-                          </h2>
-                          <div className="mt-1 flex flex-col sm:mt-0 sm:flex-row sm:flex-wrap sm:space-x-6">
-                            {/* <div className="mt-2 flex items-center text-xs text-gray-500">
-                          <BriefcaseIcon
-                            className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
-                            aria-hidden="true"
-                          />
-                        </div> */}
-                            {/* <div className="mt-2 flex items-center text-xs text-gray-500">
-                            <MapPinIcon
-                              className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
-                              aria-hidden="true"
-                            />
-                            
-                          </div> */}
-                            <div className="mt-2 flex items-center text-xs text-gray-500">
-                              <CurrencyDollarIcon
-                                className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
-                                aria-hidden="true"
-                              />
-                              R${ticket.ticketPrice}
-                            </div>
-                            <div className="mt-2 flex items-center text-xs text-gray-500">
-                              <CalendarIcon
-                                className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
-                                aria-hidden="true"
-                              />
-                              {moment(ticket.startEndingSelling.from).format(
-                                "DD/MM/YYYY"
-                              )}
-                              -
-                              {moment(ticket.startEndingSelling.to).format(
-                                "DD/MM/YYYY"
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="mt-5 flex lg:ml-4 lg:mt-0">
-                          <span className="sm:ml-3">
-                            <button
-                              type="button"
-                              className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-xs font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                            >
-                              <CheckIcon
-                                className="-ml-0.5 mr-1.5 h-5 w-5"
-                                aria-hidden="true"
-                              />
-                              Publish
-                            </button>
-                          </span>
-                        </div>
-                      </div>
-                    ))}
                 </div>
               </div>
             </div>

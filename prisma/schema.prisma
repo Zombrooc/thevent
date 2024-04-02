@@ -14,23 +14,40 @@ datasource db {
   // directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
+model Event {
+  id               String   @id @unique
+  eventName        String
+  eventDescription String
+  address          Address? @relation(fields: [addressId], references: [id])
+  eventDateStart   DateTime
+  eventDateEnd     DateTime
+  organizer        String
+  SEOMeta          SEOMeta? @relation(fields: [sEOMetaId], references: [id])
+  tickets          Ticket[]
+  tags             Tags?    @relation(fields: [tagsId], references: [id])
+  addressId        String?
+  sEOMetaId        String?
+  tagsId           String?
+  bannerImage      String?
+}
+
 model Address {
-  id            String  @id @unique @default(cuid())
-  streetAddress String
-  number        Int?
-  neighborhood  String
-  city          String
-  state         String
-  postalCode    String
-  localName     String
-  Event         Event[]
+  id           String  @id @unique
+  street       String
+  number       Int?
+  neighborhood String
+  city         String
+  state        String
+  cep          String
+  localName    String?
+  Event        Event[]
 }
 
 model Ticket {
-  id                   String   @id @unique @default(cuid())
+  id                   String   @id @unique
   ticketPrice          Float
-  isPaid               Boolean? @default(false)
-  checkInDone          Boolean? @default(false)
+  isPaid               Boolean?
+  checkInDone          Boolean?
   qrCodeURL            String
   ticketName           String
   ticketDescription    String
@@ -41,15 +58,23 @@ model Ticket {
   eventId              String?
 }
 
-model Event {
-  id               String   @id @unique @default(cuid())
-  eventName        String
-  eventDescription String
-  eventDateStart   String
-  eventDateEnd     String
-  tags             String[]
-  address          Address? @relation(fields: [addressId], references: [id])
-  tickets          Ticket[]
-  bannerImage      String
-  addressId        String?
+model SEOMeta {
+  id                 String   @id @unique @default(cuid())
+  title              String?
+  description        String?
+  keywords           String[]
+  ogTitle            String?
+  ogDescription      String?
+  ogUrl              String?
+  ogImage            String?
+  twitterTitle       String?
+  twitterDescription String?
+  twitterImage       String?
+  Event              Event[]
+}
+
+model Tags {
+  id    String   @id @unique @default(cuid())
+  tags  String[] @unique
+  Event Event[]
 }
