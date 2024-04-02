@@ -733,8 +733,11 @@ export default function CreateEvent() {
                 </div>
                 <div className="col-span-full ">
                   {tickets &&
-                    tickets.map((ticket) => (
-                      <div className="mt-2 lg:flex lg:items-center lg:justify-between">
+                    tickets.map((ticket, index) => (
+                      <div
+                        className="mt-2 lg:flex lg:items-center lg:justify-between"
+                        key={index}
+                      >
                         <div className="min-w-0 flex-1">
                           <h2 className="text-md font-bold leading-7 text-gray-900 sm:truncate sm:text-xl sm:tracking-tight">
                             {ticket.ticketName}
@@ -829,11 +832,12 @@ export default function CreateEvent() {
                     <FormDescription>
                       Adicione tags que representem o seu evento para facilitar
                       a busca por parte dos usuários. Separe cada tag por
-                      espaço. As tags funcionam como palavras-chave, como
-                      "Corrida", "BeachTennis", "Trilhão", etc., que ajudam a
-                      categorizar o evento e torná-lo mais acessível a quem
-                      procura atividades específicas. A escolha correta das tags
-                      é essencial para aumentar a visibilidade do seu evento.
+                      espaço. As tags funcionam como palavras-chave, tais como
+                      &quot;Corrida&quot;, &quot;BeachTennis&quot;,
+                      &quot;Trilhão&quot;, etc., que ajudam a categorizar o
+                      evento e torná-lo mais acessível a quem procura atividades
+                      específicas. A escolha correta das tags é essencial para
+                      aumentar a visibilidade do seu evento.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>

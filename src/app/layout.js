@@ -28,32 +28,32 @@ export const metadata = {
     "Thevent eventos",
   ],
   authors: "Elian Valdez",
-  twitter: {
-    card: "summary_large_image",
-    site: "@Thevent",
-    title: "Thevent",
-    description:
-      "Descubra a plataforma definitiva para eventos esportivos, onde a paixão pelo esporte encontra as melhores oportunidades de participação.",
-    image: "https://thevent.com.br/og-image.jpg",
-    creator: "@ElianValdez",
-  },
-  openGraph: {
-    title: "Thevent",
-    description:
-      "Descubra a plataforma definitiva para eventos esportivos, onde a paixão pelo esporte encontra as melhores oportunidades de participação.",
-    url: "https://thevent.com.br",
-    image: "https://thevent.com.br/og-image.jpg",
-    site_name: "Thevent",
-    type: "website",
-  },
-  facebook: {
-    app_id: "1234567890",
-    title: "Thevent",
-    description:
-      "Descubra a plataforma definitiva para eventos esportivos, onde a paixão pelo esporte encontra as melhores oportunidades de participação.",
-    image: "https://thevent.com.br/og-image.jpg",
-    url: "https://thevent.com.br",
-  },
+  // twitter: {
+  //   card: "summary_large_image",
+  //   site: "@Thevent",
+  //   title: "Thevent",
+  //   description:
+  //     "Descubra a plataforma definitiva para eventos esportivos, onde a paixão pelo esporte encontra as melhores oportunidades de participação.",
+  //   image: "https://thevent.com.br/og-image.jpg",
+  //   creator: "@ElianValdez",
+  // },
+  // openGraph: {
+  //   title: "Thevent",
+  //   description:
+  //     "Descubra a plataforma definitiva para eventos esportivos, onde a paixão pelo esporte encontra as melhores oportunidades de participação.",
+  //   url: "https://thevent.com.br",
+  //   image: "https://thevent.com.br/og-image.jpg",
+  //   site_name: "Thevent",
+  //   type: "website",
+  // },
+  // facebook: {
+  //   app_id: "1234567890",
+  //   title: "Thevent",
+  //   description:
+  //     "Descubra a plataforma definitiva para eventos esportivos, onde a paixão pelo esporte encontra as melhores oportunidades de participação.",
+  //   image: "https://thevent.com.br/og-image.jpg",
+  //   url: "https://thevent.com.br",
+  // },
 };
 
 export default function RootLayout({ children }) {
