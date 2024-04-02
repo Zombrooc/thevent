@@ -8,7 +8,7 @@ datasource db {
 }
 
 model Event {
-  id               String   @id @unique @default(cuid())
+  id               String   @id @default(autoincrement())
   addressId        String?
   eventDescription String
   eventName        String
@@ -25,7 +25,7 @@ model Event {
 }
 
 model Address {
-  id           String  @id @unique @default(cuid())
+  id           String  @id @default(autoincrement())
   number       Int?
   neighborhood String
   city         String
@@ -37,7 +37,7 @@ model Address {
 }
 
 model Ticket {
-  id                   String   @id @unique @default(cuid())
+  id                   String   @id @default(autoincrement())
   isPaid               Boolean?
   checkInDone          Boolean?
   qrCodeURL            String
@@ -52,7 +52,7 @@ model Ticket {
 }
 
 model SEOMeta {
-  id                 String   @id @unique @default(cuid())
+  id                 String   @id @default(autoincrement())
   title              String?
   description        String?
   keywords           String[]
@@ -67,7 +67,7 @@ model SEOMeta {
 }
 
 model Tags {
-  id    String   @id @unique @default(cuid())
+  id    String   @id @default(autoincrement())
   tags  String[] @unique
   Event Event[]
 }
