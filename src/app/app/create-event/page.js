@@ -187,7 +187,6 @@ export default function CreateEvent() {
   });
 
   async function onSubmit(data) {
-    console.log(data);
     const eventData = {
       eventName: data.eventName,
       eventDescription: data.eventDescription,
@@ -210,14 +209,16 @@ export default function CreateEvent() {
       return tag.text;
     });
 
-    // const response = await createEventAction(
-    //   bannerImage,
-    //   eventData,
-    //   ticketsData,
-    //   tagsData,
-    //   address,
-    //   user
-    // );
+    const response = await createEventAction(
+      bannerImage,
+      eventData,
+      ticketsData,
+      tagsData,
+      address,
+      user
+    );
+
+    console.log(response);
   }
 
   return (

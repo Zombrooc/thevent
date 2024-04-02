@@ -1,61 +1,54 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("POSTGRES_PRISMA_URL") // uses connection pooling
-  // directUrl = env("POSTGRES_URL_NON_POOLING")
+  url      = env("POSTGRES_PRISMA_URL")
 }
 
 model Event {
-  id               String   @id @unique
-  eventName        String
-  eventDescription String
-  address          Address? @relation(fields: [addressId], references: [id])
-  eventDateStart   DateTime
-  eventDateEnd     DateTime
-  organizer        String
-  SEOMeta          SEOMeta? @relation(fields: [sEOMetaId], references: [id])
-  tickets          Ticket[]
-  tags             Tags?    @relation(fields: [tagsId], references: [id])
+  id               String   @id @unique @default(cuid())
   addressId        String?
+  eventDescription String
+  eventName        String
+  organizer        String
   sEOMetaId        String?
+  eventDateEnd     DateTime
+  eventDateStart   DateTime
   tagsId           String?
-  bannerImage      String?
+  bannerImage      String
+  address          Address? @relation(fields: [addressId], references: [id])
+  SEOMeta          SEOMeta? @relation(fields: [sEOMetaId], references: [id])
+  tags             Tags?    @relation(fields: [tagsId], references: [id])
+  tickets          Ticket[]
 }
 
 model Address {
-  id           String  @id @unique
-  street       String
+  id           String  @id @unique @default(cuid())
   number       Int?
   neighborhood String
   city         String
   state        String
-  cep          String
   localName    String?
+  cep          String
+  street       String
   Event        Event[]
 }
 
 model Ticket {
-  id                   String   @id @unique
-  ticketPrice          Float
+  id                   String   @id @unique @default(cuid())
   isPaid               Boolean?
   checkInDone          Boolean?
   qrCodeURL            String
-  ticketName           String
-  ticketDescription    String
-  ticketStockAvailable Int
-  startSellingAt       DateTime
-  endSellingAt         DateTime
-  Event                Event?   @relation(fields: [eventId], references: [id])
   eventId              String?
+  endSellingAt         DateTime
+  startSellingAt       DateTime
+  ticketDescription    String
+  ticketName           String
+  ticketPrice          Float
+  ticketStockAvailable Int
+  Event                Event?   @relation(fields: [eventId], references: [id])
 }
 
 model SEOMeta {
