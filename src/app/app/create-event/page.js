@@ -523,6 +523,7 @@ export default function CreateEvent() {
                       ticketName: "",
                       ticketPrice: "",
                       ticketDescription: "",
+                      ticketStockAvailable: "",
                       startEndingSelling: {
                         from: new Date(),
                         to: addDays(new Date(), 30),
@@ -548,7 +549,7 @@ export default function CreateEvent() {
                             control={form.control}
                             name={`tickets.${index}.ticketName`}
                             render={({ field }) => (
-                              <div className="sm:col-span-3 sm:col-start-1">
+                              <div className="sm:col-span-2 sm:col-start-1">
                                 <FormItem>
                                   <FormLabel className="block text-xs font-medium leading-6 text-gray-900">
                                     Nome
@@ -569,7 +570,7 @@ export default function CreateEvent() {
                             control={form.control}
                             name={`tickets.${index}.ticketPrice`}
                             render={({ field }) => (
-                              <div className="sm:col-span-3">
+                              <div className="sm:col-span-2">
                                 <FormItem>
                                   <FormLabel className="block text-xs font-medium leading-6 text-gray-900">
                                     Preço
@@ -585,6 +586,28 @@ export default function CreateEvent() {
                                   <FormDescription className="text-xs leading-6 text-gray-600 muted">
                                     Você recebe:
                                   </FormDescription>
+                                  <FormMessage />
+                                </FormItem>
+                              </div>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name={`tickets.${index}.ticketStockAvailable`}
+                            render={({ field }) => (
+                              <div className="sm:col-span-2">
+                                <FormItem>
+                                  <FormLabel className="block text-xs font-medium leading-6 text-gray-900">
+                                    Quantidade liberada de ingressos
+                                  </FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      type="number"
+                                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
+                                      placeholder="300"
+                                      {...field}
+                                    />
+                                  </FormControl>
                                   <FormMessage />
                                 </FormItem>
                               </div>
