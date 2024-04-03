@@ -193,19 +193,20 @@ export default function CreateEvent() {
     };
 
     const address = {
-      streetAddress: data.streetAddress,
+      street: data.streetAddress,
       localName: data.localName,
       neighborhood: data.neighborhood,
-      number: data.number,
+      number: Number(data.number),
       city: data.city,
       state: data.state,
-      postalCode: data.postalCode,
+      cep: data.postalCode,
     };
 
     const ticketsData = data.tickets;
+
     const tagsData = data.tags.map((tag) => {
       return {
-        tag: tag.name,
+        tag: tag.text,
       };
     });
 

@@ -1,7 +1,8 @@
 "use server";
 
+import { useRouter, redirect } from "next/navigation";
 import { prisma } from "@/lib/database";
-import { redirect } from "next/navigation";
+import { generateQR } from "@/lib/qrCode";
 
 export const createEventAction = async (
   bannerImage,
@@ -11,7 +12,7 @@ export const createEventAction = async (
   addressData,
   user
 ) => {
-  const sanitizedTickets = await ticketsData.map((ticket) => {
+  const sanitizedTickets = ticketsData.map((ticket) => {
     const {
       ticketName,
       ticketPrice,
@@ -20,15 +21,36 @@ export const createEventAction = async (
       startEndingSelling,
     } = ticket;
 
+    const qrCodeURL = generateQR(
+      JSON.stringify({
+        userId: user.sid,
+      })
+    );
+
     return {
       ticketName,
-      ticketPrice,
+      ticketPrice: parseFloat(ticketPrice),
       ticketDescription,
-      ticketStockAvailable,
+      ticketStockAvailable: Number(ticketStockAvailable),
+      qrCodeURL: qrCodeURL.toString(),
       startSellingAt: startEndingSelling.from,
       endSellingAt: startEndingSelling.to,
     };
   });
+
+  const tagIds = await Promise.all(
+    tagsData.map(async ({ tag }) => {
+      let existingTag = await prisma.tags.findUnique({
+        where: { tag: tag },
+      });
+      if (!existingTag) {
+        existingTag = await prisma.tags.create({
+          data: { tag: tag },
+        });
+      }
+      return existingTag.id;
+    })
+  );
 
   try {
     const event = await prisma.event.create({
@@ -42,20 +64,24 @@ export const createEventAction = async (
         addresses: {
           create: addressData,
         },
-        tags: {
-          create: {
-            assignedBy: user.sid,
-            assignedAt: new Date(),
-            tag: {
-              createMany: tagsData,
-            },
-          },
-        },
         tickets: {
-          create: ticketsData,
+          create: sanitizedTickets,
         },
       },
     });
+
+    await Promise.all(
+      tagIds.map((tagId) => {
+        return prisma.tagsOnEvents.create({
+          data: {
+            eventId: event.id,
+            tagId: tagId,
+            assignedBy: user.sid, // Ajuste conforme necessário
+          },
+        });
+      })
+    );
+
     await router.revalidate(`/event/${event.id}`);
     redirect(`/event/${event.id}`);
   } catch (error) {

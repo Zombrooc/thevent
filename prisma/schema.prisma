@@ -44,7 +44,7 @@ model Ticket {
   id                   String   @id @default(cuid())
   isPaid               Boolean?
   checkInDone          Boolean?
-  qrCodeURL            String
+  qrCodeURL            String?
   eventId              String?  @unique
   endSellingAt         DateTime
   startSellingAt       DateTime

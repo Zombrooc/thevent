@@ -8,7 +8,6 @@ CREATE TABLE "Event" (
     "sEOMetaId" TEXT,
     "eventDateEnd" TIMESTAMP(3) NOT NULL,
     "eventDateStart" TIMESTAMP(3) NOT NULL,
-    "tagsId" TEXT,
     "bannerImage" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -26,6 +25,7 @@ CREATE TABLE "Address" (
     "localName" TEXT,
     "cep" TEXT NOT NULL,
     "street" TEXT NOT NULL,
+    "eventId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -64,6 +64,7 @@ CREATE TABLE "SEOMeta" (
     "twitterTitle" TEXT,
     "twitterDescription" TEXT,
     "twitterImage" TEXT,
+    "eventId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -73,37 +74,44 @@ CREATE TABLE "SEOMeta" (
 -- CreateTable
 CREATE TABLE "Tags" (
     "id" TEXT NOT NULL,
-    "tags" TEXT[],
+    "tag" TEXT NOT NULL,
 
     CONSTRAINT "Tags_pkey" PRIMARY KEY ("id")
 );
 
--- CreateIndex
-CREATE UNIQUE INDEX "Event_id_key" ON "Event"("id");
+-- CreateTable
+CREATE TABLE "TagsOnEvents" (
+    "eventId" TEXT NOT NULL,
+    "tagId" TEXT NOT NULL,
+    "assignedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "assignedBy" TEXT NOT NULL,
+
+    CONSTRAINT "TagsOnEvents_pkey" PRIMARY KEY ("eventId","tagId")
+);
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Address_id_key" ON "Address"("id");
+CREATE UNIQUE INDEX "Address_eventId_key" ON "Address"("eventId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Ticket_id_key" ON "Ticket"("id");
+CREATE UNIQUE INDEX "Ticket_eventId_key" ON "Ticket"("eventId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "SEOMeta_id_key" ON "SEOMeta"("id");
+CREATE UNIQUE INDEX "SEOMeta_eventId_key" ON "SEOMeta"("eventId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Tags_id_key" ON "Tags"("id");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Tags_tags_key" ON "Tags"("tags");
+CREATE UNIQUE INDEX "Tags_tag_key" ON "Tags"("tag");
 
 -- AddForeignKey
-ALTER TABLE "Event" ADD CONSTRAINT "Event_addressId_fkey" FOREIGN KEY ("addressId") REFERENCES "Address"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Event" ADD CONSTRAINT "Event_sEOMetaId_fkey" FOREIGN KEY ("sEOMetaId") REFERENCES "SEOMeta"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Event" ADD CONSTRAINT "Event_tagsId_fkey" FOREIGN KEY ("tagsId") REFERENCES "Tags"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Address" ADD CONSTRAINT "Address_eventId_fkey" FOREIGN KEY ("eventId") REFERENCES "Event"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Ticket" ADD CONSTRAINT "Ticket_eventId_fkey" FOREIGN KEY ("eventId") REFERENCES "Event"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "SEOMeta" ADD CONSTRAINT "SEOMeta_eventId_fkey" FOREIGN KEY ("eventId") REFERENCES "Event"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "TagsOnEvents" ADD CONSTRAINT "TagsOnEvents_eventId_fkey" FOREIGN KEY ("eventId") REFERENCES "Event"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "TagsOnEvents" ADD CONSTRAINT "TagsOnEvents_tagId_fkey" FOREIGN KEY ("tagId") REFERENCES "Tags"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
