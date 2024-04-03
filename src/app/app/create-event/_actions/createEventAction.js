@@ -11,7 +11,7 @@ export const createEventAction = async (
   addressData,
   user
 ) => {
-  const newTicketList = await ticketsData.map((ticket) => {
+  const sanitizedTickets = await ticketsData.map((ticket) => {
     const {
       ticketName,
       ticketPrice,
@@ -31,33 +31,31 @@ export const createEventAction = async (
   });
 
   try {
-    const tickets = await prisma.ticket.createMany({
-      data: [...newTicketList],
-      skipDuplicates: true,
-    });
-
-    const tags = await prisma.tags.createMany({
-      data: [...tagsData],
-    });
-
-    const address = await prisma.address.create({
-      data: addressData,
-    });
-
     const event = await prisma.event.create({
       data: {
         bannerImage,
         eventName: eventData.eventName,
         eventDescription: eventData.eventDescription,
-        organizer: user.id,
-        tagsId: tags.id,
-        tickets: tickets.id,
+        organizer: user.sid,
         eventDateStart: eventData.eventDateStartEnd.from,
         eventDateEnd: eventData.eventDateStartEnd.to,
-        addressId: address.id,
+        addresses: {
+          create: addressData,
+        },
+        tags: {
+          create: {
+            assignedBy: user.sid,
+            assignedAt: new Date(),
+            tag: {
+              createMany: tagsData,
+            },
+          },
+        },
+        tickets: {
+          create: ticketsData,
+        },
       },
     });
-
     await router.revalidate(`/event/${event.id}`);
     redirect(`/event/${event.id}`);
   } catch (error) {

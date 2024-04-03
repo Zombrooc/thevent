@@ -147,9 +147,6 @@ import { useUser } from "@auth0/nextjs-auth0/client";
 export default function CreateEvent() {
   const { user, error, isLoading } = useUser();
 
-  // if (isLoading) return <div>Loading...</div>;
-  // if (error) return <div>{error.message}</div>;
-
   const [bannerImage, setBannerImage] = useState(null);
 
   // const { toast } = useToast();
@@ -178,6 +175,7 @@ export default function CreateEvent() {
       tags: [],
     },
   });
+  console.log(user);
 
   const { setValue } = form;
 
@@ -206,7 +204,9 @@ export default function CreateEvent() {
 
     const ticketsData = data.tickets;
     const tagsData = data.tags.map((tag) => {
-      return tag.text;
+      return {
+        tag: tag.name,
+      };
     });
 
     const response = await createEventAction(
@@ -221,6 +221,8 @@ export default function CreateEvent() {
     console.log(response);
   }
 
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>{error.message}</div>;
   return (
     <>
       <Form {...form}>

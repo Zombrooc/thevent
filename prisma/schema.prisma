@@ -8,7 +8,7 @@ datasource db {
 }
 
 model Event {
-  id               String   @id @default(autoincrement())
+  id               String         @id @default(cuid())
   addressId        String?
   eventDescription String
   eventName        String
@@ -16,16 +16,17 @@ model Event {
   sEOMetaId        String?
   eventDateEnd     DateTime
   eventDateStart   DateTime
-  tagsId           String?
   bannerImage      String
-  address          Address? @relation(fields: [addressId], references: [id])
-  SEOMeta          SEOMeta? @relation(fields: [sEOMetaId], references: [id])
-  tags             Tags?    @relation(fields: [tagsId], references: [id])
+  addresses        Address?
+  SEOMeta          SEOMeta?
+  tags             TagsOnEvents[]
   tickets          Ticket[]
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
 }
 
 model Address {
-  id           String  @id @default(autoincrement())
+  id           String   @id @default(cuid())
   number       Int?
   neighborhood String
   city         String
@@ -33,15 +34,18 @@ model Address {
   localName    String?
   cep          String
   street       String
-  Event        Event[]
+  Event        Event    @relation(fields: [eventId], references: [id])
+  eventId      String   @unique
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 model Ticket {
-  id                   String   @id @default(autoincrement())
+  id                   String   @id @default(cuid())
   isPaid               Boolean?
   checkInDone          Boolean?
   qrCodeURL            String
-  eventId              String?
+  eventId              String?  @unique
   endSellingAt         DateTime
   startSellingAt       DateTime
   ticketDescription    String
@@ -49,10 +53,12 @@ model Ticket {
   ticketPrice          Float
   ticketStockAvailable Int
   Event                Event?   @relation(fields: [eventId], references: [id])
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
 }
 
 model SEOMeta {
-  id                 String   @id @default(autoincrement())
+  id                 String   @id @default(cuid())
   title              String?
   description        String?
   keywords           String[]
@@ -63,11 +69,25 @@ model SEOMeta {
   twitterTitle       String?
   twitterDescription String?
   twitterImage       String?
-  Event              Event[]
+  Event              Event    @relation(fields: [eventId], references: [id])
+  eventId            String   @unique
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
 }
 
 model Tags {
-  id    String   @id @default(autoincrement())
-  tags  String[] @unique
-  Event Event[]
+  id    String         @id @default(cuid())
+  tag   String         @unique
+  Event TagsOnEvents[]
+}
+
+model TagsOnEvents {
+  Event      Event    @relation(fields: [eventId], references: [id])
+  eventId    String
+  tag        Tags     @relation(fields: [tagId], references: [id])
+  tagId      String
+  assignedAt DateTime @default(now())
+  assignedBy String
+
+  @@id([eventId, tagId])
 }
