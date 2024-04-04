@@ -3,13 +3,13 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
-  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+  provider = "postgresql"
+  url      = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  // directUrl = env("POSTGRES_URL_NON_POOLING") 
 }
 
 model Event {
-  id               String         @id @default(cuid())
+  id               String    @id @default(cuid())
   addressId        String?
   eventDescription String
   eventName        String
@@ -18,12 +18,12 @@ model Event {
   eventDateEnd     DateTime
   eventDateStart   DateTime
   bannerImage      String
-  addresses        Address?
+  addresses        Address[]
   SEOMeta          SEOMeta?
-  tags             TagsOnEvents[]
+  tags             Tags[]
   tickets          Ticket[]
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime       @updatedAt
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 }
 
 model Address {
@@ -36,17 +36,17 @@ model Address {
   cep          String
   street       String
   Event        Event    @relation(fields: [eventId], references: [id])
-  eventId      String   @unique
+  eventId      String
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
 
 model Ticket {
   id                   String   @id @default(cuid())
-  isPaid               Boolean?
-  checkInDone          Boolean?
+  isPaid               Boolean? @default(false)
+  checkInDone          Boolean? @default(false)
   qrCodeURL            String?
-  eventId              String?  @unique
+  eventId              String?
   endSellingAt         DateTime
   startSellingAt       DateTime
   ticketDescription    String
@@ -77,18 +77,18 @@ model SEOMeta {
 }
 
 model Tags {
-  id    String         @id @default(cuid())
-  tag   String         @unique
-  Event TagsOnEvents[]
+  id    String  @id @default(cuid())
+  tag   String
+  Event Event[]
 }
 
-model TagsOnEvents {
-  Event      Event    @relation(fields: [eventId], references: [id])
-  eventId    String
-  tag        Tags     @relation(fields: [tagId], references: [id])
-  tagId      String
-  assignedAt DateTime @default(now())
-  assignedBy String
+// model TagsOnEvents {
+//   Event      Event    @relation(fields: [eventId], references: [id])
+//   eventId    String
+//   tag        Tags     @relation(fields: [tagId], references: [id])
+//   tagId      String
+//   assignedAt DateTime @default(now())
+//   assignedBy String
 
-  @@id([eventId, tagId])
-}
+//   @@id([eventId, tagId])
+// }

@@ -4,7 +4,7 @@ import EventCardItem from "./EventCardItem";
 
 export default async function EventCardList() {
   const events = await prisma.event.findMany({
-    take: 5,
+    take: 6,
     orderBy: {
       createdAt: "desc",
     },

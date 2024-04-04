@@ -149,8 +149,6 @@ export default function CreateEvent() {
 
   const [bannerImage, setBannerImage] = useState(null);
 
-  // const { toast } = useToast();
-
   const setNewBannerImage = (bannerImage) => setBannerImage(bannerImage);
 
   const [tags, setTags] = useState([]);
@@ -210,7 +208,7 @@ export default function CreateEvent() {
       };
     });
 
-    const response = await createEventAction(
+    await createEventAction(
       bannerImage,
       eventData,
       ticketsData,
@@ -219,7 +217,7 @@ export default function CreateEvent() {
       user
     );
 
-    console.log(response);
+    form.reset();
   }
 
   if (isLoading) return <div>Loading...</div>;

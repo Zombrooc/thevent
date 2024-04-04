@@ -21,70 +21,62 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 const bentogridItems = [
   {
-    title: "The Dawn of Innovation",
-    description: "Explore the birth of groundbreaking ideas and inventions.",
-    header: (
-      <Skeleton className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-neutral-200 dark:from-neutral-900 dark:to-neutral-800 to-neutral-100" />
-    ),
-    icon: <IconClipboardCopy className="h-4 w-4 text-neutral-500" />,
-  },
-  {
-    title: "The Digital Revolution",
-    description: "Dive into the transformative power of technology.",
-    header: (
-      <Skeleton className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-neutral-200 dark:from-neutral-900 dark:to-neutral-800 to-neutral-100" />
-    ),
-    icon: <IconFileBroken className="h-4 w-4 text-neutral-500" />,
-  },
-  {
-    title: "The Art of Design",
-    description: "Discover the beauty of thoughtful and functional design.",
-    header: (
-      <Skeleton className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-neutral-200 dark:from-neutral-900 dark:to-neutral-800 to-neutral-100" />
-    ),
-    icon: <IconSignature className="h-4 w-4 text-neutral-500" />,
-  },
-  {
-    title: "The Power of Communication",
+    title: "Corrida de Rua",
     description:
-      "Understand the impact of effective communication in our lives.",
+      "Sinta a adrenalina e a liberdade ao correr pelas ruas da cidade.",
     header: (
       <Skeleton className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-neutral-200 dark:from-neutral-900 dark:to-neutral-800 to-neutral-100" />
     ),
-    icon: <IconTableColumn className="h-4 w-4 text-neutral-500" />,
   },
   {
-    title: "The Pursuit of Knowledge",
-    description: "Join the quest for understanding and enlightenment.",
+    title: "Tênis",
+    description: "Desafie seus limites e participe de emocionantes partidas.",
     header: (
       <Skeleton className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-neutral-200 dark:from-neutral-900 dark:to-neutral-800 to-neutral-100" />
     ),
-    icon: <IconArrowWaveRightUp className="h-4 w-4 text-neutral-500" />,
   },
   {
-    title: "The Joy of Creation",
-    description: "Experience the thrill of bringing ideas to life.",
+    title: "Beach Tennis",
+    description: "Experimente a energia do jogo nas mais belas praias.",
     header: (
       <Skeleton className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-neutral-200 dark:from-neutral-900 dark:to-neutral-800 to-neutral-100" />
     ),
-    icon: <IconBoxAlignTopLeft className="h-4 w-4 text-neutral-500" />,
   },
   {
-    title: "The Spirit of Adventure",
-    description: "Embark on exciting journeys and thrilling discoveries.",
+    title: "Muay Thai",
+    description: "Teste sua força e habilidade no intenso mundo do Muay Thai.",
     header: (
       <Skeleton className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-neutral-200 dark:from-neutral-900 dark:to-neutral-800 to-neutral-100" />
     ),
-    icon: <IconBoxAlignRightFilled className="h-4 w-4 text-neutral-500" />,
+  },
+  {
+    title: "Karatê",
+    description:
+      "Junte-se a corredores de todo o mundo em uma desafiadora maratona.",
+    header: (
+      <Skeleton className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-neutral-200 dark:from-neutral-900 dark:to-neutral-800 to-neutral-100" />
+    ),
+  },
+  {
+    title: "Empresarial",
+    description: "Mostre suas habilidades no campo e conquiste a vitória.",
+    header: (
+      <Skeleton className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-neutral-200 dark:from-neutral-900 dark:to-neutral-800 to-neutral-100" />
+    ),
+  },
+  {
+    title: "MTB",
+    description: "Explore trilhas desafiadoras e paisagens incríveis.",
+    header: (
+      <Skeleton className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-neutral-200 dark:from-neutral-900 dark:to-neutral-800 to-neutral-100" />
+    ),
   },
 ];
 
 export default async function Home() {
-  const session = await getSession();
-
   return (
     <>
-      <Navbar user={session?.user} />
+      {/* <Navbar user={session?.user} /> */}
       <div className="min-h-full min-w-full ">
         <div className="overflow-hidden">
           <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 pt-12">
@@ -115,7 +107,7 @@ export default async function Home() {
         <EventCardList />
       </Suspense>
 
-      <div className="mt-10 max-w-7xl mx-auto">
+      <div className="mt-10 max-w-5xl mx-auto">
         <h2 className="text-3xl font-bold text-center text-gray-800 dark:text-white">
           Categorias
         </h2>
