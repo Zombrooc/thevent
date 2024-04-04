@@ -3,8 +3,81 @@ import { getSession } from "@auth0/nextjs-auth0";
 
 import Navbar from "@/components/Navbar";
 
-import beachTennisBackgroundImage from "@/assets/beachtennis.jpg";
+import {
+  IconArrowWaveRightUp,
+  IconBoxAlignRightFilled,
+  IconBoxAlignTopLeft,
+  IconClipboardCopy,
+  IconFileBroken,
+  IconSignature,
+  IconTableColumn,
+} from "@tabler/icons-react";
+
 import SearchEventInput from "./_components/search-event-input";
+import EventCardList from "@/components/EventCard/EventCardList";
+import { Suspense } from "react";
+import { BentoGrid, BentoGridItem } from "@/components/BentoGrid";
+import { Skeleton } from "@/components/ui/skeleton";
+
+const bentogridItems = [
+  {
+    title: "The Dawn of Innovation",
+    description: "Explore the birth of groundbreaking ideas and inventions.",
+    header: (
+      <Skeleton className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-neutral-200 dark:from-neutral-900 dark:to-neutral-800 to-neutral-100" />
+    ),
+    icon: <IconClipboardCopy className="h-4 w-4 text-neutral-500" />,
+  },
+  {
+    title: "The Digital Revolution",
+    description: "Dive into the transformative power of technology.",
+    header: (
+      <Skeleton className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-neutral-200 dark:from-neutral-900 dark:to-neutral-800 to-neutral-100" />
+    ),
+    icon: <IconFileBroken className="h-4 w-4 text-neutral-500" />,
+  },
+  {
+    title: "The Art of Design",
+    description: "Discover the beauty of thoughtful and functional design.",
+    header: (
+      <Skeleton className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-neutral-200 dark:from-neutral-900 dark:to-neutral-800 to-neutral-100" />
+    ),
+    icon: <IconSignature className="h-4 w-4 text-neutral-500" />,
+  },
+  {
+    title: "The Power of Communication",
+    description:
+      "Understand the impact of effective communication in our lives.",
+    header: (
+      <Skeleton className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-neutral-200 dark:from-neutral-900 dark:to-neutral-800 to-neutral-100" />
+    ),
+    icon: <IconTableColumn className="h-4 w-4 text-neutral-500" />,
+  },
+  {
+    title: "The Pursuit of Knowledge",
+    description: "Join the quest for understanding and enlightenment.",
+    header: (
+      <Skeleton className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-neutral-200 dark:from-neutral-900 dark:to-neutral-800 to-neutral-100" />
+    ),
+    icon: <IconArrowWaveRightUp className="h-4 w-4 text-neutral-500" />,
+  },
+  {
+    title: "The Joy of Creation",
+    description: "Experience the thrill of bringing ideas to life.",
+    header: (
+      <Skeleton className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-neutral-200 dark:from-neutral-900 dark:to-neutral-800 to-neutral-100" />
+    ),
+    icon: <IconBoxAlignTopLeft className="h-4 w-4 text-neutral-500" />,
+  },
+  {
+    title: "The Spirit of Adventure",
+    description: "Embark on exciting journeys and thrilling discoveries.",
+    header: (
+      <Skeleton className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-neutral-200 dark:from-neutral-900 dark:to-neutral-800 to-neutral-100" />
+    ),
+    icon: <IconBoxAlignRightFilled className="h-4 w-4 text-neutral-500" />,
+  },
+];
 
 export default async function Home() {
   const session = await getSession();
@@ -28,7 +101,7 @@ export default async function Home() {
 
               <div className="mt-5 max-w-3xl text-center mx-auto">
                 <p className="text-xl text-gray-600 dark:text-gray-400">
-                  Seja o Herói do Seu Próprio Esporte, Supere os Limites e faça
+                  Seja o herói do seu próprio esporte, supere os limites e faça
                   sua história acontecer.
                 </p>
               </div>
@@ -38,413 +111,28 @@ export default async function Home() {
         </div>
       </div>
 
-      <div className=" px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto max-w-7xl lg:px-8o">
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-10">
-          <div className="group flex flex-col h-full bg-white border border-gray-200 shadow-sm rounded-xl dark:bg-slate-900 dark:border-gray-700 dark:shadow-slate-700/[.7]">
-            <div className="aspect-w-12 aspect-h-7 sm:aspect-none rounded-xl overflow-hidden">
-              <Image
-                className="rounded-t-xl w-full object-cover h-40"
-                height="auto"
-                width="auto"
-                src={beachTennisBackgroundImage}
-                alt="Image Description"
-              />
-            </div>
-            {/* <div className="h-40 flex flex-col justify-center items-center rounded-t-xl">
-              <Image
-                className="w-full object-cover"
-                src={beachTennisBackgroundImage}
-                alt="Event Poster"
-              />
-            </div> */}
-            <div className="p-4 md:p-6">
-              <h3 className="text-lg font-semibold text-primary">
-                CORRIDA/CAMINHADA MOVIMENTA IJACI
-              </h3>
-              <span className="block mb-1 text-xs font-semibold uppercase text-slate-700 dark:text-blue-300">
-                14 de abr. de 2024, 08:00 | Lorena, SP, Brasil
-              </span>
-              {/* <p className="mt-3 text-gray-500">
-                A software that develops products for software developers and
-                developments.
-              </p> */}
-            </div>
-            <div className="mt-auto flex border-t border-gray-200 divide-x divide-gray-200 dark:border-gray-700 dark:divide-gray-700">
-              <a
-                className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-es-xl bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                href="/event"
-              >
-                Detalhes
-              </a>
-              <a
-                className="w-full py-3 px-4 bg-primary inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-ee-xl text-slate-900 shadow-sm disabled:opacity-50 disabled:pointer-events-none dark:bg-blue-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                href="#"
-              >
-                Comprar Ingresso
-              </a>
-            </div>
-          </div>
+      <Suspense fallback={<div>Loading...</div>}>
+        <EventCardList />
+      </Suspense>
 
-          <div className="group flex flex-col h-full bg-white border border-gray-200 shadow-sm rounded-xl dark:bg-slate-900 dark:border-gray-700 dark:shadow-slate-700/[.7]">
-            <div className="aspect-w-12 aspect-h-7 sm:aspect-none rounded-t-xl overflow-hidden">
-              <Image
-                className=" w-full object-cover h-40"
-                height="auto"
-                width="auto"
-                src={beachTennisBackgroundImage}
-                alt="Image Description"
-              />
-            </div>
-            {/* <div className="h-40 flex flex-col justify-center items-center rounded-t-xl">
-              <Image
-                className="w-full object-cover"
-                src={beachTennisBackgroundImage}
-                alt="Event Poster"
-              />
-            </div> */}
-            <div className="p-4 md:p-6">
-              <h3 className="text-lg font-semibold text-blue-600 dark:text-blue-500 dark:hover:text-white">
-                CORRIDA/CAMINHADA MOVIMENTA IJACI
-              </h3>
-              <span className="block mb-1 text-xs font-semibold uppercase text-slate-700 dark:text-blue-300">
-                14 de abr. de 2024, 08:00 | Lorena, SP, Brasil
-              </span>
-              {/* <p className="mt-3 text-gray-500">
-                A software that develops products for software developers and
-                developments.
-              </p> */}
-            </div>
-            <div className="mt-auto flex border-t border-gray-200 divide-x divide-gray-200 dark:border-gray-700 dark:divide-gray-700">
-              <a
-                className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-es-xl bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                href="#"
-              >
-                Detalhes
-              </a>
-              <a
-                className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-ee-xl bg-blue-600 text-white shadow-sm hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:bg-blue-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                href="#"
-              >
-                Comprar Ingresso
-              </a>
-            </div>
-          </div>
+      <div className="mt-10 max-w-7xl mx-auto">
+        <h2 className="text-3xl font-bold text-center text-gray-800 dark:text-white">
+          Categorias
+        </h2>
+        <hr className="border-t border-gray-200 dark:border-gray-700 my-3" />
 
-          <div className="group flex flex-col h-full bg-white border border-gray-200 shadow-sm rounded-xl dark:bg-slate-900 dark:border-gray-700 dark:shadow-slate-700/[.7]">
-            <div className="aspect-w-12 aspect-h-7 sm:aspect-none rounded-xl overflow-hidden">
-              <Image
-                className="rounded-t-xl w-full object-cover h-40"
-                height="auto"
-                width="auto"
-                src={beachTennisBackgroundImage}
-                alt="Image Description"
-              />
-            </div>
-            {/* <div className="h-40 flex flex-col justify-center items-center rounded-t-xl">
-              <Image
-                className="w-full object-cover"
-                src={beachTennisBackgroundImage}
-                alt="Event Poster"
-              />
-            </div> */}
-            <div className="p-4 md:p-6">
-              <h3 className="text-lg font-semibold text-blue-600 dark:text-blue-500 dark:hover:text-white">
-                CORRIDA/CAMINHADA MOVIMENTA IJACI
-              </h3>
-              <span className="block mb-1 text-xs font-semibold uppercase text-slate-700 dark:text-blue-300">
-                14 de abr. de 2024, 08:00 | Lorena, SP, Brasil
-              </span>
-              {/* <p className="mt-3 text-gray-500">
-                A software that develops products for software developers and
-                developments.
-              </p> */}
-            </div>
-            <div className="mt-auto flex border-t border-gray-200 divide-x divide-gray-200 dark:border-gray-700 dark:divide-gray-700">
-              <a
-                className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-es-xl bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                href="#"
-              >
-                Detalhes
-              </a>
-              <a
-                className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-ee-xl bg-blue-600 text-white shadow-sm hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:bg-blue-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                href="#"
-              >
-                Comprar Ingresso
-              </a>
-            </div>
-          </div>
-
-          <div className="group flex flex-col h-full bg-white border border-gray-200 shadow-sm rounded-xl dark:bg-slate-900 dark:border-gray-700 dark:shadow-slate-700/[.7]">
-            <div className="aspect-w-12 aspect-h-7 sm:aspect-none rounded-xl overflow-hidden">
-              <Image
-                className="rounded-t-xl w-full object-cover h-40"
-                height="auto"
-                width="auto"
-                src={beachTennisBackgroundImage}
-                alt="Image Description"
-              />
-            </div>
-            {/* <div className="h-40 flex flex-col justify-center items-center rounded-t-xl">
-              <Image
-                className="w-full object-cover"
-                src={beachTennisBackgroundImage}
-                alt="Event Poster"
-              />
-            </div> */}
-            <div className="p-4 md:p-6">
-              <h3 className="text-lg font-semibold text-blue-600 dark:text-blue-500 dark:hover:text-white">
-                CORRIDA/CAMINHADA MOVIMENTA IJACI
-              </h3>
-              <span className="block mb-1 text-xs font-semibold uppercase text-slate-700 dark:text-blue-300">
-                14 de abr. de 2024, 08:00 | Lorena, SP, Brasil
-              </span>
-              {/* <p className="mt-3 text-gray-500">
-                A software that develops products for software developers and
-                developments.
-              </p> */}
-            </div>
-            <div className="mt-auto flex border-t border-gray-200 divide-x divide-gray-200 dark:border-gray-700 dark:divide-gray-700">
-              <a
-                className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-es-xl bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                href="#"
-              >
-                Detalhes
-              </a>
-              <a
-                className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-ee-xl bg-blue-600 text-white shadow-sm hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:bg-blue-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                href="#"
-              >
-                Comprar Ingresso
-              </a>
-            </div>
-          </div>
-
-          <div className="group flex flex-col h-full bg-white border border-gray-200 shadow-sm rounded-xl dark:bg-slate-900 dark:border-gray-700 dark:shadow-slate-700/[.7]">
-            <div className="aspect-w-12 aspect-h-7 sm:aspect-none rounded-xl overflow-hidden">
-              <Image
-                className="rounded-t-xl w-full object-cover h-40"
-                height="auto"
-                width="auto"
-                src={beachTennisBackgroundImage}
-                alt="Image Description"
-              />
-            </div>
-            {/* <div className="h-40 flex flex-col justify-center items-center rounded-t-xl">
-              <Image
-                className="w-full object-cover"
-                src={beachTennisBackgroundImage}
-                alt="Event Poster"
-              />
-            </div> */}
-            <div className="p-4 md:p-6">
-              <h3 className="text-lg font-semibold text-blue-600 dark:text-blue-500 dark:hover:text-white">
-                CORRIDA/CAMINHADA MOVIMENTA IJACI
-              </h3>
-              <span className="block mb-1 text-xs font-semibold uppercase text-slate-700 dark:text-blue-300">
-                14 de abr. de 2024, 08:00 | Lorena, SP, Brasil
-              </span>
-              {/* <p className="mt-3 text-gray-500">
-                A software that develops products for software developers and
-                developments.
-              </p> */}
-            </div>
-            <div className="mt-auto flex border-t border-gray-200 divide-x divide-gray-200 dark:border-gray-700 dark:divide-gray-700">
-              <a
-                className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-es-xl bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                href="#"
-              >
-                Detalhes
-              </a>
-              <a
-                className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-ee-xl bg-blue-600 text-white shadow-sm hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:bg-blue-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                href="#"
-              >
-                Comprar Ingresso
-              </a>
-            </div>
-          </div>
-
-          <div className="group flex flex-col h-full bg-white border border-gray-200 shadow-sm rounded-xl dark:bg-slate-900 dark:border-gray-700 dark:shadow-slate-700/[.7]">
-            <div className="aspect-w-12 aspect-h-7 sm:aspect-none rounded-xl overflow-hidden">
-              <Image
-                className="rounded-t-xl w-full object-cover h-40"
-                height="auto"
-                width="auto"
-                src={beachTennisBackgroundImage}
-                alt="Image Description"
-              />
-            </div>
-            {/* <div className="h-40 flex flex-col justify-center items-center rounded-t-xl">
-              <Image
-                className="w-full object-cover"
-                src={beachTennisBackgroundImage}
-                alt="Event Poster"
-              />
-            </div> */}
-            <div className="p-4 md:p-6">
-              <h3 className="text-lg font-semibold text-blue-600 dark:text-blue-500 dark:hover:text-white">
-                CORRIDA/CAMINHADA MOVIMENTA IJACI
-              </h3>
-              <span className="block mb-1 text-xs font-semibold uppercase text-slate-700 dark:text-blue-300">
-                14 de abr. de 2024, 08:00 | Lorena, SP, Brasil
-              </span>
-              {/* <p className="mt-3 text-gray-500">
-                A software that develops products for software developers and
-                developments.
-              </p> */}
-            </div>
-            <div className="mt-auto flex border-t border-gray-200 divide-x divide-gray-200 dark:border-gray-700 dark:divide-gray-700">
-              <a
-                className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-es-xl bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                href="#"
-              >
-                Detalhes
-              </a>
-              <a
-                className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-ee-xl bg-blue-600 text-white shadow-sm hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:bg-blue-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                href="#"
-              >
-                Comprar Ingresso
-              </a>
-            </div>
-          </div>
-
-          <div className="group flex flex-col h-full bg-white border border-gray-200 shadow-sm rounded-xl dark:bg-slate-900 dark:border-gray-700 dark:shadow-slate-700/[.7]">
-            <div className="aspect-w-12 aspect-h-7 sm:aspect-none rounded-xl overflow-hidden">
-              <Image
-                className="rounded-t-xl w-full object-cover h-40"
-                height="auto"
-                width="auto"
-                src={beachTennisBackgroundImage}
-                alt="Image Description"
-              />
-            </div>
-            {/* <div className="h-40 flex flex-col justify-center items-center rounded-t-xl">
-              <Image
-                className="w-full object-cover"
-                src={beachTennisBackgroundImage}
-                alt="Event Poster"
-              />
-            </div> */}
-            <div className="p-4 md:p-6">
-              <h3 className="text-lg font-semibold text-blue-600 dark:text-blue-500 dark:hover:text-white">
-                CORRIDA/CAMINHADA MOVIMENTA IJACI
-              </h3>
-              <span className="block mb-1 text-xs font-semibold uppercase text-slate-700 dark:text-blue-300">
-                14 de abr. de 2024, 08:00 | Lorena, SP, Brasil
-              </span>
-              {/* <p className="mt-3 text-gray-500">
-                A software that develops products for software developers and
-                developments.
-              </p> */}
-            </div>
-            <div className="mt-auto flex border-t border-gray-200 divide-x divide-gray-200 dark:border-gray-700 dark:divide-gray-700">
-              <a
-                className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-es-xl bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                href="#"
-              >
-                Detalhes
-              </a>
-              <a
-                className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-ee-xl bg-blue-600 text-white shadow-sm hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:bg-blue-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                href="#"
-              >
-                Comprar Ingresso
-              </a>
-            </div>
-          </div>
-
-          <div className="group flex flex-col h-full bg-white border border-gray-200 shadow-sm rounded-xl dark:bg-slate-900 dark:border-gray-700 dark:shadow-slate-700/[.7]">
-            <div className="aspect-w-12 aspect-h-7 sm:aspect-none rounded-xl overflow-hidden">
-              <Image
-                className="rounded-t-xl w-full object-cover h-40"
-                height="auto"
-                width="auto"
-                src={beachTennisBackgroundImage}
-                alt="Image Description"
-              />
-            </div>
-            {/* <div className="h-40 flex flex-col justify-center items-center rounded-t-xl">
-              <Image
-                className="w-full object-cover"
-                src={beachTennisBackgroundImage}
-                alt="Event Poster"
-              />
-            </div> */}
-            <div className="p-4 md:p-6">
-              <h3 className="text-lg font-semibold text-blue-600 dark:text-blue-500 dark:hover:text-white">
-                CORRIDA/CAMINHADA MOVIMENTA IJACI
-              </h3>
-              <span className="block mb-1 text-xs font-semibold uppercase text-slate-700 dark:text-blue-300">
-                14 de abr. de 2024, 08:00 | Lorena, SP, Brasil
-              </span>
-              {/* <p className="mt-3 text-gray-500">
-                A software that develops products for software developers and
-                developments.
-              </p> */}
-            </div>
-            <div className="mt-auto flex border-t border-gray-200 divide-x divide-gray-200 dark:border-gray-700 dark:divide-gray-700">
-              <a
-                className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-es-xl bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                href="#"
-              >
-                Detalhes
-              </a>
-              <a
-                className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-ee-xl bg-blue-600 text-white shadow-sm hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:bg-blue-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                href="#"
-              >
-                Comprar Ingresso
-              </a>
-            </div>
-          </div>
-
-          <div className="group flex flex-col h-full bg-white border border-gray-200 shadow-sm rounded-xl dark:bg-slate-900 dark:border-gray-700 dark:shadow-slate-700/[.7]">
-            <div className="aspect-w-12 aspect-h-7 sm:aspect-none rounded-xl overflow-hidden">
-              <Image
-                className="rounded-t-xl w-full object-cover h-40"
-                height="auto"
-                width="auto"
-                src={beachTennisBackgroundImage}
-                alt="Image Description"
-              />
-            </div>
-            {/* <div className="h-40 flex flex-col justify-center items-center rounded-t-xl">
-              <Image
-                className="w-full object-cover"
-                src={beachTennisBackgroundImage}
-                alt="Event Poster"
-              />
-            </div> */}
-            <div className="p-4 md:p-6">
-              <h3 className="text-lg font-semibold text-blue-600 dark:text-blue-500 dark:hover:text-white">
-                CORRIDA/CAMINHADA MOVIMENTA IJACI
-              </h3>
-              <span className="block mb-1 text-xs font-semibold uppercase text-slate-700 dark:text-blue-300">
-                14 de abr. de 2024, 08:00 | Lorena, SP, Brasil
-              </span>
-              {/* <p className="mt-3 text-gray-500">
-                A software that develops products for software developers and
-                developments.
-              </p> */}
-            </div>
-            <div className="mt-auto flex border-t border-gray-200 divide-x divide-gray-200 dark:border-gray-700 dark:divide-gray-700">
-              <a
-                className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-es-xl bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                href="#"
-              >
-                Detalhes
-              </a>
-              <a
-                className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-ee-xl bg-blue-600 text-white shadow-sm hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:bg-blue-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                href="#"
-              >
-                Comprar Ingresso
-              </a>
-            </div>
-          </div>
-        </div>
+        <BentoGrid>
+          {bentogridItems.map((item, i) => (
+            <BentoGridItem
+              key={i}
+              title={item.title}
+              description={item.description}
+              header={item.header}
+              icon={item.icon}
+              className={i === 3 || i === 6 ? "md:col-span-2" : ""}
+            />
+          ))}
+        </BentoGrid>
       </div>
     </>
   );

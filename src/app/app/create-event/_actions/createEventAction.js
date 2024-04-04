@@ -1,6 +1,8 @@
 "use server";
 
-import { useRouter, redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
+
+import { redirect } from "next/navigation";
 import { prisma } from "@/lib/database";
 import { generateQR } from "@/lib/qrCode";
 
@@ -82,7 +84,8 @@ export const createEventAction = async (
       })
     );
 
-    await router.revalidate(`/event/${event.id}`);
+    revalidatePath(`/event/${event.id}`);
+    revalidatePath("/");
     redirect(`/event/${event.id}`);
   } catch (error) {
     throw error;
