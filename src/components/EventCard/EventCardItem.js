@@ -22,7 +22,7 @@ export default function EventCardItem({ event }) {
         <span className="block mb-1 text-xs font-semibold uppercase text-slate-700 dark:text-blue-300">
           {moment(event.eventDateStart).format("DD/MM/YYYY")} -{" "}
           {moment(event.eventDateEnd).format("DD/MM/YYYY")} |{" "}
-          {event.addresses.city}, {event.addresses.state}
+          {event.address.city}, {event.address.state}
         </span>
         {/* <p className="mt-3 text-gray-500">
                 A software that develops products for software developers and

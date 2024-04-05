@@ -49,7 +49,7 @@ export const createEventAction = async (
         organizer: user.sid,
         eventDateStart: eventData.eventDateStartEnd.from,
         eventDateEnd: eventData.eventDateStartEnd.to,
-        addresses: {
+        address: {
           create: addressData,
         },
         tickets: {

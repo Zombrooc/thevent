@@ -1,13 +1,10 @@
 import { Inter as FontSans } from "next/font/google";
 import { UserProvider } from "@auth0/nextjs-auth0/client";
-import { Analytics } from "@vercel/analytics/react";
 
 import "./globals.css";
 
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/toaster";
-import { getSession } from "@auth0/nextjs-auth0";
-import Navbar from "@/components/Navbar";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -59,8 +56,6 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }) {
-  const session = await getSession();
-
   return (
     <html lang="pt-BR">
       <body
@@ -72,7 +67,6 @@ export default async function RootLayout({ children }) {
               <div className="fixed h-full w-full bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)]"></div>
             </div>
           </div>
-          <Navbar user={session?.user} />
 
           {children}
         </UserProvider>
