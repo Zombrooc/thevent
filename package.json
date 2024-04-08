@@ -58,6 +58,7 @@
     "firebase": "^10.9.0",
     "framer-motion": "^11.0.24",
     "input-otp": "^1.1.0",
+    "jotai": "^2.7.2",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.363.0",
     "moment": "^2.30.1",

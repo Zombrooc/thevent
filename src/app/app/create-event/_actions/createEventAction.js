@@ -26,7 +26,7 @@ export const createEventAction = async (
 
       const qrCodeURL = generateQR(
         JSON.stringify({
-          userId: user.sid,
+          userId: user.sub,
         })
       ).then((url) => url);
 
@@ -46,7 +46,7 @@ export const createEventAction = async (
         bannerImage,
         eventName: eventData.eventName,
         eventDescription: eventData.eventDescription,
-        organizer: user.sid,
+        organizer: user.sub,
         eventDateStart: eventData.eventDateStartEnd.from,
         eventDateEnd: eventData.eventDateStartEnd.to,
         address: {

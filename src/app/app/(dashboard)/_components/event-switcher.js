@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { Suspense, useState } from "react";
 import {
   CaretSortIcon,
   CheckIcon,
@@ -42,6 +42,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const groups = [
   {
@@ -68,13 +69,17 @@ const groups = [
   },
 ];
 
-export default function TeamSwitcher({ className }) {
-  const [open, setOpen] = React.useState(false);
-  const [showNewTeamDialog, setShowNewTeamDialog] = React.useState(false);
-  const [selectedTeam, setSelectedTeam] = React.useState(groups[0].teams[0]);
+export default function EventSwitcher({
+  className,
+  currentEvent,
+  events,
+  handleCurrentEventChange,
+}) {
+  const [open, setOpen] = useState(false);
+  const [showNewEventDialog, setShowNewEventDialog] = useState(false);
 
   return (
-    <Dialog open={showNewTeamDialog} onOpenChange={setShowNewTeamDialog}>
+    <Dialog open={showNewEventDialog} onOpenChange={setShowNewEventDialog}>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
@@ -84,55 +89,57 @@ export default function TeamSwitcher({ className }) {
             aria-label="Select a team"
             className={cn("w-[200px] justify-between", className)}
           >
-            <Avatar className="mr-2 h-5 w-5">
+            {/* <Avatar className="mr-2 h-5 w-5">
               <AvatarImage
-                src={`https://avatar.vercel.sh/${selectedTeam.value}.png`}
-                alt={selectedTeam.label}
+                src={`https://avatar.vercel.sh/${currentEvent.value}.png`}
+                alt={currentEvent.label}
                 className="grayscale"
               />
               <AvatarFallback>SC</AvatarFallback>
-            </Avatar>
-            {selectedTeam.label}
+            </Avatar> */}
+            {currentEvent?.eventName !== undefined
+              ? currentEvent?.eventName
+              : "Nenhum evento criado"}
             <CaretSortIcon className="ml-auto h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-[200px] p-0">
           <Command>
             <CommandList>
-              <CommandInput placeholder="Search team..." />
-              <CommandEmpty>No team found.</CommandEmpty>
-              {groups.map((group) => (
-                <CommandGroup key={group.label} heading={group.label}>
-                  {group.teams.map((team) => (
+              <CommandInput placeholder="Procurar evento..." />
+              <CommandEmpty>Nenhum evento encontrado</CommandEmpty>
+              <CommandGroup heading="Meu Eventos">
+                {events.map((event, index) => {
+                  return (
                     <CommandItem
-                      key={team.value}
+                      key={event.id}
                       onSelect={() => {
-                        setSelectedTeam(team);
+                        handleCurrentEventChange(event);
                         setOpen(false);
                       }}
                       className="text-sm"
                     >
-                      <Avatar className="mr-2 h-5 w-5">
+                      {/* <Avatar className="mr-2 h-5 w-5">
                         <AvatarImage
                           src={`https://avatar.vercel.sh/${team.value}.png`}
                           alt={team.label}
                           className="grayscale"
                         />
                         <AvatarFallback>SC</AvatarFallback>
-                      </Avatar>
-                      {team.label}
+                      </Avatar> */}
+                      {event.eventName}
                       <CheckIcon
                         className={cn(
                           "ml-auto h-4 w-4",
-                          selectedTeam.value === team.value
+                          currentEvent.eventName === events[index].eventName
                             ? "opacity-100"
                             : "opacity-0"
                         )}
                       />
                     </CommandItem>
-                  ))}
-                </CommandGroup>
-              ))}
+                  );
+                })}
+              </CommandGroup>
             </CommandList>
             <CommandSeparator />
             <CommandList>
@@ -141,11 +148,11 @@ export default function TeamSwitcher({ className }) {
                   <CommandItem
                     onSelect={() => {
                       setOpen(false);
-                      setShowNewTeamDialog(true);
+                      setShowNewEventDialog(true);
                     }}
                   >
                     <PlusCircledIcon className="mr-2 h-5 w-5" />
-                    Create Team
+                    Criar novo evento
                   </CommandItem>
                 </DialogTrigger>
               </CommandGroup>
@@ -191,7 +198,10 @@ export default function TeamSwitcher({ className }) {
           </div>
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={() => setShowNewTeamDialog(false)}>
+          <Button
+            variant="outline"
+            onClick={() => setShowNewEventDialog(false)}
+          >
             Cancel
           </Button>
           <Button type="submit">Continue</Button>

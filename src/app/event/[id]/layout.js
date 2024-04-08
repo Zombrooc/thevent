@@ -1,5 +1,7 @@
+import Navbar from "@/components/Navbar";
 import { prisma } from "@/lib/database";
 import { generateEventTitle, generateEventDescription } from "@/lib/gemini";
+import { getSession } from "@auth0/nextjs-auth0";
 
 // export const metadata = {
 //   title: {
@@ -45,38 +47,45 @@ import { generateEventTitle, generateEventDescription } from "@/lib/gemini";
 //   // },
 // };
 
-export async function generateMetadata({ params, searchParams }, parent) {
-  const id = params.id;
+// export async function generateMetadata({ params, searchParams }, parent) {
+//   const id = params.id;
 
-  let meta = {};
-  const eventData = await prisma.event.findUnique({ where: { id } });
+//   let meta = {};
+//   const eventData = await prisma.event.findUnique({ where: { id } });
 
-  const { textResponse } = await generateEventTitle(eventData.title);
+//   const { textResponse } = await generateEventTitle(eventData.title);
 
-  console.log(textResponse);
+//   console.log(textResponse);
 
-  const description = await generateEventDescription(eventData.description);
-  console.log(description);
+//   const description = await generateEventDescription(eventData.description);
+//   console.log(description);
 
-  return;
+//   return;
 
-  // const previousImages = (await parent).openGraph?.images || [];
+// const previousImages = (await parent).openGraph?.images || [];
 
-  // const metadata = eventData.sEOTags && eventData.sEOTags.length > 0 ? eventData.sEOTags.reduce((acc, tag) => {
-  //   acc[tag.tagName] = tag.content;
-  //   return acc;
-  // }, {}) : {
-  //   title: eventData.title,
-  //   description: eventData.description,
-  // };
-  // return {
-  //   ...metadata,
-  //   openGraph: {
-  //     images: ["/some-specific-page-image.jpg", ...previousImages],
-  //   },
-  // };
-}
+// const metadata = eventData.sEOTags && eventData.sEOTags.length > 0 ? eventData.sEOTags.reduce((acc, tag) => {
+//   acc[tag.tagName] = tag.content;
+//   return acc;
+// }, {}) : {
+//   title: eventData.title,
+//   description: eventData.description,
+// };
+// return {
+//   ...metadata,
+//   openGraph: {
+//     images: ["/some-specific-page-image.jpg", ...previousImages],
+//   },
+// };
+// }
 
 export default async function Layout({ children }) {
-  return <>{children}</>;
+  const session = await getSession();
+
+  return (
+    <>
+      <Navbar user={session?.user} />
+      {children}
+    </>
+  );
 }
