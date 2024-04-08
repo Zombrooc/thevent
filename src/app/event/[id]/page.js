@@ -36,68 +36,76 @@ export default async function EventDetails({ params }) {
 
   return (
     <>
-      <div className="rounded-xl ">
-        <div className="mx-auto px-4 sm:px-6 lg:px-8 pt-12 ">
-          <Image
-            alt="Map"
-            className=" object-cover w-full max-h-96"
-            height="337"
-            src={eventData.bannerImage}
-            width="600"
-          />
-        </div>
+      <div className="w-full rounded-xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 ">
+        <Image
+          alt="Map"
+          className="object-cover max-w-5xl"
+          height="337"
+          src={eventData.bannerImage}
+          width="600"
+        />
       </div>
-      <div className="max-w-5xl min-h-screen bg-muted/40 mx-auto px-4 sm:px-6 lg:px-8 pt-12 grid grid-cols-1 gap-x- gap-y-3 sm:grid-cols-6  ">
-        <div className="col-span-full">
-          <div className="space-y-2">
-            <div className="flex rounded-lg px-3 py-1 text-base ">
-              {eventData?.tags.map((tag, index) => (
-                <Badge key={index} className="mr-2">
-                  {tag.tag}
-                </Badge>
-              ))}
-            </div>
-            <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl">
-              {eventData.eventName}
-            </h1>
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-2 text-sm">
-                <CalendarIcon className="h-6 w-6" />
-                <time>
-                  {moment(eventData.eventDataStart).format("DD/MM/YYYY")}
-                </time>
+      <div className="max-w-5xl min-h-screen bg-muted/40 mx-auto px-4 sm:px-6 lg:px-8 pt-12 grid grid-cols-1 gap-x-5 gap-y-3 sm:grid-cols-6  ">
+        <div className="col-span-4">
+          <div className="w-full">
+            <div className="space-y-2">
+              <div className="flex rounded-lg px-3 py-1 text-base ">
+                {eventData?.tags.map((tag, index) => (
+                  <Badge key={index} className="mr-2">
+                    {tag.tag}
+                  </Badge>
+                ))}
               </div>
-              <div className="flex items-center gap-2 text-sm">
-                <MapPinIcon className="h-6 w-6" />
-                <span>
-                  {eventData.address.street} - {eventData.address.city},{" "}
-                  {eventData.address.state}
-                </span>
+              <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                {eventData.eventName}
+              </h1>
+              <div className="flex items-center gap-2 mt-4">
+                <div className="flex items-center gap-2 text-sm">
+                  <CalendarIcon className="h-6 w-6" />
+                  <time>
+                    {moment(eventData.eventDataStart).format("DD/MM/YYYY")}
+                  </time>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <MapPinIcon className="h-6 w-6" />
+                  <span>
+                    {eventData.address.street} - {eventData.address.city},{" "}
+                    {eventData.address.state}
+                  </span>
+                </div>
               </div>
-            </div>
-            {/* <div className="flex items-center gap-2 text-sm">
+              {/* <div className="flex items-center gap-2 text-sm">
                 <ClockIcon className="h-6 w-6" />
                 <time>10:00 AM - 4:00 PM</time>
                   </div>*/}
-          </div>
-          <div className="prose max-w-none mt-10">
-            <p>{eventData.eventDescription}</p>
+            </div>
+            <div>
+              <h2 className=" mt-10 text-3xl font-semibold leading-7 text-gray-900">
+                Descrição
+              </h2>
+              <div className="prose max-w-none mt-10">
+                <p>{eventData.eventDescription}</p>
+              </div>
+            </div>
           </div>
         </div>
-
-        <div className="col-span-full">
-          <h2 className="text-3xl font-semibold leading-7 text-gray-900">
+        <div className="col-span-2 h-full flex flex-col">
+          {" "}
+          <h2 className=" mt-10 text-3xl font-semibold leading-7 text-gray-900">
             Ingressos
           </h2>
-          <div className=" mt-4 flex flex-row gap-4">
+          <div className=" mt-4 flex flex-col gap-4">
             {eventData?.tickets.map((ticket, index) => (
-              <Card className="max-w-sm" key={index}>
+              <Card className=" flex flex-col justify-between" key={index}>
                 <CardHeader>
                   <CardTitle>{ticket.ticketName}</CardTitle>
                   <CardDescription>{ticket.ticketDescription}</CardDescription>
                 </CardHeader>
-                <CardContent className="flex items-center justify-between space-y-0">
-                  <div className="flex items-center justify-center space-x-2">
+                <CardContent>
+                  <span className="font-semibold">
+                    R$ <span className="text-2xl"> {ticket.ticketPrice}</span>
+                  </span>
+                  <div className="flex items-center justify-center space-x-2 mt-4">
                     <Button
                       variant="outline"
                       size="icon"
@@ -124,7 +132,6 @@ export default async function EventDetails({ params }) {
                       <span className="sr-only">Increase</span>
                     </Button>
                   </div>
-                  <span className="font-semibold">R$ {ticket.ticketPrice}</span>
                 </CardContent>
               </Card>
             ))}
