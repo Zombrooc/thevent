@@ -78,14 +78,18 @@ import { getSession } from "@auth0/nextjs-auth0";
 //   },
 // };
 // }
+import { Provider } from "react-redux";
+import store from "@/store/index";
 
 export default async function Layout({ children }) {
   const session = await getSession();
 
   return (
-    <>
+    <Provider store={store}>
       <Navbar user={session?.user} />
       {children}
-    </>
+    </Provider>
   );
 }
+
+// https://redux.js.org/introduction/examples#shopping-cart

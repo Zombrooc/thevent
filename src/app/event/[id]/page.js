@@ -13,6 +13,8 @@ import { RadioGroup } from "@headlessui/react";
 import { Badge } from "@/components/ui/badge";
 import moment from "moment";
 import Image from "next/image";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { useDispatch, useSelector } from "react-redux";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -34,12 +36,15 @@ const getEventData = async (id) => {
 export default async function EventDetails({ params }) {
   const eventData = await getEventData(params?.id);
 
+  const ticketsCart = useSelector((state) => state.ticketCart.tickets);
+  const dispatch = useDispatch();
+
   return (
     <>
-      <div className="w-full rounded-xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 ">
+      <div className="max-w-5xl rounded-xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 ">
         <Image
           alt="Map"
-          className="object-cover max-w-5xl"
+          className="w-full object-cover"
           height="337"
           src={eventData.bannerImage}
           width="600"
@@ -83,7 +88,7 @@ export default async function EventDetails({ params }) {
               <h2 className=" mt-10 text-3xl font-semibold leading-7 text-gray-900">
                 Descrição
               </h2>
-              <div className="prose max-w-none mt-10">
+              <div className="prose max-w-none mt-4">
                 <p>{eventData.eventDescription}</p>
               </div>
             </div>
