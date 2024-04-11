@@ -3,43 +3,29 @@ import { createSlice } from "@reduxjs/toolkit";
 export const ticketCartSlice = createSlice({
   name: "ticketCart",
   initialState: {
-    tickets: [],
+    tickets: {},
   },
   reducers: {
-    addTicket: (state, action) => {
-      const ticket = state.tickets.find(
-        (ticket) => ticket.id === action.payload.id
-      );
-      if (ticket) {
-        ticket.quantity += 1;
+    addItem: (state, action) => {
+      state.tickets[action.payload.id] = {
+        ...state.tickets[action.payload.id],
+        quantity: (state.tickets[action.payload.id]?.quantity || 0) + 1,
+      };
+    },
+    removeItem: (state, action) => {
+      if (state.tickets[action.payload.id]?.quantity > 1) {
+        state.tickets[action.payload.id] = {
+          ...state.tickets[action.payload.id],
+          quantity: state.tickets[action.payload.id].quantity - 1,
+        };
       } else {
-        state.tickets.push({ ...action.payload, quantity: 1 });
-      }
-    },
-    removeTicket: (state, action) => {
-      const index = state.tickets.findIndex(
-        (ticket) => ticket.id === action.payload.id
-      );
-      if (index !== -1) {
-        state.tickets[index].quantity -= 1;
-        if (state.tickets[index].quantity === 0) {
-          state.tickets.splice(index, 1);
-        }
-      }
-    },
-    removeAllTickets: (state, action) => {
-      const index = state.tickets.findIndex(
-        (ticket) => ticket.id === action.payload.id
-      );
-      if (index !== -1) {
-        state.tickets.splice(index, 1);
+        delete state.tickets[action.payload.id];
       }
     },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { addTicket, removeTicket, removeAllTickets } =
-  ticketCartSlice.actions;
+export const { addItem, removeItem } = ticketCartSlice.actions;
 
 export default ticketCartSlice.reducer;

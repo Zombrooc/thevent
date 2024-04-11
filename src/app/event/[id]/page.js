@@ -1,20 +1,9 @@
-import {
-  CardTitle,
-  CardDescription,
-  CardHeader,
-  CardContent,
-  Card,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-
 import { Suspense } from "react";
-import { StarIcon } from "@heroicons/react/20/solid";
-import { RadioGroup } from "@headlessui/react";
 import { Badge } from "@/components/ui/badge";
 import moment from "moment";
 import Image from "next/image";
-import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { useDispatch, useSelector } from "react-redux";
+
+import TicketList from "./_components/TicketList";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -35,9 +24,6 @@ const getEventData = async (id) => {
 
 export default async function EventDetails({ params }) {
   const eventData = await getEventData(params?.id);
-
-  const ticketsCart = useSelector((state) => state.ticketCart.tickets);
-  const dispatch = useDispatch();
 
   return (
     <>
@@ -94,54 +80,9 @@ export default async function EventDetails({ params }) {
             </div>
           </div>
         </div>
-        <div className="col-span-2 h-full flex flex-col">
-          {" "}
-          <h2 className=" mt-10 text-3xl font-semibold leading-7 text-gray-900">
-            Ingressos
-          </h2>
-          <div className=" mt-4 flex flex-col gap-4">
-            {eventData?.tickets.map((ticket, index) => (
-              <Card className=" flex flex-col justify-between" key={index}>
-                <CardHeader>
-                  <CardTitle>{ticket.ticketName}</CardTitle>
-                  <CardDescription>{ticket.ticketDescription}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <span className="font-semibold">
-                    R$ <span className="text-2xl"> {ticket.ticketPrice}</span>
-                  </span>
-                  <div className="flex items-center justify-center space-x-2 mt-4">
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      className="h-8 w-8 shrink-0 rounded-full"
-                      // onClick={() => onClick(-10)}
-                      // disabled={goal <= 200}
-                    >
-                      <MinusIcon className="h-4 w-4" />
-                      <span className="sr-only">Decrease</span>
-                    </Button>
-                    <div className="flex-1 text-center">
-                      <div className="text-2xl font-bold tracking-tighter">
-                        5
-                      </div>
-                    </div>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      className="h-8 w-8 shrink-0 rounded-full"
-                      // onClick={() => onClick(10)}
-                      // disabled={goal >= 400}
-                    >
-                      <PlusIcon className="h-4 w-4" />
-                      <span className="sr-only">Increase</span>
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
+        <Suspense fallback={"Loading..."}>
+          <TicketList tickets={eventData.tickets} />
+        </Suspense>
       </div>
     </>
   );
