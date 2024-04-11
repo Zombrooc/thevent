@@ -1,6 +1,6 @@
 import Navbar from "@/components/Navbar";
-import { prisma } from "@/lib/database";
-import { generateEventTitle, generateEventDescription } from "@/lib/gemini";
+// import { prisma } from "@/lib/database";
+// import { generateEventTitle, generateEventDescription } from "@/lib/gemini";
 import { getSession } from "@auth0/nextjs-auth0";
 
 // export const metadata = {
