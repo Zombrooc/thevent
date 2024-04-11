@@ -36,22 +36,11 @@ export default function TicketItem({ ticket }) {
             variant="outline"
             size="icon"
             className="h-8 w-8 shrink-0 rounded-full"
-            // onClick={(ticket) =>
-            //   setTicketCart((prevticketCart) => ({
-            //     ...prevticketCart,
-            //     [ticket.id]: {
-            //       quantity: Math.max(
-            //         0,
-            //         (prevticketCart[ticket.id]?.quantity || 0) - 1
-            //       ),
-            //     },
-            //   }))
-            // }
             disabled={Number(ticketCart[ticket.id]?.quantity) === 0}
             onClick={() => dispatch(removeItem({ id: ticket.id }))}
           >
             <MinusIcon className="h-4 w-4" />
-            <span className="sr-only">Decrease</span>
+            <span className="sr-only">Remover Ingresso</span>
           </Button>
           <div className="flex-1 text-center">
             <div className="text-2xl font-bold tracking-tighter">
@@ -62,20 +51,10 @@ export default function TicketItem({ ticket }) {
             variant="outline"
             size="icon"
             className="h-8 w-8 shrink-0 rounded-full"
-            // onClick={() => onClick(10)}
-            // onClick={(ticket) =>
-            //   setTicketCart({
-            //     ...ticketCart,
-            //     [ticket.id]: {
-            //       quantity: (ticketCart[ticket.id]?.quantity += 1),
-            //     },
-            //   })
-            // }
             onClick={() => dispatch(addItem({ id: ticket.id }))}
-            // disabled={goal >= 400}
           >
             <PlusIcon className="h-4 w-4" />
-            <span className="sr-only">Increase</span>
+            <span className="sr-only">Adicionar Ingresso</span>
           </Button>
         </div>
       </CardContent>
