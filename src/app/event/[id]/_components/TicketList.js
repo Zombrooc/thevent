@@ -1,19 +1,11 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import TicketItem from "./TicketItem";
-import { useDispatch, useSelector } from "react-redux";
+import ConfirmPurchase from "./ConfirmPurchase";
+import { useSelector } from "react-redux";
 
 export default function TicketList({ tickets }) {
-  const ticketCart = useSelector((state) => state.ticketCart.tickets);
-  const dispatch = useDispatch();
-
-  const handleCheckout = () => {
-    console.log(ticketCart);
-
-    const res 
-  };
-
+  const { totalPrice } = useSelector((state) => state.ticketCart);
   return (
     <div className="col-span-2 h-full flex flex-col">
       <h2 className=" mt-10 text-3xl font-semibold leading-7 text-gray-900">
@@ -23,7 +15,9 @@ export default function TicketList({ tickets }) {
         {tickets.map((ticket) => (
           <TicketItem ticket={ticket} key={ticket.id} />
         ))}
-        <Button onClick={handleCheckout}> Comprar </Button>
+
+        <p className="text-lg font-semibold">Preço Total: R$ {totalPrice}</p>
+        <ConfirmPurchase />
       </div>
     </div>
   );

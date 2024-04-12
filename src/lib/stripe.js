@@ -11,7 +11,7 @@ export const createStripeProduct = async (ticketName, ticketPrice) => {
   const product = await stripe.products.create({
     name: ticketName,
     default_price_data: {
-      unit_amount: ticketPrice,
+      unit_amount: Math.round(ticketPrice * 100),
       currency: "BRL",
     },
     expand: ["default_price"],
