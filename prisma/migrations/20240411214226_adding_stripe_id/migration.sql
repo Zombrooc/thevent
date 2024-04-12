@@ -35,9 +35,9 @@ CREATE TABLE "Address" (
 -- CreateTable
 CREATE TABLE "Ticket" (
     "id" TEXT NOT NULL,
-    "isPaid" BOOLEAN,
-    "checkInDone" BOOLEAN,
-    "qrCodeURL" TEXT NOT NULL,
+    "isPaid" BOOLEAN DEFAULT false,
+    "checkInDone" BOOLEAN DEFAULT false,
+    "qrCodeURL" TEXT,
     "eventId" TEXT,
     "endSellingAt" TIMESTAMP(3) NOT NULL,
     "startSellingAt" TIMESTAMP(3) NOT NULL,
@@ -45,6 +45,7 @@ CREATE TABLE "Ticket" (
     "ticketName" TEXT NOT NULL,
     "ticketPrice" DOUBLE PRECISION NOT NULL,
     "ticketStockAvailable" INTEGER NOT NULL,
+    "stripeID" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -80,26 +81,22 @@ CREATE TABLE "Tags" (
 );
 
 -- CreateTable
-CREATE TABLE "TagsOnEvents" (
-    "eventId" TEXT NOT NULL,
-    "tagId" TEXT NOT NULL,
-    "assignedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "assignedBy" TEXT NOT NULL,
-
-    CONSTRAINT "TagsOnEvents_pkey" PRIMARY KEY ("eventId","tagId")
+CREATE TABLE "_EventToTags" (
+    "A" TEXT NOT NULL,
+    "B" TEXT NOT NULL
 );
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Address_eventId_key" ON "Address"("eventId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Ticket_eventId_key" ON "Ticket"("eventId");
-
--- CreateIndex
 CREATE UNIQUE INDEX "SEOMeta_eventId_key" ON "SEOMeta"("eventId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Tags_tag_key" ON "Tags"("tag");
+CREATE UNIQUE INDEX "_EventToTags_AB_unique" ON "_EventToTags"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_EventToTags_B_index" ON "_EventToTags"("B");
 
 -- AddForeignKey
 ALTER TABLE "Address" ADD CONSTRAINT "Address_eventId_fkey" FOREIGN KEY ("eventId") REFERENCES "Event"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -111,7 +108,7 @@ ALTER TABLE "Ticket" ADD CONSTRAINT "Ticket_eventId_fkey" FOREIGN KEY ("eventId"
 ALTER TABLE "SEOMeta" ADD CONSTRAINT "SEOMeta_eventId_fkey" FOREIGN KEY ("eventId") REFERENCES "Event"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "TagsOnEvents" ADD CONSTRAINT "TagsOnEvents_eventId_fkey" FOREIGN KEY ("eventId") REFERENCES "Event"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "_EventToTags" ADD CONSTRAINT "_EventToTags_A_fkey" FOREIGN KEY ("A") REFERENCES "Event"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "TagsOnEvents" ADD CONSTRAINT "TagsOnEvents_tagId_fkey" FOREIGN KEY ("tagId") REFERENCES "Tags"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "_EventToTags" ADD CONSTRAINT "_EventToTags_B_fkey" FOREIGN KEY ("B") REFERENCES "Tags"("id") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -5,6 +5,8 @@ import Image from "next/image";
 
 import TicketList from "./_components/TicketList";
 
+import { prisma } from "@/lib/database";
+
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
@@ -60,7 +62,7 @@ export default async function EventDetails({ params }) {
                 <div className="flex items-center gap-2 text-sm">
                   <MapPinIcon className="h-6 w-6" />
                   <span>
-                    {eventData.address.street} - {eventData.address.city},{" "}
+                    {eventData.address.localName} | {eventData.address.city},{" "}
                     {eventData.address.state}
                   </span>
                 </div>
