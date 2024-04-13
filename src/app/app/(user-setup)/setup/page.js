@@ -41,6 +41,21 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { updateUserRoleAndAcceptRecievePromotions } from "./actions";
 import { useSearchParams } from "next/navigation";
 
+function validateRedirectUrl(url) {
+  // Check if URL is empty or undefined
+  if (!url) {
+    return false;
+  }
+
+  // Basic format check
+  const urlRegex = /^(http|https):\/\/[^\s]+/;
+  if (!urlRegex.test(url)) {
+    return false;
+  }
+
+  return true;
+}
+
 export default function Setup() {
   const searchParams = useSearchParams();
 
@@ -53,20 +68,22 @@ export default function Setup() {
 
   async function onSubmit(data) {
     try {
-      const { success, redirectUrl } =
-        await updateUserRoleAndAcceptRecievePromotions(
-          data,
-          session_token,
-          state
-        );
-
-      if (success) {
-        toast({
-          title: "Dados enviados com sucesso!",
-          description: "Suas informações foram atualizadas.",
+      updateUserRoleAndAcceptRecievePromotions(data, session_token, state)
+        .then(({ success, redirectUrl }) => {
+          toast({
+            title: "Dados enviados com sucesso!",
+            description: "Suas informações foram atualizadas.",
+          });
+          success &&
+            validateRedirectUrl(redirectUrl) &&
+            redirect(validateRedirectUrl(redirectUrl));
+        })
+        .catch((error) => {
+          toast({
+            title: "Erro ao enviar os dados",
+            description: "Não foi possível atualizar suas informações.",
+          });
         });
-        redirect(redirectUrl);
-      }
     } catch (error) {
       toast({
         title: "Erro ao enviar os dados",

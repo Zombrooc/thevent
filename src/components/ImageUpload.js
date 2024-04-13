@@ -31,11 +31,15 @@ export default function ImageUpload({ imageUrl, setNewImageURL }) {
         console.error("Upload failed: ", error);
       },
       () => {
-        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          setUploadedFile(downloadURL);
-          setNewImageURL(downloadURL);
-          setFileToUpload(null);
-        });
+        getDownloadURL(uploadTask.snapshot.ref)
+          .then((downloadURL) => {
+            setUploadedFile(downloadURL);
+            setNewImageURL(downloadURL);
+            setFileToUpload(null);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
       }
     );
   };

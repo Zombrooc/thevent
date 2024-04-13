@@ -10,6 +10,7 @@ export const ticketCartSlice = createSlice({
     initializeState: (state, action) => {
       const newCartState = action.payload.map((ticket) => ({
         id: ticket.id,
+        ticketName: ticket.ticketName,
         stripeID: ticket.stripeID,
         quantity: 0,
         price: ticket.ticketPrice,

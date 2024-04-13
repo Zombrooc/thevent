@@ -63,9 +63,7 @@ export async function updateUserRoleAndAcceptRecievePromotions(
     );
 
     const redirectUrl = `${continue_uri}?session_token=${updatedSessionToken}&state=${state}`;
-    console.log("chegou aqui");
     return { success: true, redirectUrl };
-    // redirect(redirectUrl);
   } catch (error) {
     console.error("Error updating user role or metadata:", error.message);
     return { success: false, message: error.message };

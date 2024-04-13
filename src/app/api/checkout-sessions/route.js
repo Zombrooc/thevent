@@ -23,19 +23,21 @@ export async function POST(req) {
     })
   );
 
+  let session;
+
   try {
     // Create Checkout Sessions from body params.
-    const session = await stripe.checkout.sessions.create({
+    session = await stripe.checkout.sessions.create({
       line_items: ticketData,
       mode: "payment",
       success_url: `${origin}/return?success=true`,
       cancel_url: `${origin}/return?canceled=true`,
     });
-
-    redirect(session.url);
   } catch (err) {
+    consol.log(err.message);
     return new Response(err.message, {
       status: err.statusCode || 500,
     });
   }
+  return Response.json({ ...session });
 }
