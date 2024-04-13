@@ -7,14 +7,25 @@ export const ticketCartSlice = createSlice({
     totalPrice: 0,
   },
   reducers: {
+    initializeState: (state, action) => {
+      const newCartState = action.payload.map((ticket) => ({
+        id: ticket.id,
+        stripeID: ticket.stripeID,
+        quantity: 0,
+        price: ticket.ticketPrice,
+      }));
+      return {
+        ...state,
+        tickets: newCartState,
+        totalPrice: Number("0"),
+      };
+    },
     addItem: (state, action) => {
       const index = state.tickets.findIndex(
         (ticket) => ticket.id === action.payload.id
       );
 
       let newCartItems = [...state.tickets];
-
-      console.log("Index: ", index);
 
       if (index !== -1) {
         newCartItems[index] = {
@@ -61,6 +72,6 @@ export const ticketCartSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { addItem, removeItem } = ticketCartSlice.actions;
+export const { addItem, removeItem, initializeState } = ticketCartSlice.actions;
 
 export default ticketCartSlice.reducer;

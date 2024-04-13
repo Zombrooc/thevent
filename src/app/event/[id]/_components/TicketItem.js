@@ -11,18 +11,21 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { MinusIcon, PlusIcon } from "@radix-ui/react-icons";
+import { createSelector } from "reselect";
 
 import {
   addItem,
   removeItem,
 } from "@/store/features/ticketCart/ticketCartSlice";
 
-export default function TicketItem({ ticket }) {
-  const ticketItem = useSelector((state) =>
-    state.ticketCart.tickets.filter((el) => el.id === ticket.id)
-  );
+const selectTicketItem = createSelector(
+  [(state) => state.ticketCart.tickets, (state, ticketId) => ticketId],
+  (tickets, ticketId) => tickets.filter((ticket) => ticket.id === ticketId)
+);
 
-  console.log(ticketItem);
+export default function TicketItem({ ticket }) {
+  const ticketItem = useSelector((state) => selectTicketItem(state, ticket.id));
+
   const dispatch = useDispatch();
 
   return (

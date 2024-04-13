@@ -58,7 +58,7 @@ export const metadata = {
 
 export default async function RootLayout({ children }) {
   return (
-    <StoreProvider>
+    <>
       <html lang="pt-BR">
         <body
           className={cn(
@@ -80,6 +80,6 @@ export default async function RootLayout({ children }) {
           {/* <Analytics /> */}
         </body>
       </html>
-    </StoreProvider>
+    </>
   );
 }

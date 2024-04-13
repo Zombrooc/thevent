@@ -79,6 +79,7 @@
     "recharts": "^2.12.2",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^3.1.0",
+    "reselect": "^5.1.0",
     "slate": "^0.102.0",
     "slate-history": "^0.100.0",
     "slate-hyperscript": "^0.100.0",

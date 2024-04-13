@@ -6,6 +6,7 @@ import Image from "next/image";
 import TicketList from "./_components/TicketList";
 
 import { prisma } from "@/lib/database";
+import TicketProvider from "@/store/features/ticketCart/TicketProvider";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -82,9 +83,9 @@ export default async function EventDetails({ params }) {
             </div>
           </div>
         </div>
-        <Suspense fallback={"Loading..."}>
+        <TicketProvider initialState={eventData.tickets}>
           <TicketList tickets={eventData.tickets} />
-        </Suspense>
+        </TicketProvider>
       </div>
     </>
   );

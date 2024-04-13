@@ -3,6 +3,7 @@
 import TicketItem from "./TicketItem";
 import ConfirmPurchase from "./ConfirmPurchase";
 import { useSelector } from "react-redux";
+import TicketProvider from "@/store/features/ticketCart/TicketProvider";
 
 export default function TicketList({ tickets }) {
   const { totalPrice } = useSelector((state) => state.ticketCart);
