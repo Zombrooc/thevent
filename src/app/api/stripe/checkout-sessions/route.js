@@ -28,13 +28,19 @@ export async function POST(req) {
   try {
     // Create Checkout Sessions from body params.
     session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card", "boleto"],
+      payment_method_options: {
+        boleto: {
+          expires_after_days: 3,
+        },
+      },
       line_items: ticketData,
       mode: "payment",
       success_url: `${origin}/return?success=true`,
       cancel_url: `${origin}/return?canceled=true`,
     });
   } catch (err) {
-    consol.log(err.message);
+    console.log(err.message);
     return new Response(err.message, {
       status: err.statusCode || 500,
     });

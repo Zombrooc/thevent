@@ -20,9 +20,13 @@ export default function ConfirmPurchase() {
   );
 
   const handleConfirmPurchase = async () => {
-    const response = await fetch("/api/checkout-sessions", {
+    const filteredTickets = await ticketCart.filter(
+      (ticket) => ticket.quantity > 0
+    );
+
+    const response = await fetch("/api/stripe/checkout-sessions", {
       method: "POST",
-      body: JSON.stringify(ticketCart),
+      body: JSON.stringify(filteredTickets),
     });
 
     response
@@ -51,22 +55,24 @@ export default function ConfirmPurchase() {
         <div className="space-y-4">
           <h3 className="text-lg font-bold">Resumo do Pedido</h3>
           <ul className="divide-y divide-gray-200">
-            {Object.values(ticketCart).map((ticket) => (
-              <li
-                key={ticket.id}
-                className="py-4 flex justify-between items-center"
-              >
-                <div>
-                  <h4 className="text-lg font-bold">{ticket.ticketName}</h4>
-                  <p className="text-sm text-gray-500">
-                    Quantidade: {ticket.quantity}
+            {Object.values(ticketCart)
+              .filter((ticket) => ticket.quantity > 0)
+              .map((ticket) => (
+                <li
+                  key={ticket.id}
+                  className="py-4 flex justify-between items-center"
+                >
+                  <div>
+                    <h4 className="text-lg font-bold">{ticket.ticketName}</h4>
+                    <p className="text-sm text-gray-500">
+                      Quantidade: {ticket.quantity}
+                    </p>
+                  </div>
+                  <p className="text-sm font-medium">
+                    R${(ticket.price * ticket.quantity).toFixed(2)}
                   </p>
-                </div>
-                <p className="text-sm font-medium">
-                  R${(ticket.price * ticket.quantity).toFixed(2)}
-                </p>
-              </li>
-            ))}
+                </li>
+              ))}
           </ul>
           <div className="pt-4 flex justify-between">
             <span className="text-lg font-medium">Total</span>
