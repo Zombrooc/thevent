@@ -3,9 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
-  directUrl = env("POSTGRES_URL_NON_POOLING")
+  provider = "postgresql"
+  url      = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  // directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
 model Event {
@@ -42,9 +42,9 @@ model Address {
 }
 
 model Ticket {
-  id                   String   @id @default(cuid())
-  isPaid               Boolean? @default(false)
-  checkInDone          Boolean? @default(false)
+  id                   String      @id @default(cuid())
+  isPaid               Boolean?    @default(false)
+  checkInDone          Boolean?    @default(false)
   qrCodeURL            String?
   eventId              String?
   endSellingAt         DateTime
@@ -54,9 +54,10 @@ model Ticket {
   ticketPrice          Float
   ticketStockAvailable Int
   stripeID             String?
-  Event                Event?   @relation(fields: [eventId], references: [id])
-  createdAt            DateTime @default(now())
-  updatedAt            DateTime @updatedAt
+  Event                Event?      @relation(fields: [eventId], references: [id])
+  createdAt            DateTime    @default(now())
+  updatedAt            DateTime    @updatedAt
+  orderItem            OrderItem[]
 }
 
 model SEOMeta {
@@ -93,3 +94,24 @@ model Tags {
 
 //   @@id([eventId, tagId])
 // }
+
+model Order {
+  id         String      @id @default(cuid())
+  userId     String
+  paymentId  String
+  total      Int
+  orderItems OrderItem[]
+  createAt   DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+}
+
+model OrderItem {
+  id        String   @id @default(cuid())
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id])
+  ticket    Ticket   @relation(fields: [ticketId], references: [id])
+  ticketId  String
+  quantity  Int
+  createAt  DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

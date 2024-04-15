@@ -1,9 +1,12 @@
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
+import { getSession } from "@auth0/nextjs-auth0";
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 export async function POST(req) {
+  const { sub } = await getSession({ req });
+
   const tickets = await req.json();
 
   const headersList = headers();
@@ -19,7 +22,11 @@ export async function POST(req) {
     tickets.map(async (ticket) => {
       const productData = await stripe.products.retrieve(ticket.stripeID);
 
-      return { price: productData.default_price, quantity: ticket.quantity };
+      return {
+        id: ticket.id,
+        price: productData.default_price,
+        quantity: ticket.quantity,
+      };
     })
   );
 
@@ -34,6 +41,13 @@ export async function POST(req) {
           expires_after_days: 3,
         },
       },
+      tax_id_collection: {
+        enabled: true,
+      },
+      phone_number_collection: {
+        enabled: true,
+      },
+      customer_creation: "always",
       line_items: ticketData,
       mode: "payment",
       success_url: `${origin}/return?success=true`,
@@ -45,5 +59,15 @@ export async function POST(req) {
       status: err.statusCode || 500,
     });
   }
+
+  const Order = await prisma.order.create({
+    data: {
+      tickets: {
+        connect: ticketData,
+      },
+      userId: sub,
+    },
+  });
+  console.log(session);
   return Response.json({ ...session });
 }
