@@ -23,7 +23,7 @@ const selectTicketItem = createSelector(
   (tickets, ticketId) => tickets.filter((ticket) => ticket.id === ticketId)
 );
 
-export default function TicketItem({ ticket }) {
+export default function TicketItem({ ticket, isAuth }) {
   const ticketItem = useSelector((state) => selectTicketItem(state, ticket.id));
 
   const dispatch = useDispatch();
@@ -35,43 +35,52 @@ export default function TicketItem({ ticket }) {
         <CardDescription>{ticket.ticketDescription}</CardDescription>
       </CardHeader>
       <CardContent>
-        <span className="font-semibold">
-          R$ <span className="text-2xl"> {ticket.ticketPrice}</span>
-        </span>
-        <div className="flex items-center justify-center space-x-2 mt-4">
-          <Button
-            variant="outline"
-            size="icon"
-            className="h-8 w-8 shrink-0 rounded-full"
-            disabled={Number(ticketItem[0]?.quantity) === 0}
-            onClick={() => dispatch(removeItem({ id: ticket.id }))}
-          >
-            <MinusIcon className="h-4 w-4" />
-            <span className="sr-only">Remover Ingresso</span>
-          </Button>
-          <div className="flex-1 text-center">
-            <div className="text-2xl font-bold tracking-tighter">
-              {ticketItem[0]?.quantity || "0"}
-            </div>
-          </div>
-          <Button
-            variant="outline"
-            size="icon"
-            className="h-8 w-8 shrink-0 rounded-full"
-            onClick={() =>
-              dispatch(
-                addItem({
-                  id: ticket.id,
-                  stripeID: ticket.stripeID,
-                  ticketPrice: ticket.ticketPrice,
-                })
-              )
-            }
-          >
-            <PlusIcon className="h-4 w-4" />
-            <span className="sr-only">Adicionar Ingresso</span>
-          </Button>
+        <div className="flex flex-col gap-1">
+          <span className="font-semibold">
+            R$ <span className="text-2xl"> {ticket.ticketPrice}</span>
+          </span>
+          <span className="text-xs">
+            Taxa de 1,5% + R$0,25 por ingresso não inclusa
+          </span>
         </div>
+        {isAuth ? (
+          <div className="flex items-center justify-center space-x-2 mt-4">
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-8 w-8 shrink-0 rounded-full"
+              disabled={Number(ticketItem[0]?.quantity) === 0}
+              onClick={() => dispatch(removeItem({ id: ticket.id }))}
+            >
+              <MinusIcon className="h-4 w-4" />
+              <span className="sr-only">Remover Ingresso</span>
+            </Button>
+            <div className="flex-1 text-center">
+              <div className="text-2xl font-bold tracking-tighter">
+                {ticketItem[0]?.quantity || "0"}
+              </div>
+            </div>
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-8 w-8 shrink-0 rounded-full"
+              onClick={() =>
+                dispatch(
+                  addItem({
+                    id: ticket.id,
+                    stripeID: ticket.stripeID,
+                    ticketPrice: ticket.ticketPrice,
+                  })
+                )
+              }
+            >
+              <PlusIcon className="h-4 w-4" />
+              <span className="sr-only">Adicionar Ingresso</span>
+            </Button>
+          </div>
+        ) : (
+          ""
+        )}
       </CardContent>
     </Card>
   );

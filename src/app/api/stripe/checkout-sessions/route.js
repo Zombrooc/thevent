@@ -1,11 +1,13 @@
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
-import { getSession } from "@auth0/nextjs-auth0";
+import { getSession, withApiAuthRequired } from "@auth0/nextjs-auth0";
+import { NextResponse } from "next/server";
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
-export async function POST(req) {
-  const { sub } = await getSession({ req });
+export const POST = withApiAuthRequired(async (req) => {
+  const res = new NextResponse();
+  const { user } = await getSession(req, res);
 
   const tickets = await req.json();
 
@@ -33,7 +35,6 @@ export async function POST(req) {
   let session;
 
   try {
-    // Create Checkout Sessions from body params.
     session = await stripe.checkout.sessions.create({
       payment_method_types: ["card", "boleto"],
       payment_method_options: {
@@ -60,14 +61,20 @@ export async function POST(req) {
     });
   }
 
-  const Order = await prisma.order.create({
-    data: {
-      tickets: {
-        connect: ticketData,
-      },
-      userId: sub,
-    },
-  });
   console.log(session);
-  return Response.json({ ...session });
-}
+  // await prisma.order.create({
+  //   data: {
+  //     // tickets: {
+  //     //   connect: ticketData,
+  //     // },
+  //     userId: sub,
+  //     orderItems: {
+  //       create: ticketData,
+  //     },
+  //     paymentId: session.id,
+  //     total: session.totalAmount,
+  //   },
+  // });
+
+  return res.json({ ...session });
+});
