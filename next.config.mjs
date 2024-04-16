@@ -30,26 +30,8 @@ const nextConfig = {
     ],
     dangerouslyAllowSVG: true,
   },
-  async headers() {
-    return [
-      {
-        source: "/api/checkout-sessions",
-        headers: [
-          {
-            key: "Access-Control-Allow-Origin",
-            value: "https://checkout.stripe.com/c/pay/*", // Set your origin
-          },
-          {
-            key: "Access-Control-Allow-Methods",
-            value: "POST, GET",
-          },
-          {
-            key: "Access-Control-Allow-Headers",
-            value: "Content-Type, Authorization",
-          },
-        ],
-      },
-    ];
+  experimental: {
+    instrumentationHook: true,
   },
 };
 
