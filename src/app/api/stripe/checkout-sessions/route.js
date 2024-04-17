@@ -1,18 +1,12 @@
-import { redirect } from "next/navigation";
 import { headers } from "next/headers";
-import { getSession, withApiAuthRequired } from "@auth0/nextjs-auth0";
-import { NextResponse } from "next/server";
+import { getSession } from "@auth0/nextjs-auth0";
+
+import prisma from "@/lib/database";
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
-<<<<<<< HEAD
 export async function POST(req) {
   const { user } = await getSession({ req });
-=======
-export const POST = withApiAuthRequired(async (req) => {
-  const res = new NextResponse();
-  const { user } = await getSession(req, res);
->>>>>>> 0b4e53ad89929980a125ead7fc3ec5d956c33f2e
 
   const { tickets, totalPrice } = await req.json();
 
@@ -44,9 +38,9 @@ export const POST = withApiAuthRequired(async (req) => {
     })
   );
 
-  console.log(ticketData);
-
   let session;
+
+  console.log(ticketData);
 
   try {
     session = await stripe.checkout.sessions.create({
@@ -75,8 +69,6 @@ export const POST = withApiAuthRequired(async (req) => {
     });
   }
 
-<<<<<<< HEAD
-  console.log(orderItems);
   const Order = await prisma.order.create({
     data: {
       orderItems: {
@@ -88,24 +80,6 @@ export const POST = withApiAuthRequired(async (req) => {
       paymentStatus: session.payment_status,
     },
   });
+
   return Response.json({ ...session });
 }
-=======
-  console.log(session);
-  // await prisma.order.create({
-  //   data: {
-  //     // tickets: {
-  //     //   connect: ticketData,
-  //     // },
-  //     userId: sub,
-  //     orderItems: {
-  //       create: ticketData,
-  //     },
-  //     paymentId: session.id,
-  //     total: session.totalAmount,
-  //   },
-  // });
-
-  return res.json({ ...session });
-});
->>>>>>> 0b4e53ad89929980a125ead7fc3ec5d956c33f2e
