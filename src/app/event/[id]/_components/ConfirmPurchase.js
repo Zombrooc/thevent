@@ -20,6 +20,7 @@ export default function ConfirmPurchase() {
   );
 
   const handleConfirmPurchase = async () => {
+    console.log("Handle Confirm Purchase");
     const filteredTickets = await ticketCart.filter(
       (ticket) => ticket.quantity > 0
     );
@@ -34,14 +35,18 @@ export default function ConfirmPurchase() {
       body: JSON.stringify(purchaseData),
     });
 
-    response
-      .json()
-      .then((session) => {
-        router.push(session.url);
-      })
-      .catch((err) => {
-        console.error("Erro ao obter URL de checkout", err);
-      });
+    if (response.status === 401 && response.statusText === "Unauthorized") {
+      router.push("/api/auth/login");
+    } else {
+      response
+        .json()
+        .then((session) => {
+          router.push(session.url);
+        })
+        .catch((err) => {
+          console.error("Erro ao obter URL de checkout", err);
+        });
+    }
   };
 
   return (

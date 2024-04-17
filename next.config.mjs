@@ -30,7 +30,10 @@ const nextConfig = {
     ],
     dangerouslyAllowSVG: true,
   },
+<<<<<<< HEAD
 
+=======
+>>>>>>> 0b4e53ad89929980a125ead7fc3ec5d956c33f2e
   experimental: {
     instrumentationHook: true,
   },
