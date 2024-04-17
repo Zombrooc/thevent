@@ -43,9 +43,6 @@ model Address {
 
 model Ticket {
   id                   String      @id @default(cuid())
-  isPaid               Boolean?    @default(false)
-  checkInDone          Boolean?    @default(false)
-  qrCodeURL            String?
   eventId              String?
   endSellingAt         DateTime
   startSellingAt       DateTime
@@ -96,22 +93,25 @@ model Tags {
 // }
 
 model Order {
-  id         String      @id @default(cuid())
-  userId     String
-  paymentId  String
-  total      Int
-  orderItems OrderItem[]
-  createAt   DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
+  id            String      @id @default(cuid())
+  userId        String
+  paymentId     String
+  total         Int
+  paymentStatus String
+  orderItems    OrderItem[]
+  createAt      DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 }
 
 model OrderItem {
-  id        String   @id @default(cuid())
-  orderId   String
-  order     Order    @relation(fields: [orderId], references: [id])
-  ticket    Ticket   @relation(fields: [ticketId], references: [id])
-  ticketId  String
-  quantity  Int
-  createAt  DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(cuid())
+  order       Order    @relation(fields: [orderId], references: [id])
+  orderId     String
+  ticket      Ticket   @relation(fields: [ticketId], references: [id])
+  ticketId    String
+  quantity    Int
+  checkInDone Boolean? @default(false)
+  qrCodeURL   String?
+  createAt    DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

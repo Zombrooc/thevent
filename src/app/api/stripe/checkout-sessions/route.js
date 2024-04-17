@@ -5,9 +5,9 @@ import { getSession } from "@auth0/nextjs-auth0";
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 export async function POST(req) {
-  const { sub } = await getSession({ req });
+  const { user } = await getSession({ req });
 
-  const tickets = await req.json();
+  const { tickets, totalPrice } = await req.json();
 
   const headersList = headers();
   const origin = headersList.get("origin");
@@ -18,17 +18,26 @@ export async function POST(req) {
     });
   }
 
+  let orderItems = [];
+
   const ticketData = await Promise.all(
     tickets.map(async (ticket) => {
       const productData = await stripe.products.retrieve(ticket.stripeID);
 
+      await orderItems.push({
+        ticket: {
+          connect: { id: ticket.id },
+        },
+        quantity: ticket.quantity,
+      });
       return {
-        id: ticket.id,
         price: productData.default_price,
         quantity: ticket.quantity,
       };
     })
   );
+
+  console.log(ticketData);
 
   let session;
 
@@ -54,20 +63,23 @@ export async function POST(req) {
       cancel_url: `${origin}/return?canceled=true`,
     });
   } catch (err) {
-    console.log(err.message);
+    console.log("Error: ", err.message);
     return new Response(err.message, {
       status: err.statusCode || 500,
     });
   }
 
+  console.log(orderItems);
   const Order = await prisma.order.create({
     data: {
-      tickets: {
-        connect: ticketData,
+      orderItems: {
+        create: orderItems,
       },
-      userId: sub,
+      userId: user.sub,
+      total: totalPrice,
+      paymentId: session.id,
+      paymentStatus: session.payment_status,
     },
   });
-  console.log(session);
   return Response.json({ ...session });
 }

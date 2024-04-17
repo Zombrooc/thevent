@@ -26,23 +26,20 @@ export const createEventAction = async (
           startEndingSelling,
         } = ticket;
 
-        console.log(startEndingSelling);
-
-        // Agora, createStripeProduct deve ser resolvido corretamente antes de prosseguir
         const stripeID = await createStripeProduct(ticketName, ticketPrice);
 
-        const qrCodeURL = await generateQR(
-          JSON.stringify({
-            userId: user.sub,
-          })
-        );
+        // const qrCodeURL = await generateQR(
+        //   JSON.stringify({
+        //     userId: user.sub,
+        //   })
+        // );
 
         return {
           ticketName,
           ticketPrice: parseFloat(ticketPrice),
           ticketDescription,
           ticketStockAvailable: Number(ticketStockAvailable),
-          qrCodeURL: qrCodeURL.toString(),
+          // qrCodeURL: qrCodeURL.toString(),
           stripeID: stripeID,
           startSellingAt: startEndingSelling.from,
           endSellingAt: startEndingSelling.to,

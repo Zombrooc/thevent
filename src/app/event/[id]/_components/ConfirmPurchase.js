@@ -24,9 +24,14 @@ export default function ConfirmPurchase() {
       (ticket) => ticket.quantity > 0
     );
 
+    const purchaseData = {
+      tickets: filteredTickets,
+      totalPrice,
+    };
+
     const response = await fetch("/api/stripe/checkout-sessions", {
       method: "POST",
-      body: JSON.stringify(filteredTickets),
+      body: JSON.stringify(purchaseData),
     });
 
     response
