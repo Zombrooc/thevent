@@ -1,7 +1,7 @@
 import { headers } from "next/headers";
 import { getSession } from "@auth0/nextjs-auth0";
 
-import prisma from "@/lib/database";
+import { prisma } from "@/lib/database";
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
@@ -69,7 +69,7 @@ export async function POST(req) {
     });
   }
 
-  const Order = await prisma.order.create({
+  const order = await prisma.order.create({
     data: {
       orderItems: {
         create: orderItems,
@@ -80,6 +80,8 @@ export async function POST(req) {
       paymentStatus: session.payment_status,
     },
   });
+
+  console.log("Order: ", order);
 
   return Response.json({ ...session });
 }
