@@ -59,6 +59,9 @@ export async function POST(req) {
       customer_creation: "always",
       line_items: ticketData,
       mode: "payment",
+      metadata: {
+        userId: user.sub,
+      },
       success_url: `${origin}/return?success=true`,
       cancel_url: `${origin}/return?canceled=true`,
     });
@@ -68,7 +71,7 @@ export async function POST(req) {
       status: err.statusCode || 500,
     });
   }
-
+  console.log(session);
   const order = await prisma.order.create({
     data: {
       orderItems: {
@@ -76,7 +79,7 @@ export async function POST(req) {
       },
       userId: user.sub,
       total: totalPrice,
-      paymentId: session.id,
+      paymentId: session.payment_intent,
       paymentStatus: session.payment_status,
     },
   });

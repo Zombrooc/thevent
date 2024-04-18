@@ -3,8 +3,8 @@ import Stripe from "stripe";
 import { prisma } from "./database";
 
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
-  apiVersion: "2023-10-16",
-  httpClient: Stripe.createFetchHttpClient(),
+  apiVersion: "2020-03-02",
+  // httpClient: Stripe.createFetchHttpClient(),
 });
 
 export const createStripeProduct = async (ticketName, ticketPrice) => {
