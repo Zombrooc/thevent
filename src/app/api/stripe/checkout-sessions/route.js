@@ -79,7 +79,7 @@ export async function POST(req) {
       },
       userId: user.sub,
       total: totalPrice,
-      paymentId: session.payment_intent,
+      paymentId: session.id,
       paymentStatus: session.payment_status,
     },
   });

@@ -56,18 +56,17 @@ async function handleStripeWebhook(body) {
   const type = body.type;
 
   // console.log everything above REMOVE BEFORE PRODUCTION.
-  // console.log("mode --->", mode);
-  // console.log("webhook type --->", type);
-  // console.log("id --->", id);
-  // console.log("obj --->", obj);
-  // console.log("stat --->", stat);
-  // console.log("status --->", status);
-  // console.log("payment_intent --->", payment_intent);
-  // console.log("subId --->", subId);
-  // console.log("stripeInvoiceId --->", stripeInvoiceId);
-  // console.log("user --->", user);
-  // console.log("meta --->", meta);
-  // console.log("stripe_invoice --->", stripe_invoice);
+  console.log("mode --->", mode);
+  console.log("webhook type --->", type);
+  console.log("id --->", id);
+  console.log("obj --->", obj);
+  console.log("stat --->", stat);
+  console.log("status --->", status);
+  console.log("payment_intent --->", payment_intent);
+  console.log("subId --->", subId);
+  console.log("stripeInvoiceId --->", stripeInvoiceId);
+  console.log("meta --->", meta);
+  console.log("stripe_invoice --->", stripe_invoice);
 
   // Switch on the event type.
   switch (type) {
@@ -80,13 +79,19 @@ async function handleStripeWebhook(body) {
       );
 
     case "checkout.session.completed":
-      console.log("Checkout completed");
-      return new Response(
-        JSON.stringify({ message: "Payments marked completed!" }),
-        {
-          status: 200,
-        }
-      );
+      await prisma.Order.update({
+        where: {
+          paymentId: id,
+        },
+        data: {
+          paymentStatus: status,
+          paymentId: payment_intent,
+        },
+      });
+
+      return new Response(JSON.stringify({ message: "Payment completed!" }), {
+        status: 200,
+      });
 
     case "checkout.session.async_payment_succeeded":
       console.log("Async payment succeeded");
@@ -98,26 +103,26 @@ async function handleStripeWebhook(body) {
           status: 200,
         }
       );
-    case "charge.succeeded":
-      console.log("Charge succeeded");
-      console.log("status --->", status);
-      console.log("payment_intent --->", payment_intent);
+    // case "charge.succeeded":
+    //   console.log("Charge succeeded");
+    //   console.log("status --->", status);
+    //   console.log("payment_intent --->", payment_intent);
 
-      const order = await prisma.order.update({
-        where: {
-          paymentId: payment_intent,
-          userId: userId,
-        },
-        data: {
-          paymentStatus: status,
-        },
-      });
+    //   const order = await prisma.order.update({
+    //     where: {
+    //       paymentId: payment_intent,
+    //       userId: userId,
+    //     },
+    //     data: {
+    //       paymentStatus: status,
+    //     },
+    //   });
 
-      console.log(order);
+    //   console.log(order);
 
-      return new Response(JSON.stringify({ message: "Payment completed!" }), {
-        status: 200,
-      });
+    //   return new Response(JSON.stringify({ message: "Payment completed!" }), {
+    //     status: 200,
+    //   });
     // case "charge.refunded":
     //   return new Response(JSON.stringify({ message: "Refund completed!" }), {
     //     status: 200,
