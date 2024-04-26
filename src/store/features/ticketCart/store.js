@@ -1,11 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
-import ticketCartSlice from "./features/ticketCart/ticketCartSlice";
+import ticketCartSlice from "./ticketCartSlice";
 
 export const makeStore = () => {
   return configureStore({
-    // reducer: {
-    //   ticketCart: ticketCartSlice,
-    // },
     reducer: { ticketCart: ticketCartSlice },
   });
 };

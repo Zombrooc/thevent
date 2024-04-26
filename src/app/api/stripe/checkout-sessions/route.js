@@ -8,7 +8,7 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 export async function POST(req) {
   const { user } = await getSession({ req });
 
-  const { tickets, totalPrice } = await req.json();
+  const { tickets, totalPrice, event } = await req.json();
 
   const headersList = headers();
   const origin = headersList.get("origin");
@@ -76,6 +76,9 @@ export async function POST(req) {
     data: {
       orderItems: {
         create: orderItems,
+      },
+      event: {
+        connect: { id: event },
       },
       userId: user.sub,
       total: totalPrice,

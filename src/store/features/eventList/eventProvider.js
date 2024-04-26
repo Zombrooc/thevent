@@ -1,12 +1,12 @@
 "use client";
 
-import { makeStore } from "@/store/features/ticketCart/store";
+import { makeStore } from "@/store/features/eventList/store";
 import { useRef } from "react";
 import { Provider } from "react-redux";
 
-import { initializeState } from "@/store/features/ticketCart/ticketCartSlice";
+import { initializeState } from "@/store/features/eventList/eventListSlice";
 
-export default function TicketProvider({ initialState, children }) {
+export default function EventListProvider({ initialState, children }) {
   const storeRef = useRef();
   if (!storeRef.current) {
     storeRef.current = makeStore();

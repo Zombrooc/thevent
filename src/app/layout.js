@@ -5,7 +5,6 @@ import "./globals.css";
 
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/toaster";
-import StoreProvider from "@/store/StoreProvider";
 
 const fontSans = FontSans({
   subsets: ["latin"],

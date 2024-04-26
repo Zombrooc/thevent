@@ -10,17 +10,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { redirect, useRouter } from "next/navigation";
+import { redirect, usePathname, useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 
 export default function ConfirmPurchase() {
+  const pathname = usePathname();
   const router = useRouter();
   const { tickets: ticketCart, totalPrice } = useSelector(
     (state) => state.ticketCart
   );
 
   const handleConfirmPurchase = async () => {
-    console.log("Handle Confirm Purchase");
     const filteredTickets = await ticketCart.filter(
       (ticket) => ticket.quantity > 0
     );
@@ -28,6 +28,7 @@ export default function ConfirmPurchase() {
     const purchaseData = {
       tickets: filteredTickets,
       totalPrice,
+      event: pathname.split("/")[2],
     };
 
     const response = await fetch("/api/stripe/checkout-sessions", {

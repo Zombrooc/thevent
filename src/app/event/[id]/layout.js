@@ -90,5 +90,3 @@ export default async function Layout({ children }) {
     </>
   );
 }
-
-// https://redux.js.org/introduction/examples#shopping-cart

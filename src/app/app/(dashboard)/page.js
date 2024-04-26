@@ -55,29 +55,45 @@ import { Input } from "@/components/ui/input";
 import { Suspense, useEffect, useState } from "react";
 import { useUser } from "@auth0/nextjs-auth0/client";
 
-import { getUserEvents } from "./actions/getEvents";
+import { getEventData } from "./actions/getEventData";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setCurrentEvent,
+  setCurrentEventData,
+} from "@/store/features/eventList/eventListSlice";
 
 export default function Dashboard() {
-  const [currentEvent, setCurrentEvent] = useState();
-  const [events, setEvents] = useState([]);
+  // const [currentEvent, setCurrentEvent] = useState();
+  // const [events, setEvents] = useState([]);
+
+  const eventList = useSelector((state) => state.eventList.events);
+  const currentEvent = useSelector((state) => state.eventList.currentEvent);
+  const currentEventData = useSelector(
+    (state) => state.eventList.currentEventData
+  );
+
+  const dispatch = useDispatch();
 
   const { user, error, isLoading } = useUser();
 
   useEffect(() => {
     if (!user || isLoading) return;
-    const retrieveEvents = async (user) => {
-      const userEvents = await getUserEvents(user);
-      console.log(userEvents);
-      setCurrentEvent(userEvents[0]);
-      setEvents(userEvents);
+  }, [user, isLoading]);
+
+  useEffect(() => {
+    const getCurrentEventData = async () => {
+      const currentEventData = await getEventData(currentEvent.id);
+
+      dispatch(setCurrentEventData(currentEventData));
     };
 
-    retrieveEvents(user);
-  }, [user]);
+    getCurrentEventData();
+  }, [currentEvent]);
 
   const handleCurrentEventChange = (event) => {
-    setCurrentEvent(event);
+    console.log("Handle Current Event Change", event);
+    dispatch(setCurrentEvent(event));
   };
 
   return (
@@ -93,11 +109,11 @@ export default function Dashboard() {
               <span className="sr-only">Acme Inc</span>
             </Link>
 
-            {events && currentEvent ? (
+            {eventList && currentEvent ? (
               <EventSwitcher
                 currentEvent={currentEvent}
                 handleCurrentEventChange={handleCurrentEventChange}
-                events={events}
+                events={eventList}
               />
             ) : (
               <Skeleton className="w-[200px] h-10" />
@@ -193,26 +209,30 @@ export default function Dashboard() {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Total Revenue
+                  Total Vendido
                 </CardTitle>
                 <DollarSign className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">$45,231.89</div>
-                <p className="text-xs text-muted-foreground">
+                <div className="text-2xl font-bold">
+                  R$ {currentEventData?.totalRevenue}
+                </div>
+                {/* <p className="text-xs text-muted-foreground">
                   +20.1% from last month
-                </p>
+                </p> */}
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Subscriptions
+                  Média de vendas
                 </CardTitle>
                 <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">+2350</div>
+                <div className="text-2xl font-bold">
+                  +{currentEventData?.averageRevenue.toFixed(2)}
+                </div>
                 <p className="text-xs text-muted-foreground">
                   +180.1% from last month
                 </p>
@@ -220,14 +240,18 @@ export default function Dashboard() {
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Sales</CardTitle>
+                <CardTitle className="text-sm font-medium">
+                  Qtd. de Vendas
+                 </CardTitle>
                 <CreditCard className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">+12,234</div>
-                <p className="text-xs text-muted-foreground">
+                <div className="text-2xl font-bold">
+                  +{currentEventData?.orderCount}
+                </div>
+                {/* <p className="text-xs text-muted-foreground">
                   +19% from last month
-                </p>
+                </p> */}
               </CardContent>
             </Card>
             <Card>

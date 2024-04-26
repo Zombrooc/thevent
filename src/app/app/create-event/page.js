@@ -173,7 +173,6 @@ export default function CreateEvent() {
       tags: [],
     },
   });
-  console.log(user);
 
   const { setValue } = form;
 
