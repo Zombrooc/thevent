@@ -30,13 +30,13 @@ export const getEventData = async (id) => {
     },
   });
 
-  const byWeekAndMonth = await prisma.order.aggregate({
-    where: {
-      date: {
-        gte: moment(new Date()),
-      },
-    },
-  });
+  // const byWeekAndMonth = await prisma.order.aggregate({
+  //   where: {
+  //     date: {
+  //       gte: moment(new Date()),
+  //     },
+  //   },
+  // });
 
   return {
     orderCount: orderCount,
