@@ -142,13 +142,22 @@ export default function Navbar({ user }) {
               </div>
               <div className="absolute inset-y-0 right-0 flex items-center sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                 {pathname !== "/app/create-event" && (
-                  <Link
-                    href="/app/create-event"
-                    variant="outline"
-                    className="flex justify-center items-center text-sm font-semibold leading-6 mr-2 bg-primary text-white py-2 px-4 rounded-md "
-                  >
-                    Criar evento
-                  </Link>
+                  <>
+                    <Link
+                      href="/app/"
+                      variant="outline"
+                      className="flex justify-center items-center text-sm font-semibold leading-6 mr-2 bg-primary text-white py-2 px-4 rounded-md "
+                    >
+                      Dashboard
+                    </Link>
+                    <Link
+                      href="/app/create-event"
+                      variant="outline"
+                      className="flex justify-center items-center text-sm font-semibold leading-6 mr-2 bg-primary text-white py-2 px-4 rounded-md "
+                    >
+                      Criar evento
+                    </Link>
+                  </>
                 )}
                 <DropdownMenu>
                   <DropdownMenuTrigger className="relative rounded-full p-1 text-gray-700 hover:bg-primary hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
