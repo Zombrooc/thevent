@@ -43,15 +43,21 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useDispatch, useSelector } from "react-redux";
+import { setCurrentEvent } from "@/store/features/eventList/eventListSlice";
 
-export default function EventSwitcher({
-  className,
-  currentEvent,
-  events,
-  handleCurrentEventChange,
-}) {
+export default function EventSwitcher({ eventList, className }) {
   const [open, setOpen] = useState(false);
   const [showNewEventDialog, setShowNewEventDialog] = useState(false);
+
+  // const events = useSelector((state) => state.eventList.events);
+  const currentEvent = useSelector((state) => state.eventList.currentEvent);
+
+  const dispatch = useDispatch();
+
+  const handleCurrentEventChange = (event) => {
+    dispatch(setCurrentEvent(event));
+  };
 
   return (
     <Dialog open={showNewEventDialog} onOpenChange={setShowNewEventDialog}>
@@ -73,7 +79,7 @@ export default function EventSwitcher({
               <AvatarFallback>SC</AvatarFallback>
             </Avatar> */}
             {currentEvent?.eventName !== undefined
-              ? currentEvent?.eventName
+              ? `${currentEvent?.eventName.slice(0, 17)}...`
               : "Nenhum evento criado"}
             <CaretSortIcon className="ml-auto h-4 w-4 shrink-0 opacity-50" />
           </Button>
@@ -84,7 +90,7 @@ export default function EventSwitcher({
               <CommandInput placeholder="Procurar evento..." />
               <CommandEmpty>Nenhum evento encontrado</CommandEmpty>
               <CommandGroup heading="Meu Eventos">
-                {events.map((event, index) => {
+                {eventList.map((event, index) => {
                   return (
                     <CommandItem
                       key={event.id}
@@ -94,19 +100,11 @@ export default function EventSwitcher({
                       }}
                       className="text-sm"
                     >
-                      {/* <Avatar className="mr-2 h-5 w-5">
-                        <AvatarImage
-                          src={`https://avatar.vercel.sh/${team.value}.png`}
-                          alt={team.label}
-                          className="grayscale"
-                        />
-                        <AvatarFallback>SC</AvatarFallback>
-                      </Avatar> */}
                       {event.eventName}
                       <CheckIcon
                         className={cn(
                           "ml-auto h-4 w-4",
-                          currentEvent.eventName === events[index].eventName
+                          currentEvent.eventName === eventList[index].eventName
                             ? "opacity-100"
                             : "opacity-0"
                         )}
@@ -146,7 +144,7 @@ export default function EventSwitcher({
           <div className="space-y-4 py-2 pb-4">
             <div className="space-y-2">
               <Label htmlFor="name">Team name</Label>
-              <Input id="name" placeholder="Acme Inc." />
+              <Input id="name" placeholder="Thevent." />
             </div>
             <div className="space-y-2">
               <Label htmlFor="plan">Subscription plan</Label>

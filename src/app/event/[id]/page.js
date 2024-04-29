@@ -1,3 +1,5 @@
+import { cache } from "react";
+
 import { Badge } from "@/components/ui/badge";
 import moment from "moment";
 import Image from "next/image";
@@ -6,13 +8,10 @@ import TicketList from "./_components/TicketList";
 
 import { prisma } from "@/lib/database";
 import TicketProvider from "@/store/features/ticketCart/TicketProvider";
-import { CalendarDaysIcon, CalendarX2Icon, MapPinnedIcon } from "lucide-react";
+import { CalendarDaysIcon, MapPinnedIcon } from "lucide-react";
+import { constructMetadata } from "@/lib/constructMetadata";
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
-
-const getEventData = async (id) => {
+const getEventData = cache(async (id) => {
   const eventData = await prisma.event.findUnique({
     where: { id },
     include: {
@@ -23,10 +22,18 @@ const getEventData = async (id) => {
   });
 
   return eventData;
-};
+});
+
+export async function generateMetadata({ params }) {
+  const event = await getEventData(params.id);
+  const title = `${event.eventName} - ${process.env.NEXT_PUBLIC_APP_NAME}`;
+  const description = event.eventDescription;
+
+  return constructMetadata(title, description);
+}
 
 export default async function EventDetails({ params }) {
-  const eventData = await getEventData(params?.id);
+  const eventData = await getEventData(params.id);
 
   return (
     <>
