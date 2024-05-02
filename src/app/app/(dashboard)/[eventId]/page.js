@@ -81,7 +81,7 @@ export default function EventDetail({ params }) {
             {(currentEventData && (
               <>
                 <div className="text-2xl font-bold">
-                  +{currentEventData?.averageRevenue.toFixed(2)}
+                  +{currentEventData?.averageRevenue}
                 </div>
                 <p className="text-xs text-muted-foreground">
                   +180.1% from last month
