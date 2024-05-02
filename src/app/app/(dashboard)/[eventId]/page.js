@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Card,
   CardContent,
@@ -26,8 +28,26 @@ import {
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-export default async function EventDetail({ params }) {
-  const currentEventData = await getEventData(params?.id);
+import moment from "moment";
+import { useEffect, useState } from "react";
+import { getAuth0AccessToken } from "@/lib/getAuth0AccessToken";
+import { usePathname } from "next/navigation";
+export default function EventDetail({ params }) {
+  console.log(params);
+  const [currentEventData, setCurrentEventData] = useState(null);
+
+  const pathnmame = usePathname();
+  // const currentEventData = await getEventData(params?.id);
+
+  useEffect(() => {
+    const getData = async () => {
+      const data = await getEventData(params?.eventId);
+      setCurrentEventData(data);
+    };
+
+    getData();
+  }, []);
+
   return (
     <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
       <div className="flex items-center">
@@ -106,134 +126,82 @@ export default async function EventDetail({ params }) {
         </Card>
       </div>
       <div className="grid gap-4 md:gap-8 lg:grid-cols-2 xl:grid-cols-3">
-        <Card className="xl:col-span-2" x-chunk="dashboard-01-chunk-4">
+        <Card className="xl:col-span-full">
           <CardHeader className="flex flex-row items-center">
             <div className="grid gap-2">
-              <CardTitle>Transactions</CardTitle>
+              <CardTitle>Transações</CardTitle>
               <CardDescription>
-                Recent transactions from your store.
+                Transações recentes do seu evento.
               </CardDescription>
             </div>
             <Button asChild size="sm" className="ml-auto gap-1">
-              <Link href="#">
-                View All
+              <Link href={`${pathnmame}/orders`}>
+                Ver Todos
                 <ArrowUpRight className="h-4 w-4" />
               </Link>
             </Button>
           </CardHeader>
           <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Customer</TableHead>
-                  <TableHead className="hidden xl:table-column">Type</TableHead>
-                  <TableHead className="hidden xl:table-column">
-                    Status
-                  </TableHead>
-                  <TableHead className="hidden xl:table-column">Date</TableHead>
-                  <TableHead className="text-right">Amount</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                <TableRow>
-                  <TableCell>
-                    <div className="font-medium">Liam Johnson</div>
-                    <div className="hidden text-sm text-muted-foreground md:inline">
-                      liam@example.com
-                    </div>
-                  </TableCell>
-                  <TableCell className="hidden xl:table-column">Sale</TableCell>
-                  <TableCell className="hidden xl:table-column">
-                    <Badge className="text-xs" variant="outline">
-                      Approved
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="hidden md:table-cell lg:hidden xl:table-column">
-                    2023-06-23
-                  </TableCell>
-                  <TableCell className="text-right">$250.00</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>
-                    <div className="font-medium">Olivia Smith</div>
-                    <div className="hidden text-sm text-muted-foreground md:inline">
-                      olivia@example.com
-                    </div>
-                  </TableCell>
-                  <TableCell className="hidden xl:table-column">
-                    Refund
-                  </TableCell>
-                  <TableCell className="hidden xl:table-column">
-                    <Badge className="text-xs" variant="outline">
-                      Declined
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="hidden md:table-cell lg:hidden xl:table-column">
-                    2023-06-24
-                  </TableCell>
-                  <TableCell className="text-right">$150.00</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>
-                    <div className="font-medium">Noah Williams</div>
-                    <div className="hidden text-sm text-muted-foreground md:inline">
-                      noah@example.com
-                    </div>
-                  </TableCell>
-                  <TableCell className="hidden xl:table-column">
-                    Subscription
-                  </TableCell>
-                  <TableCell className="hidden xl:table-column">
-                    <Badge className="text-xs" variant="outline">
-                      Approved
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="hidden md:table-cell lg:hidden xl:table-column">
-                    2023-06-25
-                  </TableCell>
-                  <TableCell className="text-right">$350.00</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>
-                    <div className="font-medium">Emma Brown</div>
-                    <div className="hidden text-sm text-muted-foreground md:inline">
-                      emma@example.com
-                    </div>
-                  </TableCell>
-                  <TableCell className="hidden xl:table-column">Sale</TableCell>
-                  <TableCell className="hidden xl:table-column">
-                    <Badge className="text-xs" variant="outline">
-                      Approved
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="hidden md:table-cell lg:hidden xl:table-column">
-                    2023-06-26
-                  </TableCell>
-                  <TableCell className="text-right">$450.00</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>
-                    <div className="font-medium">Liam Johnson</div>
-                    <div className="hidden text-sm text-muted-foreground md:inline">
-                      liam@example.com
-                    </div>
-                  </TableCell>
-                  <TableCell className="hidden xl:table-column">Sale</TableCell>
-                  <TableCell className="hidden xl:table-column">
-                    <Badge className="text-xs" variant="outline">
-                      Approved
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="hidden md:table-cell lg:hidden xl:table-column">
-                    2023-06-27
-                  </TableCell>
-                  <TableCell className="text-right">$550.00</TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
+            {(currentEventData?.orders && (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Cliente</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead className="hidden md:inline">Data</TableHead>
+                    <TableHead className="text-right">Valor</TableHead>
+                  </TableRow>
+                </TableHeader>
+
+                <TableBody>
+                  {currentEventData?.orders.map((order) => (
+                    <TableRow key={order.id}>
+                      <TableCell>
+                        <div className="font-medium">{order?.user?.name}</div>
+                        <div className="hidden text-sm text-muted-foreground md:inline">
+                          {order?.user?.email}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        {order.paymentStatus === "paid" && (
+                          <Badge
+                            className="text-xs bg-primary text-white"
+                            variant="outline"
+                          >
+                            Aprovado
+                          </Badge>
+                        )}
+
+                        {order.paymentStatus === "unpaid" && (
+                          <Badge
+                            className="text-xs bg-yellow-400"
+                            variant="outline"
+                          >
+                            Pendente
+                          </Badge>
+                        )}
+
+                        {order.paymentStatus !== "unpaid" &&
+                          order.paymentStatus !== "paid" && (
+                            <Badge className="text-xs " variant="destructive">
+                              Error
+                            </Badge>
+                          )}
+                      </TableCell>
+                      <TableCell className="hidden md:inline">
+                        {moment(order.createdAt).format("YYYY-MM-DD")}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        R$ {order.total}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )) || <Skeleton className="col-span-full h-[250px]" />}
           </CardContent>
         </Card>
-        <Card x-chunk="dashboard-01-chunk-5">
+        {/* <Card x-chunk="dashboard-01-chunk-5">
           <CardHeader>
             <CardTitle>Recent Sales</CardTitle>
           </CardHeader>
@@ -306,7 +274,7 @@ export default async function EventDetail({ params }) {
               <div className="ml-auto font-medium">+$39.00</div>
             </div>
           </CardContent>
-        </Card>
+        </Card> */}
       </div>
     </main>
   );
