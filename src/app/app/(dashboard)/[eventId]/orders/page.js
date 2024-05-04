@@ -74,11 +74,11 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { UserNav } from "@/components/user-nav";
+// import { UserNav } from "@/components/user-nav";
 import { getSession } from "@auth0/nextjs-auth0";
-import { getOrdersByEvent } from "../../actions/getOrdersByEvent";
+import { getOrdersByEvent } from "../../_actions/getOrdersByEvent";
 import moment from "moment";
-import { getOrderDetails } from "../../actions/getOrderDetails";
+import { getOrderDetails } from "../../_actions/getOrderDetails";
 
 export default function Orders({ params }) {
   const [orders, setOrders] = useState(null);
@@ -87,8 +87,6 @@ export default function Orders({ params }) {
   useEffect(() => {
     const getData = async () => {
       const orders = await getOrdersByEvent(params?.eventId);
-
-      console.log(orders);
 
       setOrders(orders);
     };
@@ -221,9 +219,33 @@ export default function Orders({ params }) {
                           </TableCell>
 
                           <TableCell className="hidden sm:table-cell">
-                            <Badge className="text-xs" variant="secondary">
-                              {order.paymentStatus}
-                            </Badge>
+                            {order.paymentStatus === "paid" && (
+                              <Badge
+                                className="text-xs bg-primary text-white"
+                                variant="outline"
+                              >
+                                Aprovado
+                              </Badge>
+                            )}
+
+                            {order.paymentStatus === "unpaid" && (
+                              <Badge
+                                className="text-xs bg-yellow-400"
+                                variant="outline"
+                              >
+                                Pendente
+                              </Badge>
+                            )}
+
+                            {order.paymentStatus !== "unpaid" &&
+                              order.paymentStatus !== "paid" && (
+                                <Badge
+                                  className="text-xs "
+                                  variant="destructive"
+                                >
+                                  Error
+                                </Badge>
+                              )}
                           </TableCell>
                           <TableCell className="hidden md:table-cell">
                             {moment(order.createdAt).format("DD.MM.YYYY")}

@@ -4,17 +4,21 @@ import { revalidatePath } from "next/cache";
 
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/database";
-import { generateQR } from "@/lib/qrCode";
+// import { generateQR } from "@/lib/qrCode";
 import { createStripeProduct } from "@/lib/stripe";
+import { auth } from "@clerk/nextjs/server";
 
-export const createEventAction = async (
+export async function createEventAction(
   bannerImage,
   eventData,
   ticketsData,
   tagsData,
-  addressData,
-  user
-) => {
+  addressData
+) {
+  const { userId } = auth();
+
+  console.log("chegou aqui 2");
+  console.log("chegou aqui 3");
   try {
     const sanitizedTickets = await Promise.all(
       ticketsData.map(async (ticket) => {
@@ -52,7 +56,7 @@ export const createEventAction = async (
         bannerImage,
         eventName: eventData.eventName,
         eventDescription: eventData.eventDescription,
-        organizer: user.sub,
+        organizer: userId,
         eventDateStart: eventData.eventDateStartEnd.from,
         eventDateEnd: eventData.eventDateStartEnd.to,
         address: {
@@ -73,4 +77,4 @@ export const createEventAction = async (
   } catch (error) {
     throw error;
   }
-};
+}

@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/database";
-import { getAuth0UserDetails } from "@/lib/getAuth0UserDetails";
+import { getUserDetails } from "@/lib/getUserDetails";
 
 export const getOrdersByEvent = async (eventId) => {
   const orders = await prisma.order.findMany({
@@ -12,7 +12,14 @@ export const getOrdersByEvent = async (eventId) => {
 
   const updatedOrderWithUserDetails = await Promise.all(
     orders.map(async (order) => {
-      const userDetails = await getAuth0UserDetails(order.userId);
+      const userDetails = await getUserDetails(order?.userId);
+
+      // const user = {
+      //   id: userDetails.id,
+      //   name: `${userDetails.firstName} ${userDetails.lastName}`,
+      //   email: userDetails.emailAddresses[0].emailAddress,
+      //   imageUrl: userDetails.imageUrl,
+      // };
 
       return {
         ...order,

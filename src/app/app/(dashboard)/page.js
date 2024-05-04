@@ -353,17 +353,19 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { UserNav } from "@/components/user-nav";
-import { getSession } from "@auth0/nextjs-auth0";
-import { getEventList } from "./actions/getEventList";
+// import { UserNav } from "@/components/user-nav";
+// import { getSession } from "@auth0/nextjs-auth0";
+import { getEventList } from "./_actions/getEventList";
 import moment from "moment";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import Navbar from "@/components/Navbar";
+import { currentUser } from "@clerk/nextjs/server";
+import { SignedIn, UserButton } from "@clerk/nextjs";
 
 export default async function Dashboard() {
-  const session = await getSession();
+  const user = await currentUser();
 
-  const eventList = await getEventList(session);
+  const eventList = await getEventList(user);
 
   return (
     <div className="sm:gap-4 space-x-4 space-y-3">
@@ -419,7 +421,9 @@ export default async function Dashboard() {
             className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
           />
         </div>
-        <UserNav user={session?.user} />
+        <SignedIn>
+          <UserButton className="text-sm font-semibold leading-6 text-gray-800 ml-5 hover:bg-primary hover:text-white py-2 px-4 rounded-md" />
+        </SignedIn>
       </header>
 
       {eventList.length > 0 ? (

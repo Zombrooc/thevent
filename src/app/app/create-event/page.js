@@ -143,10 +143,10 @@ const FormSchema = z.object({
     .min(1, "Pelo menos uma tag é necessária."),
 });
 
-import { useUser } from "@auth0/nextjs-auth0/client";
-export default function CreateEvent() {
-  const { user, error, isLoading } = useUser();
+// import { useUser } from "@auth0/nextjs-auth0/client";
+// import { useUser } from "@clerk/nextjs";
 
+export default function CreateEvent() {
   const [bannerImage, setBannerImage] = useState(null);
 
   const setNewBannerImage = (bannerImage) => setBannerImage(bannerImage);
@@ -173,6 +173,7 @@ export default function CreateEvent() {
       tags: [],
     },
   });
+  // const { isLoaded, isSignedIn, user } = useUser();
 
   const { setValue } = form;
 
@@ -207,20 +208,25 @@ export default function CreateEvent() {
       };
     });
 
-    await createEventAction(
+    console.log(eventData, ticketsData, tagsData, address);
+
+    const res = await createEventAction(
       bannerImage,
       eventData,
       ticketsData,
       tagsData,
-      address,
-      user
+      address
     );
+
+    console.log(res);
 
     form.reset();
   }
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>{error.message}</div>;
+  // if (!isLoaded || !isSignedIn) {
+  //   return null;
+  // }
+
   return (
     <>
       <Form {...form}>

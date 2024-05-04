@@ -1,5 +1,3 @@
-import { getSession } from "@auth0/nextjs-auth0";
-
 import Navbar from "@/components/Navbar";
 
 // export const metadata = {
@@ -47,11 +45,9 @@ import Navbar from "@/components/Navbar";
 // };
 
 export default async function HomeLayout({ children }) {
-  const session = await getSession();
-
   return (
     <>
-      <Navbar user={session?.user} />
+      <Navbar />
       {children}
     </>
   );

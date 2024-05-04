@@ -1,12 +1,17 @@
 import { headers } from "next/headers";
-import { getSession } from "@auth0/nextjs-auth0";
+// import { getSession } from "@auth0/nextjs-auth0";
 
 import { prisma } from "@/lib/database";
+import { currentUser } from "@clerk/nextjs/server";
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 export async function POST(req) {
-  const { user } = await getSession({ req });
+  const user = await currentUser();
+
+  if (!user) {
+    return new Response("Unauthorized", { status: 401 });
+  }
 
   const { tickets, totalPrice, event } = await req.json();
 
@@ -39,8 +44,6 @@ export async function POST(req) {
   );
 
   let session;
-
-  console.log(ticketData);
 
   try {
     session = await stripe.checkout.sessions.create({
@@ -80,7 +83,7 @@ export async function POST(req) {
       event: {
         connect: { id: event },
       },
-      userId: user.sub,
+      userId: user.id,
       total: totalPrice,
       paymentId: session.id,
       paymentStatus: session.payment_status,

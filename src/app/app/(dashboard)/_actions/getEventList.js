@@ -2,10 +2,10 @@
 
 import { prisma } from "@/lib/database";
 
-export const getEventList = async ({ sub }) => {
+export const getEventList = async ({ id }) => {
   const events = await prisma.Event.findMany({
     where: {
-      organizer: sub,
+      organizer: id,
     },
   });
 

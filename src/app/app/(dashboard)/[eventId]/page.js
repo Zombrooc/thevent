@@ -15,7 +15,7 @@ import {
   DollarSign,
   Users,
 } from "lucide-react";
-import { getEventData } from "../actions/getEventData";
+import { getEventData } from "../_actions/getEventData";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Table,
@@ -30,22 +30,21 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import moment from "moment";
 import { useEffect, useState } from "react";
-import { getAuth0AccessToken } from "@/lib/getAuth0AccessToken";
 import { usePathname } from "next/navigation";
 export default function EventDetail({ params }) {
-  console.log(params);
   const [currentEventData, setCurrentEventData] = useState(null);
 
   const pathnmame = usePathname();
   // const currentEventData = await getEventData(params?.id);
 
   useEffect(() => {
-    const getData = async () => {
+    const getData = async (params) => {
       const data = await getEventData(params?.eventId);
+
       setCurrentEventData(data);
     };
 
-    getData();
+    getData(params);
   }, []);
 
   return (
@@ -126,7 +125,7 @@ export default function EventDetail({ params }) {
         </Card>
       </div>
       <div className="grid gap-4 md:gap-8 lg:grid-cols-2 xl:grid-cols-3">
-        <Card className="xl:col-span-full">
+        <Card className="col-span-full">
           <CardHeader className="flex flex-row items-center">
             <div className="grid gap-2">
               <CardTitle>Transações</CardTitle>

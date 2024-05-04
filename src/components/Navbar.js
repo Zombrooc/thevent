@@ -1,5 +1,12 @@
 "use client";
 
+import {
+  ClerkProvider,
+  SignInButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
+} from "@clerk/nextjs";
 import Link from "next/link";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
@@ -11,11 +18,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { UserNav } from "./user-nav";
-
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
+import User from "./User";
 
 const navigation = [
   { name: "Inicío", href: "/" },
@@ -51,7 +57,7 @@ const navigation = [
   },
 ];
 
-export default function Navbar({ user }) {
+export default function Navbar() {
   const pathname = usePathname();
 
   const isCurrentPage = (href) => pathname === href;
@@ -172,7 +178,7 @@ export default function Navbar({ user }) {
                   </DropdownMenuContent>
                 </DropdownMenu>
                 {/* Profile dropdown */}
-                {user !== undefined ? (
+                {/* {user !== undefined ? (
                   <div className="ml-3">
                     <UserNav user={user} />
                   </div>
@@ -183,7 +189,18 @@ export default function Navbar({ user }) {
                   >
                     Entrar <span aria-hidden="true">&rarr;</span>
                   </Link>
-                )}
+                )} */}
+                {/* <SignedOut>
+                  <SignInButton className="text-sm font-semibold leading-6 text-gray-800 ml-5 hover:bg-primary hover:text-white py-2 px-4 rounded-md">
+                    {" "}
+                    Entrar
+                  </SignInButton>
+                </SignedOut>
+                <SignedIn>
+                  <UserButton className="text-sm font-semibold leading-6 text-gray-800 ml-5 hover:bg-primary hover:text-white py-2 px-4 rounded-md" />
+                </SignedIn> */}
+                <User />
+
                 {/* <Menu as="div" className="relative ml-3">
                   <div>
                     <Menu.Button className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">

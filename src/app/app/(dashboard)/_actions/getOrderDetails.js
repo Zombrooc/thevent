@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/database";
-import { getAuth0UserDetails } from "@/lib/getAuth0UserDetails";
+import { getUserDetails } from "@/lib/getUserDetails";
 
 export async function getOrderDetails(orderId) {
   const orderDetails = await prisma.order.findUnique({
@@ -12,7 +12,7 @@ export async function getOrderDetails(orderId) {
     },
   });
 
-  const userDetails = await getAuth0UserDetails(orderDetails.userId);
+  const userDetails = await getUserDetails(orderDetails.userId);
   const updatedOrderDetails = {
     ...orderDetails,
     user: {

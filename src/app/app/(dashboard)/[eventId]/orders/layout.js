@@ -29,8 +29,6 @@ import {
   PaginationItem,
 } from "@/components/ui/pagination";
 import { Separator } from "@/components/ui/separator";
-import moment from "moment";
-import { getOrderDetails } from "@/app/app/(dashboard)/actions/getOrderDetails";
 
 export default async function OrdersLayout({ children }) {
   return (

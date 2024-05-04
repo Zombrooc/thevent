@@ -1,8 +1,7 @@
 import EventListProvider from "@/store/features/eventList/eventProvider";
-import { getSession } from "@auth0/nextjs-auth0";
+// import { getSession } from "@auth0/nextjs-auth0";
 
 import { prisma } from "@/lib/database";
-import { UserNav } from "@/components/user-nav";
 import Link from "next/link";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -73,9 +72,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import { ClerkLoaded, ClerkLoading, SignedIn, UserButton } from "@clerk/nextjs";
+import User from "@/components/User";
 export default async function DashboardLayout({ children, params }) {
-  const session = await getSession();
-
   return (
     // <EventListProvider initialState={eventList}>
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
@@ -233,7 +232,7 @@ export default async function DashboardLayout({ children, params }) {
               className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
             />
           </div>
-          <UserNav user={session?.user} />
+          <User />
         </header>
         {children}
       </div>
