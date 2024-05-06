@@ -2,6 +2,8 @@ import {
   ClerkLoaded,
   ClerkLoading,
   SignInButton,
+  SignUp,
+  SignUpButton,
   SignedIn,
   SignedOut,
   UserButton,
@@ -21,9 +23,11 @@ export default function User() {
       </SignedIn>
       <SignedOut>
         <SignInButton className="text-sm font-semibold leading-6 text-gray-800 ml-5 hover:bg-primary hover:text-white py-2 px-4 rounded-md">
-          {" "}
           Entrar
         </SignInButton>
+        <SignUpButton className="text-sm font-semibold leading-6 text-white ml-5 bg-primary  py-2 px-4 rounded-md">
+          Registrar
+        </SignUpButton>
       </SignedOut>
     </>
   );
