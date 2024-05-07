@@ -21,6 +21,10 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import { createStripeCustomer } from "@/lib/stripe";
+import { createUserPrivateMetadata } from "@/lib/createUserPrivateMetadata";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 
 export default function SignUpPage() {
   const { isLoaded, signUp, setActive } = useSignUp();
@@ -28,14 +32,17 @@ export default function SignUpPage() {
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [verifying, setVerifying] = useState(true);
+  const [verifying, setVerifying] = useState(false);
   const [code, setCode] = useState("");
+  const [error, setError] = useState(null);
   const router = useRouter();
 
   // This function will handle the user submitting their email and password
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!isLoaded) return;
+    if (!isLoaded || !signUp) return;
+
+    setError(undefined);
 
     // Start the sign-up process using the email and password provided
     try {
@@ -56,14 +63,17 @@ export default function SignUpPage() {
     } catch (err) {
       // This can return an array of errors.
       // See https://clerk.com/docs/custom-flows/error-handling to learn about error handling
-      console.error("Error:", JSON.stringify(err, null, 2));
+      console.error("Error: ", JSON.stringify(err, null, 2));
+      setError(err);
     }
   };
 
   // This function will handle the user submitting a code for verification
   const handleVerify = async (e) => {
     e.preventDefault();
-    if (!isLoaded) return;
+    if (!isLoaded || !signUp) return;
+
+    setError(undefined);
 
     try {
       // Submit the code that the user provides to attempt verification
@@ -80,6 +90,15 @@ export default function SignUpPage() {
       // Check the status to see if it is complete
       // If complete, the user has been created -- set the session active
       if (completeSignUp.status === "complete") {
+        const fullName = `${firstName} ${lastName}`;
+        const { id } = await createStripeCustomer(emailAddress, fullName);
+
+        await createUserPrivateMetadata(
+          completeSignUp.createdUserId,
+          (stripeId = id)
+        );
+
+        console.log(completeSignUp);
         await setActive({ session: completeSignUp.createdSessionId });
         // Redirect the user to a post sign-up route
         router.push("/");
@@ -88,6 +107,14 @@ export default function SignUpPage() {
       // This can return an array of errors.
       // See https://clerk.com/docs/custom-flows/error-handling to learn about error handling
       console.error("Error:", JSON.stringify(err, null, 2));
+
+      err.errors.map((error) => {
+        switch (error.code) {
+          case "session_exists":
+            router.push("/");
+        }
+        return;
+      });
     }
   };
 
@@ -97,42 +124,35 @@ export default function SignUpPage() {
       <div className="w-full h-screen flex items-center justify-center">
         <Card>
           <CardHeader>
-            <CardTitle className="text-xl">Sign Up</CardTitle>
+            <CardTitle className="text-xl">Valide seu e-mail</CardTitle>
             <CardDescription>
-              Enter your information to create an account
+              Enter your information to create an account Digite aqui o código
+              enviado para o e-mail {emailAddress}.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {/* <form onSubmit={handleVerify}> */}
-            <div className="space-y-2">
-              <InputOTP
-                maxLength={6}
-                value={code}
-                onChange={(code) => setCode(code)}
-              >
-                <InputOTPGroup>
-                  <InputOTPSlot index={0} />
-                  <InputOTPSlot index={1} />
-                  <InputOTPSlot index={2} />
-                  <InputOTPSlot index={3} />
-                  <InputOTPSlot index={4} />
-                  <InputOTPSlot index={5} />
-                </InputOTPGroup>
-              </InputOTP>
-              <div className="text-center text-sm">
-                {code === "" ? (
-                  <>Enter your one-time password.</>
-                ) : (
-                  <>You entered: {code}</>
-                )}
+            <form onSubmit={handleVerify}>
+              <div className="space-y-2 flex justify-center items-center pb-5">
+                <InputOTP
+                  maxLength={6}
+                  value={code}
+                  onChange={(code) => setCode(code)}
+                >
+                  <InputOTPGroup>
+                    <InputOTPSlot index={0} />
+                    <InputOTPSlot index={1} />
+                    <InputOTPSlot index={2} />
+                    <InputOTPSlot index={3} />
+                    <InputOTPSlot index={4} />
+                    <InputOTPSlot index={5} />
+                  </InputOTPGroup>
+                </InputOTP>
               </div>
-            </div>
 
-            <br />
-            <Button type="submit" className="w-full">
-              Confirmar código
-            </Button>
-            {/* </form> */}
+              <Button type="submit" className="w-full mt-3">
+                Validar e-mail
+              </Button>
+            </form>
           </CardContent>
         </Card>
       </div>
@@ -142,12 +162,28 @@ export default function SignUpPage() {
   // Display the initial sign-up form to capture the email and password
   return (
     <div className="w-full h-screen flex items-center justify-center">
-      <Card className="mx-auto max-w-sm">
+      <Card className="mx-auto max-w-md">
         <CardHeader>
-          <CardTitle className="text-xl">Sign Up</CardTitle>
+          <CardTitle className="text-xl">Cadastre-se</CardTitle>
           <CardDescription>
-            Enter your information to create an account
+            Informe alguns dados para poder criar uma conta.
           </CardDescription>
+          {error?.errors[0].code === "form_identifier_exists" ? (
+            <Alert>
+              <ExclamationTriangleIcon className="h-4 w-4" />
+
+              <AlertTitle>Esse usuário já existe!</AlertTitle>
+              <AlertDescription>
+                O usuário com esse e-mail já existe.
+                <br />
+                <Link href="auth/sign-in" className="underline text-primary">
+                  {" "}
+                  Faça login
+                </Link>{" "}
+                ou tente outro.
+              </AlertDescription>
+            </Alert>
+          ) : null}
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit}>
@@ -157,7 +193,7 @@ export default function SignUpPage() {
                   <Label htmlFor="firstName">Nome</Label>
                   <Input
                     id="firstName"
-                    placeholder="MaFulanox"
+                    placeholder="Fulano"
                     required
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
@@ -196,17 +232,17 @@ export default function SignUpPage() {
                 />
               </div>
               <Button type="submit" className="w-full">
-                Create an account
+                Criar conta
               </Button>
-              <Button variant="outline" className="w-full">
+              {/* <Button variant="outline" className="w-full">
                 Sign up with GitHub
-              </Button>
+              </Button> */}
             </div>
           </form>
           <div className="mt-4 text-center text-sm">
-            Already have an account?{" "}
-            <Link href="#" className="underline">
-              Sign in
+            Já tem uma conta?{" "}
+            <Link href="/auth/sign-in" className="underline">
+              Entre agora.
             </Link>
           </div>
         </CardContent>

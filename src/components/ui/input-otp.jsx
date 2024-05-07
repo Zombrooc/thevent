@@ -2,14 +2,15 @@
 
 import * as React from "react"
 import { DashIcon } from "@radix-ui/react-icons"
-import { OTPInput } from "input-otp";
+import { OTPInput, OTPInputContext } from "input-otp"
 
 import { cn } from "@/lib/utils"
 
-const InputOTP = React.forwardRef(({ className, ...props }, ref) => (
+const InputOTP = React.forwardRef(({ className, containerClassName, ...props }, ref) => (
   <OTPInput
     ref={ref}
-    containerClassName={cn("flex items-center gap-2", className)}
+    containerClassName={cn("flex items-center gap-2 has-[:disabled]:opacity-50", containerClassName)}
+    className={cn("disabled:cursor-not-allowed", className)}
     {...props} />
 ))
 InputOTP.displayName = "InputOTP"
@@ -19,7 +20,10 @@ const InputOTPGroup = React.forwardRef(({ className, ...props }, ref) => (
 ))
 InputOTPGroup.displayName = "InputOTPGroup"
 
-const InputOTPSlot = React.forwardRef(({ char, hasFakeCaret, isActive, className, ...props }, ref) => {
+const InputOTPSlot = React.forwardRef(({ index, className, ...props }, ref) => {
+  const inputOTPContext = React.useContext(OTPInputContext)
+  const { char, hasFakeCaret, isActive } = inputOTPContext.slots[index]
+
   return (
     (<div
       ref={ref}
@@ -33,7 +37,7 @@ const InputOTPSlot = React.forwardRef(({ char, hasFakeCaret, isActive, className
       {hasFakeCaret && (
         <div
           className="pointer-events-none absolute inset-0 flex items-center justify-center">
-          <div className="animate-caret-blink h-4 w-px bg-foreground duration-1000" />
+          <div className="h-4 w-px animate-caret-blink bg-foreground duration-1000" />
         </div>
       )}
     </div>)
