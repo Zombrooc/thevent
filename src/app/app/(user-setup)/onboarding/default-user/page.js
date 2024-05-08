@@ -1,3 +1,5 @@
+"use client";
+
 // import { useForm } from "react-hook-form";
 
 // import { Label } from "@/components/ui/label";
@@ -9,7 +11,8 @@
 //   SelectItem,
 //   SelectValue,
 // } from "@/components/ui/select";
-import * as React from "react";
+import { useEffect } from "react";
+import { onboardingFlow } from "./_actions/onboardingFlow";
 
 // import { Button } from "@/components/ui/button";
 // import {
@@ -69,10 +72,6 @@ import * as React from "react";
 // import { useSearchParams } from "next/navigation";
 // import Link from "next/link";
 // import { cn } from "@/lib/utils";
-import { createStripeCustomer } from "@/lib/stripe";
-import { auth, clerkClient, currentUser } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
-import Redirect from "./_components/redirect";
 
 function validateRedirectUrl(url) {
   // Check if URL is empty or undefined
@@ -89,48 +88,14 @@ function validateRedirectUrl(url) {
   return true;
 }
 
-const onboardingFlow = async (sessionClaims) => {
-  const customer = await createStripeCustomer(
-    sessionClaims.email,
-    sessionClaims.fullName
-  );
-
-  await clerkClient.users.updateUserMetadata(sessionClaims.sub, {
-    privateMetadata: {
-      stripeId: customer.id,
-    },
-  });
-
-  return { success: true };
-
-  //   try {
-  //     const { data } = await axios.post(
-  //       `${process.env.NEXT_PUBLIC_API_URL}/api/v1/onboarding/flow`,
-  //       {
-  //         session_token,
-  //         state,
-  //       }
-  //     );
-  //     return data;
-  //   } catch (error) {
-  //     return error;
-  //   }
-
-  // const customer = await createStripeCustomer()
-};
-
-export default async function Setup() {
-  const { sessionClaims } = auth();
-  const onBoargingDone = onboardingFlow(sessionClaims);
-
-  if (onBoargingDone.success) {
-    const handleRedirect = async () => {
-      "use server";
-      redirect("/");
+export default function Setup() {
+  useEffect(() => {
+    const execOnBoargingFlow = async () => {
+      await onboardingFlow();
     };
 
-    handleRedirect();
-  }
+    execOnBoargingFlow();
+  }, []);
 
   return (
     <h1> Implementando dados... </h1>
