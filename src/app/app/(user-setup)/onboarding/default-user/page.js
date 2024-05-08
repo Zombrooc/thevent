@@ -124,7 +124,12 @@ export default async function Setup() {
   const onBoargingDone = onboardingFlow(sessionClaims);
 
   if (onBoargingDone.success) {
-    return <Redirect />;
+    const handleRedirect = async () => {
+      "use server";
+      redirect("/");
+    };
+
+    handleRedirect();
   }
 
   return (
