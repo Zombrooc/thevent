@@ -24,7 +24,11 @@ export const getStripeCustomerByEmail = async (email) => {
 
 export const createStripeCustomer = async (email, fullName) => {
   const customer = await getStripeCustomerByEmail(email);
-  if (customer) return customer;
+  if (customer) {
+    console.log(customer);
+
+    return customer;
+  }
 
   const createdCustomer = await stripe.customers.create({
     email: email,
@@ -33,3 +37,22 @@ export const createStripeCustomer = async (email, fullName) => {
 
   return createdCustomer;
 };
+
+// export const createStripeAccount = async (email, fullName) => {
+
+// const account = await stripe.accounts.create({
+//   country: 'BR',
+//   email,
+//   controller: {
+//     fees: {
+//       payer: 'application',
+//     },
+//     losses: {
+//       payments: 'application',
+//     },
+//     stripe_dashboard: {
+//       type: 'express',
+//     },
+//   },
+// });
+// }
