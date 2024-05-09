@@ -15,6 +15,8 @@ const isProtectedRoute = createRouteMatcher([
 ]);
 
 export default clerkMiddleware((auth, req) => {
+  const pathname = req.nextUrl.pathname;
+
   if (isProtectedRoute(req)) auth().protect();
 
   const { userId, sessionClaims } = auth();
@@ -28,6 +30,15 @@ export default clerkMiddleware((auth, req) => {
   // Redirect them to the /onboading route to complete onboarding
   if (userId && !sessionClaims?.metadata?.onboardingComplete) {
     const onboardingUrl = new URL("/app/onboarding/default-user/", req.url);
+    return NextResponse.redirect(onboardingUrl);
+  }
+
+  if (
+    userId &&
+    !sessionClaims?.metadata?.isEventProducer &&
+    pathname.includes("/app")
+  ) {
+    const onboardingUrl = new URL("/app/onboarding/events-producer/", req.url);
     return NextResponse.redirect(onboardingUrl);
   }
 
