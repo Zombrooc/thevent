@@ -7,16 +7,20 @@ import { currentUser } from "@clerk/nextjs/server";
 import { stripe } from "@/lib/stripe";
 
 export async function POST(req) {
-  try {
-    const account = await stripe.accounts.create({});
+  const user = await currentUser();
 
-    res.json({ account: account.id });
+  try {
+    const account = await stripe.accounts.create({
+      country: "BR",
+      email: user.email,
+    });
+
+    return Response.json({ account: account.id });
   } catch (error) {
     console.error(
       "An error occurred when calling the Stripe API to create an account:",
       error
     );
-    res.status(500);
-    res.json({ error: error.message });
+    return Response.json({ error: error.message });
   }
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { redirect } from "next/navigation";
 import React, { useState } from "react";
 
 export default function EventsProducerOnBoarding() {
@@ -18,7 +19,7 @@ export default function EventsProducerOnBoarding() {
         {!connectedAccountId && <h2>Get ready for take off</h2>}
         {!connectedAccountId && (
           <p>
-            Thevent is the world's leading air travel platform: join our team of
+            Thevent is the worlds leading air travel platform: join our team of
             pilots to help people travel faster.
           </p>
         )}
@@ -27,7 +28,7 @@ export default function EventsProducerOnBoarding() {
         )}
         {connectedAccountId && (
           <p>
-            Matt's Mats partners with Stripe to help you receive payments while
+            Matts Mats partners with Stripe to help you receive payments while
             keeping your personal and bank details secure.
           </p>
         )}
@@ -36,7 +37,7 @@ export default function EventsProducerOnBoarding() {
             onClick={async () => {
               setAccountCreatePending(true);
               setError(false);
-              fetch("/api/stripe/account", {
+              fetch("/api/stripe/accounts", {
                 method: "POST",
               })
                 .then((response) => response.json())
@@ -78,7 +79,7 @@ export default function EventsProducerOnBoarding() {
 
                   const { url, error } = json;
                   if (url) {
-                    window.location.href = url;
+                    redirect(url);
                   }
 
                   if (error) {
