@@ -25,8 +25,6 @@ export const getStripeCustomerByEmail = async (email) => {
 export const createStripeCustomer = async (email, fullName) => {
   const customer = await getStripeCustomerByEmail(email);
   if (customer) {
-    console.log(customer);
-
     return customer;
   }
 

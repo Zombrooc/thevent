@@ -1,19 +1,33 @@
 import { headers } from "next/headers";
 // import { getSession } from "@auth0/nextjs-auth0";
 
-import { prisma } from "@/lib/database";
-import { currentUser } from "@clerk/nextjs/server";
+import { auth, clerkClient } from "@clerk/nextjs/server";
 
 import { stripe } from "@/lib/stripe";
 
 export async function POST(req) {
-  const user = await currentUser();
+  const { sessionClaims } = auth();
 
+  const user = await clerkClient.users.getUser(sessionClaims.sub);
+
+  let account;
   try {
-    const account = await stripe.accounts.create({
-      country: "BR",
-      email: user.email,
-    });
+    if (user?.privateMetadata?.stripeConnectedAccount) {
+      account = await stripe.accounts.retrieve(
+        user?.privateMetadata?.stripeConnectedAccount
+      );
+    } else {
+      account = await stripe.accounts.create({
+        country: "BR",
+        email: user.email,
+      });
+
+      await clerkClient.users.updateUserMetadata(sessionClaims.sub, {
+        privateMetadata: {
+          stripeConnectedAccount: account.id,
+        },
+      });
+    }
 
     return Response.json({ account: account.id });
   } catch (error) {

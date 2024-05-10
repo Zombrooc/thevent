@@ -4,7 +4,7 @@ import { headers } from "next/headers";
 import { prisma } from "@/lib/database";
 import { currentUser } from "@clerk/nextjs/server";
 
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+import stripe from "@/lib/stripe";
 
 export async function POST(req) {
   const user = await currentUser();

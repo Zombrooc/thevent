@@ -7,13 +7,13 @@ import { redirect } from "next/navigation";
 
 export const onboardingFlow = async () => {
   const { sessionClaims } = auth();
-  try {
-    const customer = await createStripeCustomer(
-      sessionClaims.email,
-      sessionClaims.fullName
-    );
 
-    await clerkClient.users.updateUserMetadata(sessionClaims.sub, {
+  const { sub, email, fullName } = sessionClaims;
+
+  try {
+    const customer = await createStripeCustomer(email, fullName);
+
+    await clerkClient.users.updateUserMetadata(sub, {
       privateMetadata: {
         stripeId: customer.id,
       },
