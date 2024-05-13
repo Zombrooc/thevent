@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/database";
 // import { generateQR } from "@/lib/qrCode";
 import { createStripeProduct } from "@/lib/stripe";
-import { auth } from "@clerk/nextjs/server";
+import { auth, clerkClient } from "@clerk/nextjs/server";
 
 export async function createEventAction(
   bannerImage,
@@ -17,8 +17,6 @@ export async function createEventAction(
 ) {
   const { userId } = auth();
 
-  console.log("chegou aqui 2");
-  console.log("chegou aqui 3");
   try {
     const sanitizedTickets = await Promise.all(
       ticketsData.map(async (ticket) => {
@@ -30,7 +28,15 @@ export async function createEventAction(
           startEndingSelling,
         } = ticket;
 
-        const stripeID = await createStripeProduct(ticketName, ticketPrice);
+        const updatedTicketPrice =
+          parseFloat(ticketPrice) +
+          (ticketPrice * (Number(process.env.APP_FEE_PERCENT) / 100) +
+            parseFloat(process.env.APP_FEE_FIXED));
+
+        const stripeID = await createStripeProduct(
+          ticketName,
+          updatedTicketPrice
+        );
 
         // const qrCodeURL = await generateQR(
         //   JSON.stringify({
@@ -40,9 +46,10 @@ export async function createEventAction(
 
         return {
           ticketName,
-          ticketPrice: parseFloat(ticketPrice),
+          ticketPrice: parseFloat(updatedTicketPrice),
           ticketDescription,
           ticketStockAvailable: Number(ticketStockAvailable),
+          ticketSubTotalPrice: parseFloat(ticketPrice),
           // qrCodeURL: qrCodeURL.toString(),
           stripeID: stripeID,
           startSellingAt: startEndingSelling.from,

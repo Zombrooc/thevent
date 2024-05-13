@@ -1,8 +1,9 @@
+"use client";
 import React, { useState } from "react";
-import { useRouter } from "next/router";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function Refresh({ params }) {
+  const router = useRouter();
   const connectedAccountId = params?.id;
   const [accountLinkCreatePending, setAccountLinkCreatePending] =
     useState(false);
@@ -27,7 +28,7 @@ export default function Refresh({ params }) {
           const { url, error } = json;
 
           if (url) {
-            redirect(url);
+            router.push(url);
           }
 
           if (error) {

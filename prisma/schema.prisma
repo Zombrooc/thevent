@@ -50,6 +50,7 @@ model Ticket {
   ticketDescription    String
   ticketName           String
   ticketPrice          Float
+  ticketSubTotalPrice  Float       @default(0)
   ticketStockAvailable Int
   stripeID             String?
   Event                Event?      @relation(fields: [eventId], references: [id])

@@ -2,15 +2,26 @@ import { headers } from "next/headers";
 // import { getSession } from "@auth0/nextjs-auth0";
 
 import { stripe } from "@/lib/stripe";
+import { auth, clerkClient } from "@clerk/nextjs/server";
 
 export async function POST(req) {
   const { account } = await req.json();
+  const { sessionClaims } = await auth();
   try {
     const accountLink = await stripe.accountLinks.create({
       account: account,
       refresh_url: `${process.env.NEXT_PUBLIC_APP_URL}/app/onboarding/events-producer/refresh/${account}`,
       return_url: `${process.env.NEXT_PUBLIC_APP_URL}/app/onboarding/events-producer/return/${account}`,
       type: "account_onboarding",
+    });
+
+    await clerkClient.users.updateUserMetadata(sessionClaims.sub, {
+      privateMetadata: {
+        stripeAccountLink: accountLink.url,
+      },
+      publicMetadata: {
+        eventProducerOnBoardingFlowCompleted: true,
+      },
     });
 
     return Response.json({

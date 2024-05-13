@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { useRouter } from "next/navigation";
+import { setIsEventProducer } from "./_actions/setIsEventProducer";
 
 export default function EventsProducerOnBoarding() {
   const router = useRouter();
@@ -43,11 +44,12 @@ export default function EventsProducerOnBoarding() {
             }),
           })
             .then((response) => response.json())
-            .then((json) => {
+            .then(async (json) => {
               setAccountLinkCreatePending(false);
 
               const { url, error } = json;
               if (url) {
+                setIsEventProducer(url);
                 router.push(url);
               }
 

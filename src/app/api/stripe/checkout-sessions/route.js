@@ -2,18 +2,28 @@ import { headers } from "next/headers";
 // import { getSession } from "@auth0/nextjs-auth0";
 
 import { prisma } from "@/lib/database";
-import { currentUser } from "@clerk/nextjs/server";
+import { auth, clerkClient, currentUser } from "@clerk/nextjs/server";
 
-import stripe from "@/lib/stripe";
+import { stripe } from "@/lib/stripe";
 
 export async function POST(req) {
-  const user = await currentUser();
+  const { tickets, totalPrice, event } = await req.json();
 
-  if (!user) {
+  const { userId, sessionClaims } = auth();
+
+  const customer = await clerkClient.users.getUser(userId);
+
+  const user = await clerkClient.users.getUser(sessionClaims.sub);
+
+  const eventDetails = await prisma.event.findUnique({ where: { id: event } });
+
+  const eventProducerDetails = await clerkClient.users.getUser(
+    eventDetails.organizer
+  );
+
+  if (!user || !sessionClaims) {
     return new Response("Unauthorized", { status: 401 });
   }
-
-  const { tickets, totalPrice, event } = await req.json();
 
   const headersList = headers();
   const origin = headersList.get("origin");
@@ -26,9 +36,26 @@ export async function POST(req) {
 
   let orderItems = [];
 
+  let appFee = 0;
+
   const ticketData = await Promise.all(
     tickets.map(async (ticket) => {
       const productData = await stripe.products.retrieve(ticket.stripeID);
+      const { unit_amount } = await stripe.prices.retrieve(
+        productData.default_price
+      );
+
+      const ticketDetails = await prisma.ticket.findUnique({
+        where: { id: ticket.id },
+      });
+
+      const ticketFee =
+        (ticketDetails.ticketSubTotalPrice *
+          (Number(process.env.APP_FEE_PERCENT) / 100) +
+          parseFloat(process.env.APP_FEE_FIXED)) *
+        ticket.quantity;
+
+      appFee += ticketFee;
 
       await orderItems.push({
         ticket: {
@@ -43,6 +70,8 @@ export async function POST(req) {
     })
   );
 
+  console.log(appFee);
+
   let session;
 
   try {
@@ -53,18 +82,21 @@ export async function POST(req) {
           expires_after_days: 3,
         },
       },
-      tax_id_collection: {
-        enabled: true,
-      },
       phone_number_collection: {
         enabled: true,
       },
-      customer_creation: "always",
+
       line_items: ticketData,
       mode: "payment",
-      metadata: {
-        userId: user.sub,
+
+      payment_intent_data: {
+        application_fee_amount: appFee * 100,
+        transfer_data: {
+          destination:
+            eventProducerDetails.privateMetadata.stripeConnectedAccount,
+        },
       },
+      customer: customer.privateMetadata.stripeId,
       success_url: `${origin}/return?success=true`,
       cancel_url: `${origin}/return?canceled=true`,
     });

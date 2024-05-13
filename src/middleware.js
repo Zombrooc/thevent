@@ -35,7 +35,7 @@ export default clerkMiddleware((auth, req) => {
 
   if (
     userId &&
-    !sessionClaims?.metadata?.isEventProducer &&
+    !sessionClaims?.metadata?.eventProducerOnBoardingFlowCompleted &&
     pathname.includes("/app")
   ) {
     const onboardingUrl = new URL("/app/onboarding/events-producer/", req.url);

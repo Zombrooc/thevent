@@ -13,7 +13,7 @@ import {
 import { redirect, usePathname, useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 
-export default function ConfirmPurchase() {
+export default function ConfirmPurchase({ params }) {
   const pathname = usePathname();
   const router = useRouter();
   const { tickets: ticketCart, totalPrice } = useSelector(
