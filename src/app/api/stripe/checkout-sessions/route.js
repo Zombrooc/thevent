@@ -41,19 +41,15 @@ export async function POST(req) {
   const ticketData = await Promise.all(
     tickets.map(async (ticket) => {
       const productData = await stripe.products.retrieve(ticket.stripeID);
-      const { unit_amount } = await stripe.prices.retrieve(
-        productData.default_price
-      );
 
       const ticketDetails = await prisma.ticket.findUnique({
         where: { id: ticket.id },
       });
 
       const ticketFee =
-        (ticketDetails.ticketSubTotalPrice *
-          (Number(process.env.APP_FEE_PERCENT) / 100) +
-          parseFloat(process.env.APP_FEE_FIXED)) *
-        ticket.quantity;
+        (parseFloat(ticketDetails.ticketPrice) -
+          parseFloat(ticketDetails.ticketSubTotalPrice)) *
+        Number(ticket.quantity);
 
       appFee += ticketFee;
 

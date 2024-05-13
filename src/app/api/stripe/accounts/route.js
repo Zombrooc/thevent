@@ -20,6 +20,7 @@ export async function POST(req) {
       account = await stripe.accounts.create({
         country: "BR",
         email: user.email,
+        type: "express",
       });
 
       await clerkClient.users.updateUserMetadata(sessionClaims.sub, {

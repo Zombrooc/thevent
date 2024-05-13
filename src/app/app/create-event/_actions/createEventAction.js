@@ -30,19 +30,12 @@ export async function createEventAction(
 
         const updatedTicketPrice =
           parseFloat(ticketPrice) +
-          (ticketPrice * (Number(process.env.APP_FEE_PERCENT) / 100) +
-            parseFloat(process.env.APP_FEE_FIXED));
+          parseFloat(ticketPrice) * process.env.APP_FEE_PERCENT;
 
         const stripeID = await createStripeProduct(
           ticketName,
           updatedTicketPrice
         );
-
-        // const qrCodeURL = await generateQR(
-        //   JSON.stringify({
-        //     userId: user.sub,
-        //   })
-        // );
 
         return {
           ticketName,
