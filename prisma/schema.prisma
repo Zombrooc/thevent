@@ -23,6 +23,7 @@ model Event {
   tags             Tags[]
   tickets          Ticket[]
   orders           Order[]
+  eventStatus      String   @default("active")
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 }

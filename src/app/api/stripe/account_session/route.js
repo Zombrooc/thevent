@@ -19,6 +19,8 @@ export async function POST(req) {
             refund_management: true,
             dispute_management: true,
             capture_payments: true,
+
+            destination_on_behalf_of_charge_management: false,
           },
         },
         balances: {
@@ -34,7 +36,6 @@ export async function POST(req) {
           features: {
             instant_payouts: true,
             standard_payouts: true,
-            edit_payout_schedule: true,
           },
         },
       },

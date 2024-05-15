@@ -3,23 +3,14 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   ChevronLeft,
-  ChevronRight,
-  Copy,
-  CreditCard,
   File,
   Home,
   LineChart,
   ListFilter,
-  MoreVertical,
-  Package,
   Package2,
   PanelLeft,
   PlusCircle,
   Search,
-  Settings,
-  ShoppingCart,
-  Truck,
-  Users2,
 } from "lucide-react";
 
 import { MoreHorizontal } from "lucide-react";
@@ -45,15 +36,6 @@ import {
 } from "@/components/ui/table";
 
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-
-import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
@@ -68,29 +50,27 @@ import {
   PaginationContent,
   PaginationItem,
 } from "@/components/ui/pagination";
-import { Progress } from "@/components/ui/progress";
-import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-// import { UserNav } from "@/components/user-nav";
-// import { getSession } from "@auth0/nextjs-auth0";
-import { getEventList } from "./_actions/getEventList";
+
 import moment from "moment";
-import Breadcrumbs from "@/components/Breadcrumbs";
-import Navbar from "@/components/Navbar";
 import { currentUser } from "@clerk/nextjs/server";
 import { SignedIn, UserButton } from "@clerk/nextjs";
 
-export default async function Dashboard() {
-  const user = await currentUser();
+const getUserEventList = async () => {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_APP_URL}/api/events/by-user`,
+    {
+      next: {
+        revalidate: 0,
+      },
+    }
+  );
 
-  const eventList = await getEventList(user);
+  return await res.json();
+};
+export default async function Dashboard() {
+  const { userEvents } = await getUserEventList();
 
   return (
     <div className="sm:gap-4 space-x-4 space-y-3">
@@ -151,7 +131,7 @@ export default async function Dashboard() {
         </SignedIn>
       </header>
 
-      {eventList.length > 0 ? (
+      {userEvents.length > 0 ? (
         <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 mt-5">
           <Tabs defaultValue="all">
             <div className="flex items-center">
@@ -204,7 +184,7 @@ export default async function Dashboard() {
               </div>
             </div>
             <TabsContent value="all">
-              <Card x-chunk="dashboard-06-chunk-0">
+              <Card>
                 <CardHeader>
                   <CardTitle>Meus Eventos</CardTitle>
                   <CardDescription>
@@ -233,7 +213,7 @@ export default async function Dashboard() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {eventList.map((event) => (
+                      {userEvents.map((event) => (
                         <TableRow key={event.id}>
                           <TableCell className="font-medium">
                             {event.eventName}
@@ -270,6 +250,89 @@ export default async function Dashboard() {
                           </TableCell>
                         </TableRow>
                       ))}
+                    </TableBody>
+                  </Table>
+                </CardContent>
+                <CardFooter>
+                  <div className="text-xs text-muted-foreground">
+                    Showing <strong>1-10</strong> of <strong>32</strong>{" "}
+                    products
+                  </div>
+                </CardFooter>
+              </Card>
+            </TabsContent>
+            <TabsContent value="active">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Meus Eventos</CardTitle>
+                  <CardDescription>
+                    Gerencie seus eventos e veja a performance de vendas.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Nome</TableHead>
+                        <TableHead>Status</TableHead>
+                        {/* <TableHead>Price</TableHead> */}
+                        {/* <TableHead className="hidden md:table-cell">
+                          Total Sales
+                        </TableHead> */}
+                        <TableHead className="hidden md:table-cell">
+                          Criado em
+                        </TableHead>
+                        <TableHead>
+                          <span className="sr-only">Gerenciar Evento</span>
+                        </TableHead>
+                        <TableHead>
+                          <span className="sr-only">Ações</span>
+                        </TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {userEvents
+                        .filter((event) => event.eventStatus === "active")
+                        .map((event) => (
+                          <TableRow key={event.id}>
+                            <TableCell className="font-medium">
+                              {event.eventName}
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant="outline">Ativo</Badge>
+                            </TableCell>
+                            <TableCell className="hidden md:table-cell">
+                              {moment(event.createdAt).format("d MMMM YYYY")}
+                            </TableCell>
+                            <TableCell>
+                              <Button asChild>
+                                <Link href={`/app/${event.id}`}>
+                                  {" "}
+                                  Gerenciar{" "}
+                                </Link>
+                              </Button>
+                            </TableCell>
+                            <TableCell>
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button
+                                    aria-haspopup="true"
+                                    size="icon"
+                                    variant="ghost"
+                                  >
+                                    <MoreHorizontal className="h-4 w-4" />
+                                    <span className="sr-only">Toggle menu</span>
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end">
+                                  <DropdownMenuLabel>Ações</DropdownMenuLabel>
+                                  <DropdownMenuItem>Editar</DropdownMenuItem>
+                                  <DropdownMenuItem>Excluir</DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            </TableCell>
+                          </TableRow>
+                        ))}
                     </TableBody>
                   </Table>
                 </CardContent>

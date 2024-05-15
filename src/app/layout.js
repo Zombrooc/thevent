@@ -1,5 +1,4 @@
 import { Inter as FontSans } from "next/font/google";
-// import { UserProvider } from "@auth0/nextjs-auth0/client";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ptBR } from "@clerk/localizations";
 

@@ -1,18 +1,17 @@
-import { prisma } from "@/lib/database";
-
 import EventCardItem from "./EventCardItem";
 
-export default async function EventCardList() {
-  const events = await prisma.event.findMany({
-    take: 6,
-    orderBy: {
-      createdAt: "desc",
-    },
-    include: {
-      address: true,
-      tags: true,
+const getEvents = async () => {
+  const events = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/events`, {
+    next: {
+      revalidate: 3600,
     },
   });
+
+  return await events.json();
+};
+
+export default async function EventCardList() {
+  const { events } = await getEvents();
 
   return (
     <div className=" px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto max-w-5xl lg:px-8o">

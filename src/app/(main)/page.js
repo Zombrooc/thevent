@@ -1,17 +1,4 @@
 import Image from "next/image";
-import { getSession } from "@auth0/nextjs-auth0";
-
-import Navbar from "@/components/Navbar";
-
-import {
-  IconArrowWaveRightUp,
-  IconBoxAlignRightFilled,
-  IconBoxAlignTopLeft,
-  IconClipboardCopy,
-  IconFileBroken,
-  IconSignature,
-  IconTableColumn,
-} from "@tabler/icons-react";
 
 import running from "@/assets/running.jpg";
 import tennis from "@/assets/tennis.jpg";
@@ -114,7 +101,6 @@ const bentogridItems = [
 export default async function Home() {
   return (
     <>
-      {/* <Navbar user={session?.user} /> */}
       <div className="min-h-full min-w-full ">
         <div className="overflow-hidden">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-12">

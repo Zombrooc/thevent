@@ -81,12 +81,17 @@ export async function POST(req) {
       phone_number_collection: {
         enabled: true,
       },
+      metadata: {
+        eventId: event,
+      },
 
       line_items: ticketData,
       mode: "payment",
 
       payment_intent_data: {
         application_fee_amount: appFee * 100,
+        on_behalf_of:
+          eventProducerDetails.privateMetadata.stripeConnectedAccount,
         transfer_data: {
           destination:
             eventProducerDetails.privateMetadata.stripeConnectedAccount,
@@ -102,7 +107,7 @@ export async function POST(req) {
       status: err.statusCode || 500,
     });
   }
-  console.log(session);
+
   const order = await prisma.order.create({
     data: {
       orderItems: {
@@ -117,8 +122,6 @@ export async function POST(req) {
       paymentStatus: session.payment_status,
     },
   });
-
-  console.log("Order: ", order);
 
   return Response.json({ ...session });
 }
