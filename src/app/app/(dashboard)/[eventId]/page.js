@@ -13,6 +13,7 @@ import {
   ArrowUpRight,
   CreditCard,
   DollarSign,
+  RocketIcon,
   Users,
 } from "lucide-react";
 import { getEventData } from "../_actions/getEventData";
@@ -40,7 +41,15 @@ import {
   ConnectPayouts,
 } from "@stripe/react-connect-js";
 
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@/components/ui/alert"
+import { getAccountLink } from "../_actions/getAccountLink";
+
 export default function EventDetail({ params }) {
+  
   const [currentEventData, setCurrentEventData] = useState(null);
   const [stripeConnectInstance, setStripeConnectInstance] = useState(null);
 
@@ -88,12 +97,12 @@ export default function EventDetail({ params }) {
     <>
       {stripeConnectInstance && (
         <ConnectComponentsProvider connectInstance={stripeConnectInstance}>
+         
           <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
             <div className="flex items-center">
               <h1 className="text-lg font-semibold md:text-2xl">Visão Geral</h1>
             </div>
             <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
-              <ConnectBalances />
 
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -110,8 +119,7 @@ export default function EventDetail({ params }) {
                   )) || <Skeleton className="w-[200px] h-10" />}
                 </CardContent>
               </Card>
-              <ConnectPayouts />
-              {/* <Card>
+              <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">
                     Média de vendas
@@ -130,7 +138,7 @@ export default function EventDetail({ params }) {
                     </>
                   )) || <Skeleton className="w-[200px] h-10" />}
                 </CardContent>
-              </Card> */}
+              </Card>
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">
@@ -167,8 +175,7 @@ export default function EventDetail({ params }) {
               </Card>
             </div>
             <div className="grid gap-4 md:gap-8 lg:grid-cols-2 xl:grid-cols-3">
-              <ConnectPayments />
-              {/*<Card className="col-span-full">
+              <Card className="col-span-full">
                 <CardHeader className="flex flex-row items-center">
                   <div className="grid gap-2">
                     <CardTitle>Transações</CardTitle>
@@ -249,7 +256,7 @@ export default function EventDetail({ params }) {
                     </Table>
                   )) || <Skeleton className="col-span-full h-[250px]" />}
                 </CardContent>
-                </Card>*/}
+                </Card>
               {/* <Card x-chunk="dashboard-01-chunk-5">
           <CardHeader>
             <CardTitle>Recent Sales</CardTitle>

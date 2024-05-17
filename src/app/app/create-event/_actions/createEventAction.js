@@ -71,7 +71,6 @@ export async function createEventAction(
       },
     });
 
-    revalidatePath(`/event/${event.id}`);
     revalidatePath("/");
     redirect(`/event/${event.id}`);
   } catch (error) {
