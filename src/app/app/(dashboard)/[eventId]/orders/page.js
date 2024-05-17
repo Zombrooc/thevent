@@ -24,14 +24,7 @@ import {
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -58,7 +51,6 @@ import {
 } from "@/components/ui/pagination";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
   Table,
   TableBody,
@@ -68,14 +60,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-// import { UserNav } from "@/components/user-nav";
-import { getSession } from "@auth0/nextjs-auth0";
+
 import { getOrdersByEvent } from "../../_actions/getOrdersByEvent";
 import moment from "moment";
 import { getOrderDetails } from "../../_actions/getOrderDetails";
@@ -86,9 +71,11 @@ export default function Orders({ params }) {
 
   useEffect(() => {
     const getData = async () => {
-      const orders = await getOrdersByEvent(params?.eventId);
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_APP_URL}/api/events/${params?.eventId}`
+      );
 
-      setOrders(orders);
+      setOrders(await res.json());
     };
     getData();
   }, []);

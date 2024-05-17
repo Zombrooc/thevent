@@ -11,6 +11,9 @@ export const getEventData = async (id) => {
       where: {
         event: { id: id },
       },
+      orderBy: {
+        createdAt: "desc",
+      },
       include: {
         _count: {
           select: { orderItems: true },
@@ -21,6 +24,9 @@ export const getEventData = async (id) => {
     const firstFiveOrders = await prisma.order.findMany({
       where: {
         event: { id: id },
+      },
+      orderBy: {
+        createdAt: "desc",
       },
       take: 5,
     });

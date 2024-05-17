@@ -1,12 +1,12 @@
-"use server";
-
-import { prisma } from "@/lib/database";
 import { getUserDetails } from "@/lib/getUserDetails";
+import { auth } from "@clerk/nextjs/server";
 
-export const getOrdersByEvent = async (eventId) => {
+export async function GET(req, { params }) {
+  const { id } = params;
+
   const orders = await prisma.order.findMany({
     where: {
-      eventId: eventId,
+      eventId: id,
     },
     orderBy: {
       createdAt: "desc",
@@ -26,5 +26,5 @@ export const getOrdersByEvent = async (eventId) => {
     })
   );
 
-  return updatedOrderWithUserDetails;
-};
+  return Response.json(updatedOrderWithUserDetails);
+}
