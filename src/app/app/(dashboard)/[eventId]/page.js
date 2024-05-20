@@ -49,16 +49,35 @@ import { usePathname } from "next/navigation";
 // import { getAccountLink } from "../_actions/getAccountLink";
 
 export default function EventDetail({ params }) {
-  const [currentEventData, setCurrentEventData] = useState(null);
-  // const [stripeConnectInstance, setStripeConnectInstance] = useState(null);
+  const [eventOrders, setEventOrders] = useState(null);
+  const [analytics, setAnalytics] = useState(null);
 
   const pathnmame = usePathname();
 
   useEffect(() => {
     const getData = async (params) => {
-      const data = await getEventData(params?.eventId);
+      const analyticsRes = await fetch(
+        `${process.env.NEXT_PUBLIC_APP_URL}/api/analytics`,
+        {
+          next: {
+            revalidate: 0,
+          },
+        }
+      );
 
-      setCurrentEventData(data);
+      console.log(await analytics.json());
+
+      const ordersRes = await fetch(
+        `${process.env.NEXT_PUBLIC_APP_URL}/api/analytics?isDashboardHome=true`,
+        {
+          next: {
+            revalidate: 0,
+          },
+        }
+      );
+
+      setAnalytics(await analyticsRes.json());
+      setEventOrders(await ordersRes.json());
     };
 
     // const fetchClientSecret = async () => {
@@ -109,9 +128,9 @@ export default function EventDetail({ params }) {
               <DollarSign className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              {(currentEventData && (
+              {(analytics.totalRevenue && (
                 <div className="text-2xl font-bold">
-                  R$ {currentEventData?.totalRevenue}
+                  R$ {analytics.totalRevenue?.totalRevenue}
                 </div>
               )) || <Skeleton className="w-[200px] h-10" />}
             </CardContent>
@@ -124,10 +143,10 @@ export default function EventDetail({ params }) {
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              {(currentEventData && (
+              {(analytics && (
                 <>
                   <div className="text-2xl font-bold">
-                    +{currentEventData?.averageRevenue}
+                    +{analytics?.avgRevenue}
                   </div>
                   <p className="text-xs text-muted-foreground">
                     +180.1% from last month
@@ -144,9 +163,9 @@ export default function EventDetail({ params }) {
               <CreditCard className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              {(currentEventData && (
+              {(averageRevenue && (
                 <div className="text-2xl font-bold">
-                  +{currentEventData?.orderCount}
+                  +{averageRevenue?.sellQuantity}
                 </div>
               )) || <Skeleton className="w-[200px] h-10" />}
 
@@ -163,9 +182,9 @@ export default function EventDetail({ params }) {
               <Activity className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              {(currentEventData && (
+              {(analytics && (
                 <div className="text-2xl font-bold">
-                  +{currentEventData?.orderItemsCount}
+                  +{analytics?.soldTickets}
                 </div>
               )) || <Skeleton className="w-[200px] h-10" />}
             </CardContent>
@@ -188,7 +207,7 @@ export default function EventDetail({ params }) {
               </Button>
             </CardHeader>
             <CardContent>
-              {(currentEventData?.orders && (
+              {(eventOrders?.orders && (
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -200,7 +219,7 @@ export default function EventDetail({ params }) {
                   </TableHeader>
 
                   <TableBody>
-                    {currentEventData?.orders.map((order) => (
+                    {eventOrders?.orders.map((order) => (
                       <TableRow key={order.id}>
                         <TableCell>
                           <div className="font-medium">{order?.user?.name}</div>

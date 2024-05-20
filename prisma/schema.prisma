@@ -9,7 +9,7 @@ datasource db {
 }
 
 model Event {
-  id               String   @id @default(cuid())
+  id               String     @id @default(cuid())
   addressId        String?
   eventDescription String
   eventName        String
@@ -23,9 +23,10 @@ model Event {
   tags             Tags[]
   tickets          Ticket[]
   orders           Order[]
-  eventStatus      String   @default("active")
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  eventStatus      String     @default("active")
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+  analytics        Analytics?
 }
 
 model Address {
@@ -121,10 +122,17 @@ model OrderItem {
   updatedAt   DateTime @updatedAt
 }
 
-model ManagementToken {
-  id              String   @id @default(cuid())
-  managementToken String
-  expiration      DateTime
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+model Analytics {
+  id           String   @id @default(cuid())
+  event        Event    @relation(fields: [eventId], references: [id])
+  eventId      String   @unique
+  pageViews    Int?
+  totalRevenue Float?
+  avgRevenue   Float?
+  soldTickets  Int?
+  sellQuantity Int?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("analytics")
 }

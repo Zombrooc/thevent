@@ -68,6 +68,11 @@ export async function createEventAction(
         tags: {
           create: tagsData,
         },
+        analytics: {
+          create: {
+            pageViews: 0,
+          },
+        },
       },
     });
 
