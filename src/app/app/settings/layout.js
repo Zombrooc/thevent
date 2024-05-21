@@ -3,7 +3,6 @@ import Image from "next/image";
 import { Separator } from "@/components/ui/separator";
 import { SidebarNav } from "./_components/sidebar-nav";
 import Navbar from "@/components/Navbar";
-import { getSession } from "@auth0/nextjs-auth0";
 
 export const metadata = {
   title: "Forms",
@@ -34,11 +33,9 @@ const sidebarNavItems = [
 ];
 
 export default async function SettingsLayout({ children }) {
-  const session = await getSession();
-
   return (
     <>
-      <Navbar user={session?.user} />
+      <Navbar />
       <div className="md:hidden">
         <Image
           src="/forms-light.png"
