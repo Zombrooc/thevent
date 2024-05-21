@@ -13,6 +13,7 @@ import {
   ArrowUpRight,
   CreditCard,
   DollarSign,
+  EyeIcon,
   RocketIcon,
   Users,
 } from "lucide-react";
@@ -49,35 +50,36 @@ import { usePathname } from "next/navigation";
 // import { getAccountLink } from "../_actions/getAccountLink";
 
 export default function EventDetail({ params }) {
+  const pathnmame = usePathname();
+
   const [eventOrders, setEventOrders] = useState(null);
   const [analytics, setAnalytics] = useState(null);
-
-  const pathnmame = usePathname();
 
   useEffect(() => {
     const getData = async (params) => {
       const analyticsRes = await fetch(
-        `${process.env.NEXT_PUBLIC_APP_URL}/api/analytics`,
+        `${process.env.NEXT_PUBLIC_APP_URL}/api/analytics/${params.eventId}`,
         {
           next: {
-            revalidate: 0,
+            revalidate: 900,
           },
         }
       );
-
-      console.log(await analytics.json());
 
       const ordersRes = await fetch(
-        `${process.env.NEXT_PUBLIC_APP_URL}/api/analytics?isDashboardHome=true`,
+        `${process.env.NEXT_PUBLIC_APP_URL}/api/orders/${params.eventId}?isDashboardHome=true`,
         {
           next: {
-            revalidate: 0,
+            revalidate: 900,
           },
         }
       );
 
-      setAnalytics(await analyticsRes.json());
-      setEventOrders(await ordersRes.json());
+      const analytics = await analyticsRes.json();
+      const orders = await ordersRes.json();
+
+      setAnalytics(analytics);
+      setEventOrders(orders);
     };
 
     // const fetchClientSecret = async () => {
@@ -119,7 +121,18 @@ export default function EventDetail({ params }) {
         <div className="flex items-center">
           <h1 className="text-lg font-semibold md:text-2xl">Visão Geral</h1>
         </div>
-        <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
+        <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-5">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Visitas</CardTitle>
+              <EyeIcon className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              {(analytics && (
+                <div className="text-2xl font-bold">{analytics?.pageViews}</div>
+              )) || <Skeleton className="w-[200px] h-10" />}
+            </CardContent>
+          </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
@@ -128,9 +141,9 @@ export default function EventDetail({ params }) {
               <DollarSign className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              {(analytics.totalRevenue && (
+              {(analytics && (
                 <div className="text-2xl font-bold">
-                  R$ {analytics.totalRevenue?.totalRevenue}
+                  R$ {analytics?.totalRevenue}
                 </div>
               )) || <Skeleton className="w-[200px] h-10" />}
             </CardContent>
@@ -163,9 +176,9 @@ export default function EventDetail({ params }) {
               <CreditCard className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              {(averageRevenue && (
+              {(analytics && (
                 <div className="text-2xl font-bold">
-                  +{averageRevenue?.sellQuantity}
+                  +{analytics?.sellQuantity}
                 </div>
               )) || <Skeleton className="w-[200px] h-10" />}
 
@@ -207,7 +220,7 @@ export default function EventDetail({ params }) {
               </Button>
             </CardHeader>
             <CardContent>
-              {(eventOrders?.orders && (
+              {(eventOrders && (
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -219,7 +232,7 @@ export default function EventDetail({ params }) {
                   </TableHeader>
 
                   <TableBody>
-                    {eventOrders?.orders.map((order) => (
+                    {eventOrders.map((order) => (
                       <TableRow key={order.id}>
                         <TableCell>
                           <div className="font-medium">{order?.user?.name}</div>

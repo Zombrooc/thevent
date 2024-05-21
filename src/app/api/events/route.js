@@ -11,7 +11,5 @@ export async function GET(req) {
     },
   });
 
-  return Response.json({
-    events,
-  });
+  return Response.json(...events);
 }

@@ -20,25 +20,25 @@ const EventName = [
   "checkout.session.async_payment_failed",
   "checkout.session.expired",
   // Charge: https://stripe.com/docs/api/charges
-  "charge.succeeded",
-  "charge.failed",
-  "charge.refunded",
-  "charge.expired",
+  // "charge.succeeded",
+  // "charge.failed",
+  // "charge.refunded",
+  // "charge.expired",
   // Disputes: https://stripe.com/docs/disputes
-  "charge.dispute.created",
-  "charge.dispute.updated",
-  "charge.dispute.funds_reinstated",
-  "charge.dispute.funds_withdrawn",
-  "charge.dispute.closed",
+  // "charge.dispute.created",
+  // "charge.dispute.updated",
+  // "charge.dispute.funds_reinstated",
+  // "charge.dispute.funds_withdrawn",
+  // "charge.dispute.closed",
   // Customer: https://stripe.com/docs/api/customers
-  "customer.created",
-  "customer.updated",
-  "customer.deleted",
-  "customer.subscription.created",
-  "customer.subscription.updated",
-  "customer.subscription.deleted",
-  "customer.subscription.paused",
-  "customer.subscription.resumed",
+  // "customer.created",
+  // "customer.updated",
+  // "customer.deleted",
+  // "customer.subscription.created",
+  // "customer.subscription.updated",
+  // "customer.subscription.deleted",
+  // "customer.subscription.paused",
+  // "customer.subscription.resumed",
 ];
 
 async function handleStripeWebhook(body) {
@@ -95,13 +95,18 @@ async function handleStripeWebhook(body) {
         },
       });
 
-      console.log(order);
-
       return new Response(JSON.stringify({ message: "Paiment success!" }), {
         status: 200,
       });
 
     case "checkout.session.completed":
+      const { subTotal, orderItems } = await prisma.Order.findUnique({
+        where: { paymentId: id },
+        include: {
+          orderItems: true,
+        },
+      });
+
       await prisma.Order.update({
         where: {
           paymentId: id,
@@ -111,6 +116,42 @@ async function handleStripeWebhook(body) {
           paymentId: payment_intent,
         },
       });
+
+      const { _avg } = await prisma.order.aggregate({
+        where: {
+          paymentStatus: "paid",
+          eventId: meta.eventId,
+        },
+        _avg: {
+          total: true,
+        },
+      });
+
+      console.log(status);
+      if (status === "paid") {
+        let soldTickets = 0;
+
+        await orderItems.map((orderItem) => {
+          soldTickets += orderItem.quantity;
+          return;
+        });
+
+        await prisma.analytics.update({
+          where: {
+            eventId: meta.eventId,
+          },
+          data: {
+            totalRevenue: {
+              increment: subTotal,
+            },
+            avgRevenue: _avg.total,
+            soldTickets: { increment: soldTickets },
+            sellQuantity: {
+              increment: 1,
+            },
+          },
+        });
+      }
 
       return new Response(JSON.stringify({ message: "Checkout completed!" }), {
         status: 200,

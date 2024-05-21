@@ -66,8 +66,6 @@ export async function POST(req) {
     })
   );
 
-  console.log(appFee);
-
   let session;
 
   try {
@@ -118,6 +116,7 @@ export async function POST(req) {
       },
       userId: user.id,
       total: totalPrice,
+      subTotal: totalPrice - appFee,
       paymentId: session.id,
       paymentStatus: session.payment_status,
     },

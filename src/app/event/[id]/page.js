@@ -6,7 +6,6 @@ import TicketList from "./_components/TicketList";
 
 import TicketProvider from "@/store/features/ticketCart/TicketProvider";
 import { CalendarDaysIcon, MapPinnedIcon } from "lucide-react";
-import { constructMetadata } from "@/lib/constructMetadata";
 
 const getEventData = async (id) => {
   const res = await fetch(
@@ -24,19 +23,6 @@ const getEventData = async (id) => {
     return { error: 404 };
   }
 };
-
-export async function generateMetadata({ params }) {
-  const { eventData: event, error } = await getEventData(params.id);
-
-  if (error === 404) {
-    return constructMetadata();
-  } else {
-    const title = `${event.eventName} - ${process.env.NEXT_PUBLIC_APP_NAME}`;
-    const description = event.eventDescription;
-
-    return constructMetadata(title, description);
-  }
-}
 
 export default async function EventDetails({ params }) {
   const { eventData, error } = await getEventData(params.id);

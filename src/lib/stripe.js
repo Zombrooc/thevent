@@ -36,6 +36,11 @@ export const createStripeCustomer = async (email, fullName) => {
   return createdCustomer;
 };
 
+export const getPaymentIntnet = async (paymentIntnet) => {
+  const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntnet);
+  return paymentIntent;
+};
+
 // export const createStripeAccount = async (email, fullName) => {
 
 // const account = await stripe.accounts.create({

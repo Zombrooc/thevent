@@ -101,6 +101,7 @@ model Order {
   userId        String
   paymentId     String?     @unique
   total         Int
+  subTotal      Int         @default(0)
   paymentStatus String
   event         Event       @relation(fields: [eventId], references: [id])
   orderItems    OrderItem[]
@@ -126,11 +127,11 @@ model Analytics {
   id           String   @id @default(cuid())
   event        Event    @relation(fields: [eventId], references: [id])
   eventId      String   @unique
-  pageViews    Int?
-  totalRevenue Float?
-  avgRevenue   Float?
-  soldTickets  Int?
-  sellQuantity Int?
+  pageViews    Int      @default(0)
+  totalRevenue Float    @default(0.0)
+  avgRevenue   Float    @default(0.0)
+  soldTickets  Int      @default(0)
+  sellQuantity Int      @default(0)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 

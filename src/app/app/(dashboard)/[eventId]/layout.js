@@ -72,8 +72,15 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import { ClerkLoaded, ClerkLoading, SignedIn, UserButton } from "@clerk/nextjs";
 import User from "@/components/User";
+import { constructMetadata } from "@/lib/constructMetadata";
+
+export async function generateMetadata() {
+  const title = `Dashboard - ${process.env.NEXT_PUBLIC_APP_NAME}`;
+
+  return constructMetadata(title);
+}
+
 export default async function DashboardLayout({ children, params }) {
   return (
     // <EventListProvider initialState={eventList}>
@@ -107,10 +114,10 @@ export default async function DashboardLayout({ children, params }) {
                   className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-accent-foreground  transition-colors hover:text-foreground md:h-8 md:w-8"
                 >
                   <ShoppingCart className="h-5 w-5" />
-                  <span className="sr-only">Orders</span>
+                  <span className="sr-only">Ordens</span>
                 </Link>
               </TooltipTrigger>
-              <TooltipContent side="right">Orders</TooltipContent>
+              <TooltipContent side="right">Ordens</TooltipContent>
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -119,10 +126,10 @@ export default async function DashboardLayout({ children, params }) {
                   className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                 >
                   <Package className="h-5 w-5" />
-                  <span className="sr-only">Products</span>
+                  <span className="sr-only">Ingressos</span>
                 </Link>
               </TooltipTrigger>
-              <TooltipContent side="right">Products</TooltipContent>
+              <TooltipContent side="right">Ingressos</TooltipContent>
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -131,10 +138,10 @@ export default async function DashboardLayout({ children, params }) {
                   className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                 >
                   <Users2 className="h-5 w-5" />
-                  <span className="sr-only">Customers</span>
+                  <span className="sr-only">Clientes</span>
                 </Link>
               </TooltipTrigger>
-              <TooltipContent side="right">Customers</TooltipContent>
+              <TooltipContent side="right">Clientes</TooltipContent>
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
