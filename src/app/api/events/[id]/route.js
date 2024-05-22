@@ -12,8 +12,6 @@ export async function GET(req, { params }) {
     },
   });
 
-  console.log(eventData);
-
   if (eventData) {
     return Response.json({
       eventData: eventData,

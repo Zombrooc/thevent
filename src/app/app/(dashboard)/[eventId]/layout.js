@@ -22,6 +22,7 @@ import {
   Package,
   Package2,
   PanelLeft,
+  Pencil,
   Search,
   Settings,
   ShoppingCart,
@@ -122,14 +123,14 @@ export default async function DashboardLayout({ children, params }) {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  href="#"
+                  href={`/app/${params.eventId}/edit-event`}
                   className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                 >
-                  <Package className="h-5 w-5" />
-                  <span className="sr-only">Ingressos</span>
+                  <Pencil className="h-5 w-5" />
+                  <span className="sr-only">Editar Evento</span>
                 </Link>
               </TooltipTrigger>
-              <TooltipContent side="right">Ingressos</TooltipContent>
+              <TooltipContent side="right">Editar Evento</TooltipContent>
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -166,10 +167,10 @@ export default async function DashboardLayout({ children, params }) {
                   className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                 >
                   <Settings className="h-5 w-5" />
-                  <span className="sr-only">Settings</span>
+                  <span className="sr-only">Configurações</span>
                 </Link>
               </TooltipTrigger>
-              <TooltipContent side="right">Settings</TooltipContent>
+              <TooltipContent side="right">Configurações</TooltipContent>
             </Tooltip>
           </TooltipProvider>
         </nav>
