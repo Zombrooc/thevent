@@ -1,15 +1,15 @@
 import Navbar from "@/components/Navbar";
 import { constructMetadata } from "@/lib/constructMetadata";
 
-export async function generateStaticParams() {
-  const eventRes = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/events`);
+// export async function generateStaticParams() {
+//   const eventRes = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/events`);
 
-  const { events } = await eventRes.json();
+//   const { events } = await eventRes.json();
 
-  return events.map((event) => ({
-    id: event.id,
-  }));
-}
+//   return events.map((event) => ({
+//     id: event.id,
+//   }));
+// }
 
 const getEventData = async (id) => {
   const res = await fetch(
