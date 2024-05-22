@@ -22,6 +22,8 @@ export async function GET(req, { params }) {
   try {
     const orders = await prisma.order.findMany(query);
 
+    console.log("Order: ", orders);
+
     if (orders.length > 0) {
       const updatedOrderWithUserDetails = await Promise.all(
         orders.map(async (order) => {
@@ -36,13 +38,18 @@ export async function GET(req, { params }) {
         })
       );
 
-      return Response.json(updatedOrderWithUserDetails);
+      return Response.json({
+        orders: updatedOrderWithUserDetails,
+      });
     }
 
-    return {
+    return Response.json({
       orders: [],
-    };
+    });
   } catch (e) {
-    throw new Error(e);
+    return new Response({
+      status: e.statusCode,
+      body: e.message,
+    });
   }
 }

@@ -61,7 +61,7 @@ export default function EventDetail({ params }) {
         `${process.env.NEXT_PUBLIC_APP_URL}/api/analytics/${params.eventId}`,
         {
           next: {
-            revalidate: 900,
+            revalidate: 0,
           },
         }
       );
@@ -70,13 +70,13 @@ export default function EventDetail({ params }) {
         `${process.env.NEXT_PUBLIC_APP_URL}/api/orders/${params.eventId}?isDashboardHome=true`,
         {
           next: {
-            revalidate: 900,
+            revalidate: 0,
           },
         }
       );
 
       const analytics = await analyticsRes.json();
-      const orders = await ordersRes.json();
+      const { orders } = await ordersRes.json();
 
       setAnalytics(analytics);
       setEventOrders(orders);

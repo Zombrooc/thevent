@@ -8,9 +8,18 @@ export async function GET(req) {
     where: {
       organizer: sessionClaims?.sub,
     },
+    orderBy: {
+      createdAt: "desc",
+    },
   });
 
+  if (userEvents) {
+    return Response.json({
+      userEvents: userEvents,
+    });
+  }
+
   return Response.json({
-    userEvents: userEvents,
+    userEvents: [],
   });
 }

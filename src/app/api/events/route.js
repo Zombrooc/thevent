@@ -11,5 +11,11 @@ export async function GET(req) {
     },
   });
 
-  return Response.json(...events);
+  if (events) {
+    return Response.json({
+      events: events,
+    });
+  }
+
+  return Response.json({ events: [] });
 }

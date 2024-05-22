@@ -71,6 +71,10 @@ export async function createEventAction(
         analytics: {
           create: {
             pageViews: 0,
+            avgRevenue: 0,
+            sellQuantity: 0,
+            soldTickets: 0,
+            totalRevenue: 0,
           },
         },
       },
