@@ -1,70 +1,21 @@
-import EventListProvider from "@/store/features/eventList/eventProvider";
-// import { getSession } from "@auth0/nextjs-auth0";
-
-import { prisma } from "@/lib/database";
 import Link from "next/link";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Suspense } from "react";
 import * as React from "react";
-import Image from "next/image";
 import {
-  ChevronLeft,
-  ChevronRight,
-  Copy,
-  CreditCard,
-  File,
   Home,
   LineChart,
-  ListFilter,
-  MoreVertical,
   Package,
   Package2,
   PanelLeft,
+  Pencil,
   Search,
   Settings,
   ShoppingCart,
-  Truck,
   Users2,
 } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
-
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-} from "@/components/ui/pagination";
-import { Progress } from "@/components/ui/progress";
-import { Separator } from "@/components/ui/separator";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Tooltip,
   TooltipContent,
@@ -123,9 +74,10 @@ export default async function DashboardLayout({ children, params }) {
               <TooltipTrigger asChild>
                 <Link
                   href={`/app/${params.eventId}/edit-event`}
+                  href={`/app/${params.eventId}/edit-event`}
                   className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                 >
-                  <Package className="h-5 w-5" />
+                  <Pencil className="h-5 w-5" />
                   <span className="sr-only">Editar Evento</span>
                 </Link>
               </TooltipTrigger>
