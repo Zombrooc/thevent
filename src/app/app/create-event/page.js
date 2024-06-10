@@ -2,6 +2,16 @@
 
 import { useState } from "react";
 import { addDays } from "date-fns";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useFieldArray } from "react-hook-form";
@@ -10,6 +20,14 @@ import { z } from "zod";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   CalendarIcon,
   CheckIcon,
@@ -44,107 +62,26 @@ import moment from "moment";
 import { Textarea } from "@/components/ui/textarea";
 import { TrashIcon } from "@radix-ui/react-icons";
 import { createEventAction } from "./_actions/createEventAction";
-
-const FormSchema = z.object({
-  eventName: z.string().min(1, {
-    message: "O nome do evento deve ter pelo menos 1 caractere.",
-    required_error: "O nome do evento é obrigatório.",
-  }),
-  eventDescription: z
-    .string()
-    .min(10, {
-      message: "A descrição do evento deve ter pelo menos 10 caracteres.",
-      required_error: "A descrição do evento é obrigatória.",
-    })
-    .max(3000, {
-      message: "A descrição do evento deve ter no máximo 3000 caracteres.",
-    }),
-
-  streetAddress: z.string().min(1, {
-    message: "A rua deve ter pelo menos 1 caractere.",
-    required_error: "A rua é obrigatória.",
-  }),
-  number: z.string().min(1, {
-    message: "O número do local deve ter pelo menos 1 caractere.",
-    required_error: "O número do local é obrigatório.",
-  }),
-  neighborhood: z.string().min(1, {
-    message: "O bairro deve ter pelo menos 1 caractere.",
-    required_error: "O bairro é obrigatório.",
-  }),
-  localName: z.string().min(1, {
-    message: "O nome do local deve ter pelo menos 1 caractere.",
-    required_error: "O nome do local é obrigatório.",
-  }),
-  city: z.string().min(1, {
-    message: "A cidade deve ter pelo menos 1 caractere.",
-    required_error: "A cidade é obrigatória.",
-  }),
-  state: z.string().min(2, {
-    message: "O estado deve ter pelo menos 2 caracteres.",
-    required_error: "O estado é obrigatório.",
-  }),
-  postalCode: z.string().regex(/^\d{5}-\d{3}$/, {
-    message: "O código postal deve estar no formato 00000-000.",
-    required_error: "O código postal é obrigatório.",
-  }),
-  eventDateStartEnd: z
-    .object({
-      from: z.date({ message: "Data de início inválida." }),
-      to: z.date({ message: "Data de término inválida." }),
-    })
-    .refine((data) => data.to > data.from, {
-      message: "A data de término deve ser após a data de início.",
-      path: ["startEndingSelling"],
-    }),
-
-  tickets: z.array(
-    z.object({
-      ticketName: z
-        .string()
-        .min(2, {
-          message: "O nome do ingresso deve ter no mínimo 2 caracteres.",
-        })
-        .max(50, {
-          message: "O nome do ingresso deve ter no máximo 50 caracteres.",
-        }),
-      ticketPrice: z
-        .string()
-        .min(0, { message: "O preço do ingresso não pode ser negativo." }),
-      ticketDescription: z
-        .string()
-        .min(10, {
-          message: "A descrição do ingresso deve ter no mínimo 10 caracteres.",
-        })
-        .max(200, {
-          message: "A descrição do ingresso deve ter no máximo 300 caracteres.",
-        }),
-      ticketStockAvailable: z.string().min(1, {
-        message: "A quantidade de ingressos disponíveis deve ser pelo menos 1.",
-      }),
-      startEndingSelling: z
-        .object({
-          from: z.date({ message: "Data de início inválida." }),
-          to: z.date({ message: "Data de término inválida." }),
-        })
-        .refine((data) => data.to > data.from, {
-          message: "A data de término deve ser após a data de início.",
-          path: ["startEndingSelling"],
-        }),
-    })
-  ),
-  tags: z
-    .array(
-      z.object({
-        id: z.string().min(1, "O ID da tag é obrigatório."),
-        text: z.string().min(1, "O texto da tag é obrigatório."),
-      })
-    )
-    .min(1, "Pelo menos uma tag é necessária."),
-});
-
-// import { useUser } from "@auth0/nextjs-auth0/client";
-// import { useUser } from "@clerk/nextjs";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { eventSchema as FormSchema } from "@/schemas/eventSchema";
+import TicketExtraFields from "@/components/Ticket/TicketExtraFields";
+import { PlusCircle } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Separator } from "@/components/ui/separator";
 
 export default function CreateEvent() {
   const [bannerImage, setBannerImage] = useState(null);
@@ -161,7 +98,7 @@ export default function CreateEvent() {
       streetAddress: "",
       localName: "",
       neighborhood: "",
-      number: "",
+      // number: null,
       city: "",
       state: "",
       postalCode: "",
@@ -177,7 +114,11 @@ export default function CreateEvent() {
 
   const { setValue } = form;
 
-  const { fields, append, remove } = useFieldArray({
+  const {
+    fields,
+    append: appendTicket,
+    remove: removeTicket,
+  } = useFieldArray({
     name: "tickets",
     control: form.control,
   });
@@ -260,559 +201,726 @@ export default function CreateEvent() {
                     evento.
                   </p>
                 </div>
-                <div className="sm:col-span-full">
-                  <FormField
-                    control={form.control}
-                    name="eventName"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="block text-xs font-medium leading-6 text-gray-900">
-                          Nome do Evento
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            type="text"
-                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
-                            placeholder="1º Campeonato de Xadrez de Rio Verde"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-full"></div>
-                </div>
-                <div className="col-span-full">
-                  <FormField
-                    control={form.control}
-                    name="eventDescription"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="block text-xs font-medium leading-6 text-gray-900">
-                          Descrição
-                        </FormLabel>
-                        <FormControl>
-                          <Textarea
-                            rows={3}
-                            {...field}
-                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
-                          />
-                        </FormControl>
-                        <FormDescription className="text-xs leading-6 text-gray-600">
-                          Escreve um poucos sobre o seu evento.
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
               </div>
             </div>
+            <div className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8">
+              <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Detalhes do Evento</CardTitle>
+                    {/* <CardDescription>
+                  Lipsum dolor sit amet, consectetur adipiscing elit
+                </CardDescription> */}
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid gap-6">
+                      <div className="grid gap-3">
+                        {/* <Label htmlFor="name">Nome do Evento</Label>
+                    <Input
+                      id="name"
+                      type="text"
+                      className="w-full"
+                      defaultValue="Gamer Gear Pro Controller"
+                    /> */}
+                        <FormField
+                          control={form.control}
+                          name="eventName"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="block text-xs font-medium leading-6 text-gray-900">
+                                Nome do Evento
+                              </FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="text"
+                                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
+                                  placeholder="1º Campeonato de Xadrez de Rio Verde"
+                                  {...field}
+                                />
+                              </FormControl>
 
-            <div className="border-b border-gray-900/10 pb-12">
-              <h2 className="text-base font-semibold leading-7 text-gray-900">
-                Local e Data
-              </h2>
-              <p className="mt-1 text-xs leading-6 text-gray-600">
-                Diga pra gente qual será o local e data do seu evento
-              </p>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      <div className="grid gap-3">
+                        <FormField
+                          control={form.control}
+                          name="eventDescription"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="block text-xs font-medium leading-6 text-gray-900">
+                                Descrição
+                              </FormLabel>
+                              <FormControl>
+                                <Textarea
+                                  rows={3}
+                                  {...field}
+                                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
+                                />
+                              </FormControl>
+                              <FormDescription className="text-xs leading-6 text-gray-600">
+                                Escreve um poucos sobre o seu evento.
+                              </FormDescription>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Local e Data</CardTitle>
+                    <CardDescription>
+                      Diga pra gente qual será o local e data do seu evento
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 gap-x-3 gap-y-3 sm:grid-cols-6">
+                      <div className="col-span-full">
+                        <FormField
+                          control={form.control}
+                          name="localName"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="block text-xs font-medium leading-6 text-gray-900">
+                                Nome do local
+                              </FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="text"
+                                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      <div className="col-span-5">
+                        <FormField
+                          control={form.control}
+                          name="street"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="block text-xs font-medium leading-6 text-gray-900">
+                                Endereço
+                              </FormLabel>
+                              <FormControl>
+                                <Input
+                                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
+                                  type="text"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      <div className="col-span-1">
+                        <FormField
+                          control={form.control}
+                          name="number"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="block text-xs font-medium leading-6 text-gray-900">
+                                Número
+                              </FormLabel>
+                              <FormControl>
+                                <Input
+                                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
+                                  type="number"
+                                  min="1"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      <div className="col-span-2">
+                        <FormField
+                          control={form.control}
+                          name="neighborhood"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="block text-xs font-medium leading-6 text-gray-900">
+                                Bairro
+                              </FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="text"
+                                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      <div className="col-span-3">
+                        <FormField
+                          control={form.control}
+                          name="city"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="block text-xs font-medium leading-6 text-gray-900">
+                                Cidade
+                              </FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="text"
+                                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
 
-              <div className="mt-10 grid grid-cols-1 gap-x-3 gap-y-3 sm:grid-cols-6">
-                <div className="col-span-full">
-                  <FormField
-                    control={form.control}
-                    name="localName"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="block text-xs font-medium leading-6 text-gray-900">
-                          Nome do local
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            type="text"
-                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <div className="col-span-5">
-                  <FormField
-                    control={form.control}
-                    name="streetAddress"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="block text-xs font-medium leading-6 text-gray-900">
-                          Endereço
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
-                            type="text"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <div className="col-span-1">
-                  <FormField
-                    control={form.control}
-                    name="number"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="block text-xs font-medium leading-6 text-gray-900">
-                          Número
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
-                            type="text"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <div className="col-span-2">
-                  <FormField
-                    control={form.control}
-                    name="neighborhood"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="block text-xs font-medium leading-6 text-gray-900">
-                          Bairro
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            type="text"
-                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <div className="col-span-3">
-                  <FormField
-                    control={form.control}
-                    name="city"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="block text-xs font-medium leading-6 text-gray-900">
-                          Cidade
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            type="text"
-                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                {/* <div className="sm:col-span-2 sm:col-start-1"></div> */}
-                <div className="sm:col-span-1">
-                  <FormField
-                    control={form.control}
-                    name="state"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="block text-xs font-medium leading-6 text-gray-900">
-                          Estado
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            type="text"
-                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <div className="sm:col-span-2">
-                  <FormField
-                    control={form.control}
-                    name="postalCode"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="block text-xs font-medium leading-6 text-gray-900">
-                          CEP
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            type="text"
-                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <div className="sm:col-span-full">
-                  <FormField
-                    control={form.control}
-                    name="eventDateStartEnd"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-col">
-                        <FormLabel className="text-xs font-semibold leading-7 text-gray-900">
-                          Data de Início e Fim do Evento
-                        </FormLabel>
-                        <div className="grid grid-cols-1 gap-x-3 gap-y-3 sm:grid-cols-6">
-                          <div className="sm:col-span-2">
-                            <div className="mt-2">
-                              <div className={cn("grid gap-2")}>
-                                <Popover>
-                                  <PopoverTrigger asChild>
-                                    <FormControl>
-                                      <Button
-                                        variant={"outline"}
-                                        className={cn(
-                                          "w-[300px] justify-start text-left font-normal",
-                                          !field.value &&
-                                            "text-muted-foreground"
-                                        )}
-                                      >
-                                        <CalendarIcon className="mr-2 h-4 w-4" />
-                                        {field.value?.from ? (
-                                          field.value.to ? (
-                                            <>
-                                              {moment(field.value.from).format(
-                                                "LL"
-                                              )}{" "}
-                                              -{" "}
-                                              {moment(field.value.to).format(
-                                                "LL"
+                      {/* <div className="sm:col-span-2 sm:col-start-1"></div> */}
+                      <div className="sm:col-span-1">
+                        <FormField
+                          control={form.control}
+                          name="state"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="block text-xs font-medium leading-6 text-gray-900">
+                                Estado
+                              </FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="text"
+                                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      <div className="sm:col-span-2">
+                        <FormField
+                          control={form.control}
+                          name="cep"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="block text-xs font-medium leading-6 text-gray-900">
+                                CEP
+                              </FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="text"
+                                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      <div className="sm:col-span-full">
+                        <FormField
+                          control={form.control}
+                          name="eventDateStartEnd"
+                          render={({ field }) => (
+                            <FormItem className="flex flex-col">
+                              <FormLabel className="text-xs font-semibold leading-7 text-gray-900">
+                                Data de Início e Fim do Evento
+                              </FormLabel>
+                              <div className="grid grid-cols-1 gap-x-3 gap-y-3 sm:grid-cols-6">
+                                <div className="sm:col-span-2">
+                                  <div className="mt-2">
+                                    <div className={cn("grid gap-2")}>
+                                      <Popover>
+                                        <PopoverTrigger asChild>
+                                          <FormControl>
+                                            <Button
+                                              variant={"outline"}
+                                              className={cn(
+                                                "w-[300px] justify-start text-left font-normal",
+                                                !field.value &&
+                                                  "text-muted-foreground"
                                               )}
-                                            </>
-                                          ) : (
-                                            moment(field.value.from).format(
-                                              "LL"
-                                            )
-                                          )
-                                        ) : (
-                                          <span>Escolha uma data</span>
-                                        )}
-                                      </Button>
-                                    </FormControl>
-                                  </PopoverTrigger>
-                                  <PopoverContent
-                                    className="w-auto p-0"
-                                    align="start"
-                                  >
-                                    <Calendar
-                                      mode="range"
-                                      selected={field.value}
-                                      onSelect={field.onChange}
-                                      disabled={(date) => date < new Date()}
-                                      defaultMonth={field.value?.from}
-                                      numberOfMonths={2}
-                                    />
-                                  </PopoverContent>
-                                </Popover>
-                                <FormMessage />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className="border-b border-gray-900/10 pb-12">
-              <h2 className="text-base font-semibold leading-7 text-gray-900">
-                Criar ingressos
-              </h2>
-              <p className="mt-1 text-xs leading-6 text-gray-600">
-                Diga pra gente qual será o local e data do seu evento
-              </p>
-
-              <div className="mt-2 grid grid-cols-1 gap-x-6 gap-y-8">
-                <Button
-                  type="button"
-                  onClick={() =>
-                    append({
-                      ticketName: "",
-                      ticketPrice: "",
-                      ticketDescription: "",
-                      ticketStockAvailable: "",
-                      startEndingSelling: {
-                        from: new Date(),
-                        to: addDays(new Date(), 30),
-                      },
-                    })
-                  }
-                >
-                  Novo Ingresso
-                </Button>
-                <div className="flex flex-col">
-                  {/* <CreateTicket
-                    tickets={tickets}
-                    setNewTickets={setNewTickets}
-                  /> */}
-                  <div className="space-y-4">
-                    {fields.map((_, index) => (
-                      <div
-                        className="relative border border-gray-900/10 p-4 rounded"
-                        key={index}
-                      >
-                        <div className="grid grid-cols-1 gap-x-3 gap-y-3 sm:grid-cols-6">
-                          <FormField
-                            control={form.control}
-                            name={`tickets.${index}.ticketName`}
-                            render={({ field }) => (
-                              <div className="sm:col-span-2 sm:col-start-1">
-                                <FormItem>
-                                  <FormLabel className="block text-xs font-medium leading-6 text-gray-900">
-                                    Nome
-                                  </FormLabel>
-                                  <FormControl>
-                                    <Input
-                                      placeholder="Inteira"
-                                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
-                                      {...field}
-                                    />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              </div>
-                            )}
-                          />
-                          <FormField
-                            control={form.control}
-                            name={`tickets.${index}.ticketPrice`}
-                            render={({ field }) => (
-                              <div className="sm:col-span-2">
-                                <FormItem>
-                                  <FormLabel className="block text-xs font-medium leading-6 text-gray-900">
-                                    Preço
-                                  </FormLabel>
-                                  <FormControl>
-                                    <Input
-                                      type="number"
-                                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
-                                      placeholder="60"
-                                      {...field}
-                                    />
-                                  </FormControl>
-                                  <FormDescription className="text-xs leading-6 text-gray-600 muted">
-                                    Você recebe:
-                                  </FormDescription>
-                                  <FormMessage />
-                                </FormItem>
-                              </div>
-                            )}
-                          />
-                          <FormField
-                            control={form.control}
-                            name={`tickets.${index}.ticketStockAvailable`}
-                            render={({ field }) => (
-                              <div className="sm:col-span-2">
-                                <FormItem>
-                                  <FormLabel className="block text-xs font-medium leading-6 text-gray-900">
-                                    Quantidade liberada de ingressos
-                                  </FormLabel>
-                                  <FormControl>
-                                    <Input
-                                      type="number"
-                                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
-                                      placeholder="300"
-                                      {...field}
-                                    />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              </div>
-                            )}
-                          />
-                          <FormField
-                            control={form.control}
-                            name={`tickets.${index}.ticketDescription`}
-                            render={({ field }) => (
-                              <div className="sm:col-span-full">
-                                <FormItem>
-                                  <FormLabel className="block text-xs font-medium leading-6 text-gray-900">
-                                    Descrição
-                                  </FormLabel>
-                                  <FormControl>
-                                    <Textarea
-                                      rows={3}
-                                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
-                                      placeholder="Openbar, VIP, Camisa, Garrafa, Pulseira, Number Plate, etc."
-                                      {...field}
-                                    />
-                                  </FormControl>
-                                  <FormDescription className="text-xs leading-6 text-gray-600">
-                                    Descreve sobre esse ingresso e diga o que
-                                    esse ingresso permite.
-                                  </FormDescription>
-
-                                  <FormMessage />
-                                </FormItem>
-                              </div>
-                            )}
-                          />
-                        </div>
-                        <div>
-                          <FormField
-                            control={form.control}
-                            name={`tickets.${index}.startEndingSelling`}
-                            render={({ field }) => (
-                              <FormItem className="flex flex-col">
-                                <FormLabel className="text-xs font-semibold leading-7 text-gray-900">
-                                  Início e fim das vendas
-                                </FormLabel>
-                                <div className="grid grid-cols-1 gap-x-3 gap-y-3 sm:grid-cols-6">
-                                  <div className="sm:col-span-2">
-                                    <div className="mt-2">
-                                      <div className={cn("grid gap-2")}>
-                                        <Popover>
-                                          <PopoverTrigger asChild>
-                                            <FormControl>
-                                              <Button
-                                                variant={"outline"}
-                                                className={cn(
-                                                  "w-[300px] justify-start text-left font-normal",
-                                                  !field.value &&
-                                                    "text-muted-foreground"
-                                                )}
-                                              >
-                                                <CalendarIcon className="mr-2 h-4 w-4" />
-                                                {field.value?.from ? (
-                                                  field.value.to ? (
-                                                    <>
-                                                      {moment(
-                                                        field.value.from
-                                                      ).format("LL")}{" "}
-                                                      -{" "}
-                                                      {moment(
-                                                        field.value.to
-                                                      ).format("LL")}
-                                                    </>
-                                                  ) : (
-                                                    moment(
+                                            >
+                                              <CalendarIcon className="mr-2 h-4 w-4" />
+                                              {field.value?.from ? (
+                                                field.value.to ? (
+                                                  <>
+                                                    {moment(
                                                       field.value.from
-                                                    ).format("LL")
-                                                  )
+                                                    ).format("LL")}{" "}
+                                                    -{" "}
+                                                    {moment(
+                                                      field.value.to
+                                                    ).format("LL")}
+                                                  </>
                                                 ) : (
-                                                  <span>Escolha uma data</span>
-                                                )}
-                                              </Button>
-                                            </FormControl>
-                                          </PopoverTrigger>
-                                          <PopoverContent
-                                            className="w-auto p-0"
-                                            align="start"
-                                          >
-                                            <Calendar
-                                              mode="range"
-                                              selected={field.value}
-                                              onSelect={field.onChange}
-                                              // disabled={(date) =>
-                                              //   date > new Date() ||
-                                              //   date < new Date("1900-01-01")
-                                              // }
-                                              disabled={(date) =>
-                                                date < new Date()
-                                              }
-                                              defaultMonth={field.value?.from}
-                                              numberOfMonths={2}
-                                              // initialFocus
-                                            />
-                                          </PopoverContent>
-                                        </Popover>
-                                      </div>
+                                                  moment(
+                                                    field.value.from
+                                                  ).format("LL")
+                                                )
+                                              ) : (
+                                                <span>Escolha uma data</span>
+                                              )}
+                                            </Button>
+                                          </FormControl>
+                                        </PopoverTrigger>
+                                        <PopoverContent
+                                          className="w-auto p-0"
+                                          align="start"
+                                        >
+                                          <Calendar
+                                            mode="range"
+                                            selected={field.value}
+                                            onSelect={field.onChange}
+                                            disabled={(date) =>
+                                              date < new Date()
+                                            }
+                                            defaultMonth={field.value?.from}
+                                            numberOfMonths={2}
+                                          />
+                                        </PopoverContent>
+                                      </Popover>
+                                      <FormMessage />
                                     </div>
                                   </div>
                                 </div>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                        <Button
-                          type="button"
-                          variant="destructive"
-                          className="w-10 h-10 absolute -right-4 -top-4 flex justify-center align-center"
-                          onClick={() => remove(index)}
-                          size="icon"
-                        >
-                          <TrashIcon className="h-6 w-6" />
-                        </Button>
+                              </div>
+                            </FormItem>
+                          )}
+                        />
                       </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
+                    </div>
+                  </CardContent>
+                  {/* <CardFooter className="justify-center border-t p-4">
+                    <Button size="sm" variant="ghost" className="gap-1">
+                      <PlusCircle className="h-3.5 w-3.5" />
+                      Add Variant
+                    </Button>
+                  </CardFooter> */}
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Ingressos</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex flex-col">
+                      {/* <CreateTicket
+                    tickets={tickets}
+                    setNewTickets={setNewTickets}
+                  /> */}
+                      <div className="space-y-4">
+                        {fields.map((_, index) => (
+                          <div
+                            className="relative border border-gray-900/10 p-4 rounded"
+                            key={index}
+                          >
+                            <div className="grid grid-cols-1 gap-x-3 gap-y-3 sm:grid-cols-6">
+                              <FormField
+                                control={form.control}
+                                name={`tickets.${index}.ticketName`}
+                                render={({ field }) => (
+                                  <div className="sm:col-span-2 sm:col-start-1">
+                                    <FormItem>
+                                      <FormLabel className="block text-xs font-medium leading-6 text-gray-900">
+                                        Nome
+                                      </FormLabel>
+                                      <FormControl>
+                                        <Input
+                                          placeholder="Inteira"
+                                          className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
+                                          {...field}
+                                        />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  </div>
+                                )}
+                              />
+                              <FormField
+                                control={form.control}
+                                name={`tickets.${index}.ticketPrice`}
+                                render={({ field }) => (
+                                  <div className="sm:col-span-2">
+                                    <FormItem>
+                                      <FormLabel className="block text-xs font-medium leading-6 text-gray-900">
+                                        Preço
+                                      </FormLabel>
+                                      <FormControl>
+                                        <Input
+                                          type="number"
+                                          className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
+                                          placeholder="60"
+                                          min="1"
+                                          {...field}
+                                        />
+                                      </FormControl>
+                                      <FormDescription className="text-xs leading-6 text-gray-600 muted">
+                                        Você recebe:
+                                      </FormDescription>
+                                      <FormMessage />
+                                    </FormItem>
+                                  </div>
+                                )}
+                              />
+                              <FormField
+                                control={form.control}
+                                name={`tickets.${index}.ticketStockAvailable`}
+                                render={({ field }) => (
+                                  <div className="sm:col-span-2">
+                                    <FormItem>
+                                      <FormLabel className="block text-xs font-medium leading-6 text-gray-900">
+                                        Quantidade liberada de ingressos
+                                      </FormLabel>
+                                      <FormControl>
+                                        <Input
+                                          type="number"
+                                          className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
+                                          placeholder="300"
+                                          min="1"
+                                          {...field}
+                                        />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  </div>
+                                )}
+                              />
+                              <FormField
+                                control={form.control}
+                                name={`tickets.${index}.ticketDescription`}
+                                render={({ field }) => (
+                                  <div className="sm:col-span-full">
+                                    <FormItem>
+                                      <FormLabel className="block text-xs font-medium leading-6 text-gray-900">
+                                        Descrição
+                                      </FormLabel>
+                                      <FormControl>
+                                        <Textarea
+                                          rows={3}
+                                          className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
+                                          placeholder="Openbar, VIP, Camisa, Garrafa, Pulseira, Number Plate, etc."
+                                          {...field}
+                                        />
+                                      </FormControl>
+                                      <FormDescription className="text-xs leading-6 text-gray-600">
+                                        Descreve sobre esse ingresso e diga o
+                                        que esse ingresso permite.
+                                      </FormDescription>
 
-            <div className="border-b border-gray-900/10 pb-12">
-              <FormField
-                control={form.control}
-                name="tags"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col items-start">
-                    <FormLabel className="text-xs font-semibold leading-7 text-gray-900">
-                      Tags
-                    </FormLabel>
-                    <FormControl>
-                      <TagInput
-                        {...field}
-                        placeholder="Corrida, Tênis, Muay Thai, Beach Tennis, ..."
-                        tags={tags}
-                        className="sm:min-w-[450px]"
-                        setTags={(newTags) => {
-                          setTags(newTags);
-                          setValue("tags", newTags);
-                        }}
-                        maxTags={5}
-                        minTags={1}
-                        showCount
-                        truncate={6}
-                        clearAll
-                        onClearAll={() => {
-                          setTags([]);
-                        }}
-                        // enableAutocomplete
-                        // autocompleteOptions={autoCompleteOptions}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      Adicione tags que representem o seu evento para facilitar
-                      a busca por parte dos usuários. Separe cada tag por
-                      espaço. As tags funcionam como palavras-chave, tais como
-                      &quot;Corrida&quot;, &quot;BeachTennis&quot;,
-                      &quot;Trilhão&quot;, etc., que ajudam a categorizar o
-                      evento e torná-lo mais acessível a quem procura atividades
-                      específicas. A escolha correta das tags é essencial para
-                      aumentar a visibilidade do seu evento.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                                      <FormMessage />
+                                    </FormItem>
+                                  </div>
+                                )}
+                              />
+                            </div>
+                            <div>
+                              <FormField
+                                control={form.control}
+                                name={`tickets.${index}.startEndingSelling`}
+                                render={({ field }) => (
+                                  <FormItem className="flex flex-col">
+                                    <FormLabel className="text-xs font-semibold leading-7 text-gray-900">
+                                      Início e fim das vendas
+                                    </FormLabel>
+                                    <div className="grid grid-cols-1 gap-x-3 gap-y-3 sm:grid-cols-6">
+                                      <div className="sm:col-span-2">
+                                        <div className="mt-2">
+                                          <div className={cn("grid gap-2")}>
+                                            <Popover>
+                                              <PopoverTrigger asChild>
+                                                <FormControl>
+                                                  <Button
+                                                    variant={"outline"}
+                                                    className={cn(
+                                                      "w-[300px] justify-start text-left font-normal",
+                                                      !field.value &&
+                                                        "text-muted-foreground"
+                                                    )}
+                                                  >
+                                                    <CalendarIcon className="mr-2 h-4 w-4" />
+                                                    {field.value?.from ? (
+                                                      field.value.to ? (
+                                                        <>
+                                                          {moment(
+                                                            field.value.from
+                                                          ).format("LL")}{" "}
+                                                          -{" "}
+                                                          {moment(
+                                                            field.value.to
+                                                          ).format("LL")}
+                                                        </>
+                                                      ) : (
+                                                        moment(
+                                                          field.value.from
+                                                        ).format("LL")
+                                                      )
+                                                    ) : (
+                                                      <span>
+                                                        Escolha uma data
+                                                      </span>
+                                                    )}
+                                                  </Button>
+                                                </FormControl>
+                                              </PopoverTrigger>
+                                              <PopoverContent
+                                                className="w-auto p-0"
+                                                align="start"
+                                              >
+                                                <Calendar
+                                                  mode="range"
+                                                  selected={field.value}
+                                                  onSelect={field.onChange}
+                                                  // disabled={(date) =>
+                                                  //   date > new Date() ||
+                                                  //   date < new Date("1900-01-01")
+                                                  // }
+                                                  disabled={(date) =>
+                                                    date < new Date()
+                                                  }
+                                                  defaultMonth={
+                                                    field.value?.from
+                                                  }
+                                                  numberOfMonths={2}
+                                                  initialFocus
+                                                />
+                                              </PopoverContent>
+                                            </Popover>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                            </div>
+                            <Dialog>
+                              <DialogTrigger>
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  className="mt-4 gap-1 "
+                                  type="button"
+                                >
+                                  <PlusCircle />
+                                  Adicionar Campos Extras
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent className="sm:max-w-[850px]">
+                                <DialogHeader>
+                                  <DialogTitle>Campos extras</DialogTitle>
+                                  <DialogDescription>
+                                    Colete informações extras dos
+                                    participamentes do seu evento. Como
+                                    categorias, pesos, idades e afins. Escolha o
+                                    tipo de campo que quer criar, dê um nome e
+                                    diga se ele é obrigatório ou não.
+                                  </DialogDescription>
+                                </DialogHeader>
+                                <Separator className="my-4" />
+                                <TicketExtraFields fieldIndex={index} />
+                                <DialogFooter className="sm:justify-center w-full ">
+                                  <DialogClose asChild>
+                                    <Button
+                                      type="button"
+                                      className="hover:bg-primary hover:text-white w-full"
+                                    >
+                                      Concluir
+                                    </Button>
+                                  </DialogClose>
+                                </DialogFooter>
+                              </DialogContent>
+                            </Dialog>
+
+                            <Button
+                              type="button"
+                              variant="destructive"
+                              className="w-10 h-10 absolute -right-4 -top-4 flex justify-center align-center"
+                              onClick={() => removeTicket(index)}
+                              size="icon"
+                            >
+                              <TrashIcon className="h-6 w-6" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </CardContent>
+                  <CardFooter className="justify-center border-t p-4">
+                    <Button
+                      size="sm"
+                      className="gap-1"
+                      type="button"
+                      onClick={() =>
+                        appendTicket({
+                          ticketName: "",
+                          // ticketPrice: null,
+                          ticketDescription: "",
+                          // ticketStockAvailable: null,
+                          startEndingSelling: {
+                            from: new Date(),
+                            to: addDays(new Date(), 30),
+                          },
+                        })
+                      }
+                    >
+                      <PlusCircle className="h-3.5 w-3.5" />
+                      Novo Ingresso
+                    </Button>
+                  </CardFooter>
+                </Card>
+
+                {/* <Card>
+                  <CardHeader>
+                    <CardTitle>Categoria do Evento</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid gap-6 sm:grid-cols-3">
+                      <div className="grid gap-3">
+                        <Label htmlFor="category">Category</Label>
+                        <Select>
+                          <SelectTrigger
+                            id="category"
+                            aria-label="Select category"
+                          >
+                            <SelectValue placeholder="Select category" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="clothing">Clothing</SelectItem>
+                            <SelectItem value="electronics">
+                              Electronics
+                            </SelectItem>
+                            <SelectItem value="accessories">
+                              Accessories
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="grid gap-3">
+                        <Label htmlFor="subcategory">
+                          Subcategory (optional)
+                        </Label>
+                        <Select>
+                          <SelectTrigger
+                            id="subcategory"
+                            aria-label="Select subcategory"
+                          >
+                            <SelectValue placeholder="Select subcategory" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="t-shirts">T-Shirts</SelectItem>
+                            <SelectItem value="hoodies">Hoodies</SelectItem>
+                            <SelectItem value="sweatshirts">
+                              Sweatshirts
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card> */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Tags</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <FormField
+                      control={form.control}
+                      name="tags"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-col items-start">
+                          <FormControl>
+                            <TagInput
+                              {...field}
+                              placeholder="Corrida, Tênis, Muay Thai, Beach Tennis, ..."
+                              tags={tags}
+                              className="sm:min-w-[450px]"
+                              setTags={(newTags) => {
+                                setTags(newTags);
+                                setValue("tags", newTags);
+                              }}
+                              maxTags={5}
+                              minTags={1}
+                              showCount
+                              truncate={6}
+                              clearAll
+                              onClearAll={() => {
+                                setTags([]);
+                              }}
+                              // enableAutocomplete
+                              // autocompleteOptions={autoCompleteOptions}
+                            />
+                          </FormControl>
+                          <FormDescription>
+                            Adicione tags que representem o seu evento para
+                            facilitar a busca por parte dos usuários. Separe
+                            cada tag por espaço. As tags funcionam como
+                            palavras-chave, tais como &quot;Corrida&quot;,
+                            &quot;BeachTennis&quot;, &quot;Trilhão&quot;, etc.,
+                            que ajudam a categorizar o evento e torná-lo mais
+                            acessível a quem procura atividades específicas. A
+                            escolha correta das tags é essencial para aumentar a
+                            visibilidade do seu evento.
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </CardContent>
+                </Card>
+              </div>
+              <div className="grid auto-rows-max items-start gap-4 lg:gap-8">
+                {/* <Card>
+                  <CardHeader>
+                    <CardTitle>Product Status</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid gap-6">
+                      <div className="grid gap-3">
+                        <Label htmlFor="status">Status</Label>
+                        <Select>
+                          <SelectTrigger id="status" aria-label="Select status">
+                            <SelectValue placeholder="Select status" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="draft">Draft</SelectItem>
+                            <SelectItem value="published">Active</SelectItem>
+                            <SelectItem value="archived">Archived</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card> */}
+
+                {/* <Card>
+                  <CardHeader>
+                    <CardTitle>Archive Product</CardTitle>
+                    <CardDescription>
+                      Lipsum dolor sit amet, consectetur adipiscing elit.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div></div>
+                    <Button size="sm" variant="secondary">
+                      Arquivar Evento
+                    </Button>
+                  </CardContent>
+                </Card> */}
+              </div>
             </div>
 
             {/* <div className="border-b border-gray-900/10 pb-12">

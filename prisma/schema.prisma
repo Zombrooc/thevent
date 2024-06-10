@@ -59,6 +59,7 @@ model Ticket {
   createdAt            DateTime    @default(now())
   updatedAt            DateTime    @updatedAt
   orderItem            OrderItem[]
+  form                 Form?
 }
 
 model SEOMeta {
@@ -136,4 +137,13 @@ model Analytics {
   updatedAt    DateTime @updatedAt
 
   @@map("analytics")
+}
+
+model Form {
+  id        String   @id @default(cuid())
+  ticketId  String   @unique
+  ticket    Ticket   @relation(fields: [ticketId], references: [id])
+  fields    Json // Armazena a estrutura do formulário em JSON
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

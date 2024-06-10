@@ -26,6 +26,7 @@ export async function createEventAction(
           ticketDescription,
           ticketStockAvailable,
           startEndingSelling,
+          ticketExtraFields,
         } = ticket;
 
         const updatedTicketPrice =
@@ -44,6 +45,7 @@ export async function createEventAction(
           ticketStockAvailable: Number(ticketStockAvailable),
           ticketSubTotalPrice: parseFloat(ticketPrice),
           // qrCodeURL: qrCodeURL.toString(),
+          Forms: json.Stringfy(ticketExtraFields),
           stripeID: stripeID,
           startSellingAt: startEndingSelling.from,
           endSellingAt: startEndingSelling.to,
