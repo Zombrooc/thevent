@@ -46,10 +46,17 @@ export default clerkMiddleware((auth, req) => {
   // if (userId && !isPublicRoute(req)) return NextResponse.next();
 });
 
+// export const config = {
+//   matcher: [
+//     // "/app/:path*",
+//     // "/api/stripe/checkout-sessions",
+//     "/((?!.*\\..*|_next).*)",
+//   ],
+// };
+
 export const config = {
   matcher: [
-    // "/app/:path*",
-    // "/api/stripe/checkout-sessions",
-    "/((?!.*\\..*|_next).*)",
+    // Skip Next.js internals and all static files, unless found in search params
+    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
   ],
 };

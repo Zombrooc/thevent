@@ -86,6 +86,7 @@ export default function TicketExtraFields({ fieldIndex }) {
     remove: removeExtraField,
   } = useFieldArray({
     name: `tickets.${fieldIndex}.extraFields`,
+    control: form.control,
   });
 
   const cardRef = useRef(null);
@@ -117,7 +118,7 @@ export default function TicketExtraFields({ fieldIndex }) {
                   <div className="grid grid-cols-1 gap-x-3 gap-y-3 sm:grid-cols-6">
                     <FormField
                       control={form.control}
-                      name={`tickets.${fieldIndex}.extraField.${index}.name`}
+                      name={`tickets.${fieldIndex}.extraFields.${index}.name`}
                       render={({ field }) => (
                         <div className="sm:col-span-full sm:col-start-1">
                           <FormItem>
@@ -138,7 +139,7 @@ export default function TicketExtraFields({ fieldIndex }) {
                     />
                     <FormField
                       control={form.control}
-                      name={`tickets.${fieldIndex}.extraField.${index}.label`}
+                      name={`tickets.${fieldIndex}.extraFields.${index}.label`}
                       render={({ field }) => (
                         <div className="sm:col-span-3 sm:col-start-1">
                           <FormItem>
@@ -163,7 +164,7 @@ export default function TicketExtraFields({ fieldIndex }) {
 
                     <FormField
                       control={form.control}
-                      name={`tickets.${fieldIndex}.extraField.${index}.type`}
+                      name={`tickets.${fieldIndex}.extraFields.${index}.type`}
                       render={({ field }) => (
                         <FormItem className="col-span full sm:col-span-3">
                           <FormLabel className="block text-xs font-medium leading-6 text-gray-900">

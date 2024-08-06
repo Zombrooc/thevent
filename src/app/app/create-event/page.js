@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { addDays } from "date-fns";
 import {
   Dialog,
@@ -112,7 +112,9 @@ export default function CreateEvent() {
   });
   // const { isLoaded, isSignedIn, user } = useUser();
 
-  const { setValue } = form;
+  const { setValue, watch } = form;
+
+  const formData = watch();
 
   const {
     fields,
@@ -124,6 +126,7 @@ export default function CreateEvent() {
   });
 
   async function onSubmit(data) {
+    console.log("Form Data:", data);
     const eventData = {
       eventName: data.eventName,
       eventDescription: data.eventDescription,
@@ -159,10 +162,14 @@ export default function CreateEvent() {
       address
     );
 
-    console.log(res);
+    console.log("Res: ", res);
 
     form.reset();
   }
+
+  useEffect(() => {
+    console.log(formData);
+  }, [watch, formData]);
 
   // if (!isLoaded || !isSignedIn) {
   //   return null;
@@ -733,7 +740,7 @@ export default function CreateEvent() {
                                 <Separator className="my-4" />
                                 <TicketExtraFields fieldIndex={index} />
                                 <DialogFooter className="sm:justify-center w-full ">
-                                  <DialogClose asChild>
+                                  <DialogClose>
                                     <Button
                                       type="button"
                                       className="hover:bg-primary hover:text-white w-full"

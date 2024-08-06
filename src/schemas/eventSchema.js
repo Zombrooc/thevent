@@ -60,7 +60,7 @@ export const eventSchema = z.object({
         .max(50, {
           message: "O nome do ingresso deve ter no máximo 50 caracteres.",
         }),
-      ticketPrice: z
+      ticketPrice: z.coerce
         .number()
         .nonnegative()
         .min(0, { message: "O preço do ingresso não pode ser negativo." }),
@@ -72,7 +72,7 @@ export const eventSchema = z.object({
         .max(200, {
           message: "A descrição do ingresso deve ter no máximo 300 caracteres.",
         }),
-      ticketStockAvailable: z.number().positive().int().min(1, {
+      ticketStockAvailable: z.coerce.number().positive().int().min(1, {
         message: "A quantidade de ingressos disponíveis deve ser pelo menos 1.",
       }),
       startEndingSelling: z
