@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/database";
 // import { generateQR } from "@/lib/qrCode";
 import { createStripeProduct } from "@/lib/stripe";
-import { auth, clerkClient } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 
 export async function createEventAction(
   bannerImage,
@@ -26,7 +26,7 @@ export async function createEventAction(
           ticketDescription,
           ticketStockAvailable,
           startEndingSelling,
-          ticketExtraFields,
+          extraFields,
         } = ticket;
 
         const updatedTicketPrice =
@@ -44,8 +44,13 @@ export async function createEventAction(
           ticketDescription,
           ticketStockAvailable: Number(ticketStockAvailable),
           ticketSubTotalPrice: parseFloat(ticketPrice),
-          // qrCodeURL: qrCodeURL.toString(),
-          Forms: json.Stringfy(ticketExtraFields),
+          form: {
+            create: {
+              fields: JSON.stringify({
+                fields: extraFields,
+              }),
+            },
+          },
           stripeID: stripeID,
           startSellingAt: startEndingSelling.from,
           endSellingAt: startEndingSelling.to,

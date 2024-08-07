@@ -15,7 +15,6 @@ import {
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useFieldArray } from "react-hook-form";
-import { z } from "zod";
 
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
@@ -28,11 +27,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  CalendarIcon,
-  CheckIcon,
-  CurrencyDollarIcon,
-} from "@heroicons/react/20/solid";
+import { CalendarIcon } from "@heroicons/react/20/solid";
 import {
   Form,
   FormControl,
@@ -50,37 +45,18 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useToast } from "@/components/ui/use-toast";
 import ImageUpload from "@/components/ImageUpload";
 
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 import moment from "moment";
 import { Textarea } from "@/components/ui/textarea";
 import { TrashIcon } from "@radix-ui/react-icons";
 import { createEventAction } from "./_actions/createEventAction";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { eventSchema as FormSchema } from "@/schemas/eventSchema";
 import TicketExtraFields from "@/components/Ticket/TicketExtraFields";
 import { PlusCircle } from "lucide-react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
 
 export default function CreateEvent() {
@@ -98,7 +74,6 @@ export default function CreateEvent() {
       streetAddress: "",
       localName: "",
       neighborhood: "",
-      // number: null,
       city: "",
       state: "",
       postalCode: "",
@@ -110,11 +85,8 @@ export default function CreateEvent() {
       tags: [],
     },
   });
-  // const { isLoaded, isSignedIn, user } = useUser();
 
-  const { setValue, watch } = form;
-
-  const formData = watch();
+  const { setValue } = form;
 
   const {
     fields,
@@ -126,22 +98,20 @@ export default function CreateEvent() {
   });
 
   async function onSubmit(data) {
-    console.log("Form Data:", data);
     const eventData = {
       eventName: data.eventName,
       eventDescription: data.eventDescription,
-
       eventDateStartEnd: data.eventDateStartEnd,
     };
 
     const address = {
-      street: data.streetAddress,
+      street: data.street,
       localName: data.localName,
       neighborhood: data.neighborhood,
       number: Number(data.number),
       city: data.city,
       state: data.state,
-      cep: data.postalCode,
+      cep: data.cep,
     };
 
     const ticketsData = data.tickets;
@@ -152,9 +122,7 @@ export default function CreateEvent() {
       };
     });
 
-    console.log(eventData, ticketsData, tagsData, address);
-
-    const res = await createEventAction(
+    await createEventAction(
       bannerImage,
       eventData,
       ticketsData,
@@ -162,18 +130,8 @@ export default function CreateEvent() {
       address
     );
 
-    console.log("Res: ", res);
-
     form.reset();
   }
-
-  useEffect(() => {
-    console.log(formData);
-  }, [watch, formData]);
-
-  // if (!isLoaded || !isSignedIn) {
-  //   return null;
-  // }
 
   return (
     <>
