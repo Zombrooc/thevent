@@ -1,8 +1,9 @@
 import { headers } from "next/headers";
 // import { getSession } from "@auth0/nextjs-auth0";
 
+import { clerkClient } from "@/lib/clerkClient";
 import { prisma } from "@/lib/database";
-import { auth, clerkClient, currentUser } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 
 import { stripe } from "@/lib/stripe";
 
@@ -87,7 +88,7 @@ export async function POST(req) {
       mode: "payment",
 
       payment_intent_data: {
-        application_fee_amount: appFee * 100,
+        application_fee_amount: Math.floor(appFee * 100),
         on_behalf_of:
           eventProducerDetails.privateMetadata.stripeConnectedAccount,
         transfer_data: {
