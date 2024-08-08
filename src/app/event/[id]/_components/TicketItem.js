@@ -40,7 +40,8 @@ export default function TicketItem({ ticket, isAuth }) {
             R$ <span className="text-2xl"> {ticket.ticketSubTotalPrice}</span>
           </span>
           <span className="text-xs">
-            Taxa de 10% + R$0,30 por ingresso ({ticket.ticketPrice})
+            Taxa de 10% por ingresso (R$
+            {ticket.ticketPrice})
           </span>
         </div>
         {isAuth ? (

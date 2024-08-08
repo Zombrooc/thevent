@@ -40,13 +40,13 @@ export default async function EventDetails({ params }) {
               width="600"
             />
           </div>
-          <div className="max-w-5xl min-h-screen bg-muted/40 mx-auto px-4 sm:px-6 lg:px-8 pt-12 grid grid-cols-1 gap-x-5 gap-y-3 sm:grid-cols-6  ">
+          <div className="max-w-5xl min-h-screen bg-muted/40 bg-white mx-auto px-4 sm:px-6 lg:px-8 pt-12 grid grid-cols-1 gap-x-5 gap-y-3 sm:grid-cols-6  ">
             <div className="col-span-4">
               <div className="w-full">
                 <div className="space-y-2">
                   <div className="flex rounded-lg px-3 py-1 text-base ">
                     {eventData?.tags.map((tag, index) => (
-                      <Badge key={index} className="mr-2">
+                      <Badge key={index} className="mr-2 capitalize">
                         {tag.tag}
                       </Badge>
                     ))}

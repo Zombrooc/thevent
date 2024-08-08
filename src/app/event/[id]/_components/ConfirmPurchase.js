@@ -2,18 +2,16 @@ import { Button } from "@/components/ui/button";
 
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { redirect, usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 
-export default function ConfirmPurchase({ params }) {
+export default function ConfirmPurchase() {
   const pathname = usePathname();
   const router = useRouter();
   const { tickets: ticketCart, totalPrice } = useSelector(

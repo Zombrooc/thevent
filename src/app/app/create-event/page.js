@@ -673,7 +673,7 @@ export default function CreateEvent() {
                               />
                             </div>
                             <Dialog>
-                              <DialogTrigger>
+                              <DialogTrigger asChild>
                                 <Button
                                   size="sm"
                                   variant="ghost"
