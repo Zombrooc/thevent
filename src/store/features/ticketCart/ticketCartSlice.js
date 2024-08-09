@@ -14,6 +14,7 @@ export const ticketCartSlice = createSlice({
         stripeID: ticket.stripeID,
         quantity: 0,
         price: ticket.ticketPrice,
+        form: ticket.form,
       }));
       return {
         ...state,

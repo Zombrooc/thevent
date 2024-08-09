@@ -46,9 +46,7 @@ export async function createEventAction(
           ticketSubTotalPrice: parseFloat(ticketPrice),
           form: {
             create: {
-              fields: JSON.stringify({
-                fields: extraFields,
-              }),
+              fields: JSON.stringify(extraFields),
             },
           },
           stripeID: stripeID,

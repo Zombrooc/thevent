@@ -1,5 +1,6 @@
 import Navbar from "@/components/Navbar";
 import { constructMetadata } from "@/lib/constructMetadata";
+import TicketProvider from "@/store/features/ticketCart/TicketProvider";
 
 // export async function generateStaticParams() {
 //   const eventRes = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/events`);
@@ -54,11 +55,12 @@ const incrementPageViews = async (eventId) => {
 };
 export default async function Layout({ children, params }) {
   await incrementPageViews(params.id);
+  const { eventData } = await getEventData(params.id);
 
   return (
-    <>
+    <TicketProvider initialState={eventData.tickets}>
       <Navbar />
       {children}
-    </>
+    </TicketProvider>
   );
 }

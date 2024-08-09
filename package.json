@@ -55,6 +55,7 @@
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@udecode/plate": "^31.0.0",
     "@vercel/analytics": "^1.2.2",
+    "@vercel/kv": "^2.0.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "cmdk": "^1.0.0",

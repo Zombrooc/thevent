@@ -84,9 +84,9 @@ export default async function EventDetails({ params }) {
                 </div>
               </div>
             </div>
-            <TicketProvider initialState={eventData.tickets}>
-              <TicketList tickets={eventData.tickets} />
-            </TicketProvider>
+            {/* <TicketProvider initialState={eventData.tickets}> */}
+            <TicketList tickets={eventData.tickets} />
+            {/* </TicketProvider> */}
           </div>
         </>
       )}
