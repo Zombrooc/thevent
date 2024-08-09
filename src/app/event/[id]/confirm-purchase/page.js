@@ -1,5 +1,6 @@
 "use client";
 
+import { Input } from "@/components/ui/input";
 import { useSelector } from "react-redux";
 
 export default function EventDetails({ params }) {
@@ -26,11 +27,21 @@ export default function EventDetails({ params }) {
                       {/* <p className="text-sm text-gray-500">
                       Quantidade: {ticket.quantity}
                     </p> */}
-                      {console.log(ticket.form.fields)}
+                      {Object.values(ticket.form.fields).map((field) => (
+                        <p key={field.name}>
+                          {field.label}
+                          <Input
+                            placeholder={field.name}
+                            type={field.type}
+                            required={ticket.form.fields.required}
+                          />
+                        </p>
+                      ))}
                     </div>
                     <p className="text-sm font-medium">
                       R${ticket.price.toFixed(2)}
                     </p>
+                    <br />
                   </li>
                 ))
               )}
