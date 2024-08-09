@@ -8,10 +8,15 @@ export async function GET(req, { params }) {
     include: {
       address: true,
       tags: true,
-      tickets: true,
+      tickets: {
+        include: {
+          form: true,
+        },
+      },
     },
   });
 
+  console.log(eventData.tickets);
   if (eventData) {
     return Response.json({
       eventData: eventData,

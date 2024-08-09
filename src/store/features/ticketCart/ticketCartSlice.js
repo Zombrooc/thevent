@@ -8,14 +8,17 @@ export const ticketCartSlice = createSlice({
   },
   reducers: {
     initializeState: (state, action) => {
-      const newCartState = action.payload.map((ticket) => ({
-        id: ticket.id,
-        ticketName: ticket.ticketName,
-        stripeID: ticket.stripeID,
-        quantity: 0,
-        price: ticket.ticketPrice,
-        form: ticket.form,
-      }));
+      const newCartState = action.payload.map((ticket) => {
+        console.log(ticket);
+        return {
+          id: ticket.id,
+          ticketName: ticket.ticketName,
+          stripeID: ticket.stripeID,
+          quantity: 0,
+          price: ticket.ticketPrice,
+          form: ticket.form,
+        };
+      });
       return {
         ...state,
         tickets: newCartState,

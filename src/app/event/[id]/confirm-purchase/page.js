@@ -26,6 +26,7 @@ export default function EventDetails({ params }) {
                       {/* <p className="text-sm text-gray-500">
                       Quantidade: {ticket.quantity}
                     </p> */}
+                      {console.log(ticket.form.fields)}
                     </div>
                     <p className="text-sm font-medium">
                       R${ticket.price.toFixed(2)}
