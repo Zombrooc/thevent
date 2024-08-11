@@ -1,11 +1,12 @@
 "use client";
 
 import TicketItem from "./TicketItem";
-// import ConfirmPurchase from "./ConfirmPurchase";
+import ConfirmPurchase from "../ConfirmPurchase";
 import { useSelector } from "react-redux";
+// import { useUser } from "@auth0/nextjs-auth0/client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { useUser } from "@clerk/nextjs";
 
 export default function TicketList({ tickets }) {
@@ -27,23 +28,15 @@ export default function TicketList({ tickets }) {
 
         {user ? (
           <>
-            <p className="text-lg font-semibold">Total: R$ {totalPrice}</p>
-            {/* <ConfirmPurchase /> */}
-            {totalPrice > 0 && (
-              <Button type="button" asChild>
-                <Link href={`${pathname}/confirm-purchase`}>Comprar agora</Link>
-              </Button>
-            )}
+            <p className="text-lg font-semibold">
+              Preço Total: R$ {totalPrice}
+            </p>
+            <ConfirmPurchase />
           </>
         ) : (
           <Button asChild>
-            <Link
-              href={{
-                pathname: "/api/auth/login",
-                query: { returnTo: pathname },
-              }}
-            >
-              Faça login para poder comprar seus ingressos
+            <Link href={`/api/auth/login?returnTo=${pathname}`}>
+              Faça login para comprar os ingresso
             </Link>
           </Button>
         )}
