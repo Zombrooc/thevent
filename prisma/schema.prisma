@@ -118,6 +118,7 @@ model OrderItem {
   ticket      Ticket   @relation(fields: [ticketId], references: [id])
   ticketId    String
   quantity    Int
+  ticketData  Json
   checkInDone Boolean? @default(false)
   qrCodeURL   String?
   createdAt   DateTime @default(now())

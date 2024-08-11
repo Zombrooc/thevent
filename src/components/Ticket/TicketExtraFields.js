@@ -183,8 +183,14 @@ export default function TicketExtraFields({ fieldIndex }) {
                             <SelectContent>
                               <SelectItem value="string">Texto</SelectItem>
                               <SelectItem value="number">Número</SelectItem>
+                              <SelectItem value="select">
+                                Lista Suspensa
+                              </SelectItem>
+                              <SelectItem value="radio">
+                                Múltipla escolha
+                              </SelectItem>
                               <SelectItem value="checkbox">
-                                Caixa de Seleção
+                                Caixa de seleção
                               </SelectItem>
                             </SelectContent>
                           </Select>

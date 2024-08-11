@@ -86,6 +86,12 @@ export default function CreateEvent() {
     },
   });
 
+  const watchExtraFieldType = form.watch("tickets");
+
+  useEffect(() => {
+    console.log(watchExtraFieldType);
+  }, [watchExtraFieldType]);
+
   const { setValue } = form;
 
   const {

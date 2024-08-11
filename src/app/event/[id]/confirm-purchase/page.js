@@ -1,6 +1,7 @@
 "use client";
 
 import { Input } from "@/components/ui/input";
+import { Fragment } from "react";
 import { useSelector } from "react-redux";
 
 export default function EventDetails({ params }) {
@@ -14,7 +15,7 @@ export default function EventDetails({ params }) {
         <div className="space-y-4">
           <h3 className="text-lg font-bold">Resumo do Pedido</h3>
           <ul className="divide-y divide-gray-200">
-            {Object.values(ticketCart)
+            {/* {Object.values(ticketCart)
               .filter((ticket) => ticket.quantity > 0)
               .map((ticket) =>
                 [...Array(ticket.quantity)].map((e, i) => (
@@ -26,7 +27,7 @@ export default function EventDetails({ params }) {
                       <h4 className="text-lg font-bold">{ticket.ticketName}</h4>
                       {/* <p className="text-sm text-gray-500">
                       Quantidade: {ticket.quantity}
-                    </p> */}
+                    </p>
                       {Object.values(ticket.form.fields).map((field) => (
                         <p key={field.name}>
                           {field.label}
@@ -44,7 +45,43 @@ export default function EventDetails({ params }) {
                     <br />
                   </li>
                 ))
-              )}
+              )} */}
+            {ticketCart
+              .filter((ticket) => ticket.quantity > 0)
+              .map((ticket) => (
+                <li
+                  key={ticket.id}
+                  className="py-4 flex justify-between items-center"
+                >
+                  <div>
+                    <h4 className="text-lg font-bold">{ticket.ticketName}</h4>
+                    <p className="text-sm text-gray-500">
+                      Quantidade: {ticket.quantity}
+                    </p>
+                    {[...Array(ticket.quantity)].map((e, i) => (
+                      <Fragment key={i}>
+                        <h4 className="text-lg font-bold">
+                          {ticket.ticketName} - ({i + 1})
+                        </h4>
+                        {ticket.form.fields.map((field) => (
+                          <p key={field.name}>
+                            {field.label}
+                            <Input
+                              placeholder={field.name}
+                              type={field.type}
+                              required={ticket.form.fields.required}
+                            />
+                          </p>
+                        ))}
+                      </Fragment>
+                    ))}
+                  </div>
+                  <p className="text-sm font-medium">
+                    R${ticket.price.toFixed(2)}
+                  </p>
+                  <br />
+                </li>
+              ))}
           </ul>
           <div className="pt-4 flex justify-between">
             <span className="text-lg font-medium">Total</span>
