@@ -89,6 +89,15 @@ export default function TicketExtraFields({ fieldIndex }) {
     control: form.control,
   });
 
+  const {
+    fields,
+    append: appendFieldType,
+    remove: appendFieldType,
+  } = useFieldArray({
+    name: `tickets.${fieldIndex}.extraFields`,
+    control: form.control,
+  });
+
   const cardRef = useRef(null);
 
   useEffect(() => {
@@ -97,6 +106,11 @@ export default function TicketExtraFields({ fieldIndex }) {
     }
   }, [fields.length]);
 
+  const watchAll = form.watch();
+
+  useEffect(() => {
+    console.log(watchAll);
+  }, [watchAll]);
   return (
     <>
       {fields.length > 0 && (
@@ -201,6 +215,12 @@ export default function TicketExtraFields({ fieldIndex }) {
                         </FormItem>
                       )}
                     />
+                    {watchAll.tickets[fieldIndex].extraFields[index].type ===
+                      "checkbox" && <span> Checkbox </span>}
+                    {watchAll.tickets[fieldIndex].extraFields[index].type ===
+                      "radio" && <span> Radio </span>}
+                    {watchAll.tickets[fieldIndex].extraFields[index].type ===
+                      "select" && <span> Select </span>}
                   </div>
                 </div>
               </CardContent>
