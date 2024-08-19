@@ -29,25 +29,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
-import { addDays } from "date-fns";
+import { useEffect, useRef } from "react";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, useFieldArray, useFormContext } from "react-hook-form";
-import { z } from "zod";
+import { useFieldArray, useFormContext } from "react-hook-form";
 
-import { Calendar } from "@/components/ui/calendar";
-
-import { cn } from "@/lib/utils";
-import {
-  CalendarIcon,
-  CheckIcon,
-  CurrencyDollarIcon,
-} from "@heroicons/react/20/solid";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
-  Form,
   FormControl,
   FormDescription,
   FormField,
@@ -55,44 +42,77 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { TagInput } from "@/components/Tag/tagInput";
 import React from "react";
 
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { useToast } from "@/components/ui/use-toast";
-import ImageUpload from "@/components/ImageUpload";
-
-import { Label } from "@/components/ui/label";
-
-import { Checkbox } from "@/components/ui/checkbox";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-
-import moment from "moment";
 import { TrashIcon } from "@radix-ui/react-icons";
 
-import { eventSchema as FormSchema } from "@/schemas/eventSchema";
-import { Skeleton } from "@/components/ui/skeleton";
+function SelectInputOptions({ fieldPath }) {
+  const form = useFormContext();
+
+  const {
+    fields: selectInputOptions,
+    append: appendSelectInputOptions,
+    remove: removeSelectInputOptions,
+  } = useFieldArray({
+    name: fieldPath,
+    control: form.control,
+  });
+
+  return (
+    <>
+      {selectInputOptions.map((child, index) => (
+        <FormField
+          key={child.id}
+          control={form.control}
+          name={`${fieldPath}.${index}.option`}
+          render={({ field }) => (
+            <div className="sm:col-span-3 sm:col-start-1">
+              <FormItem>
+                <FormControl>
+                  <Input
+                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+                <FormDescription>
+                  You can manage email addresses in your{" "}
+                </FormDescription>
+              </FormItem>
+              <Button
+                type="button"
+                variant="destructive"
+                className="w-10 h-10 absolute right-4 top-4 flex justify-center align-center"
+                onClick={() => removeSelectInputOptions(index)}
+                size="icon"
+              >
+                <TrashIcon className="h-6 w-6" />
+              </Button>
+            </div>
+          )}
+        />
+      ))}
+      <Button
+        size="sm"
+        variant="ghost"
+        className="gap-1"
+        type="button"
+        onClick={() => appendSelectInputOptions({ option: "" })}
+      >
+        <PlusCircle />
+        Adicionar opção{" "}
+      </Button>
+    </>
+  );
+}
 
 export default function TicketExtraFields({ fieldIndex }) {
   const form = useFormContext();
 
   const {
-    fields,
+    fields: extraFieldsField,
     append: appendExtraField,
     remove: removeExtraField,
-  } = useFieldArray({
-    name: `tickets.${fieldIndex}.extraFields`,
-    control: form.control,
-  });
-
-  const {
-    fields,
-    append: appendFieldType,
-    remove: appendFieldType,
   } = useFieldArray({
     name: `tickets.${fieldIndex}.extraFields`,
     control: form.control,
@@ -101,10 +121,10 @@ export default function TicketExtraFields({ fieldIndex }) {
   const cardRef = useRef(null);
 
   useEffect(() => {
-    if (fields.length > 0) {
+    if (extraFieldsField.length > 0) {
       cardRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [fields.length]);
+  }, [extraFieldsField.length]);
 
   const watchAll = form.watch();
 
@@ -113,9 +133,9 @@ export default function TicketExtraFields({ fieldIndex }) {
   }, [watchAll]);
   return (
     <>
-      {fields.length > 0 && (
+      {extraFieldsField.length > 0 && (
         <ScrollArea className="h-[500px] w-full p-4">
-          {fields.map((child, index, row) => (
+          {extraFieldsField.map((child, index, row) => (
             <Card
               key={child.id}
               className="mb-4 relative"
@@ -220,7 +240,11 @@ export default function TicketExtraFields({ fieldIndex }) {
                     {watchAll.tickets[fieldIndex].extraFields[index].type ===
                       "radio" && <span> Radio </span>}
                     {watchAll.tickets[fieldIndex].extraFields[index].type ===
-                      "select" && <span> Select </span>}
+                      "select" && (
+                      <SelectInputOptions
+                        fieldPath={`tickets.${fieldIndex}.extraFields.${index}.selectOptions`}
+                      />
+                    )}
                   </div>
                 </div>
               </CardContent>
