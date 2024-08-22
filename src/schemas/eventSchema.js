@@ -1,6 +1,14 @@
 import { z } from "zod";
 
-const inputType = ["text", "number", "select", "checkbox", "select", "radio"];
+const inputType = [
+  "text",
+  "number",
+  "select",
+  "checkbox",
+  "select",
+  "radio",
+  "date",
+];
 
 export const eventSchema = z
   .object({
