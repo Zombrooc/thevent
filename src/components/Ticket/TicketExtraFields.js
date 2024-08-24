@@ -200,42 +200,45 @@ export default function TicketExtraFields({ fieldIndex }) {
                       <FormField
                         control={form.control}
                         name={`tickets.${fieldIndex}.extraFields.${index}.type`}
-                        render={({ field }) => (
-                          <FormItem className="col-span full sm:col-span-3">
-                            <FormLabel className="block text-xs font-medium leading-6 text-gray-900">
-                              Tipo
-                            </FormLabel>
-                            <Select
-                              onValueChange={field.onChange}
-                              // defaultValue={field.value}
-                              className="w-full"
-                            >
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Selecione o tipo de campo." />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value="string">Texto</SelectItem>
-                                <SelectItem value="number">Número</SelectItem>
-                                <SelectItem value="select">
-                                  Lista Suspensa
-                                </SelectItem>
-                                <SelectItem value="radio">
-                                  Múltipla escolha
-                                </SelectItem>
-                                <SelectItem value="checkbox">
-                                  Caixa de seleção
-                                </SelectItem>
-                                <SelectItem value="date">Data</SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <FormDescription>
-                              You can manage email addresses in your{" "}
-                            </FormDescription>
-                            <FormMessage />
-                          </FormItem>
-                        )}
+                        render={({ field }) => {
+                          console.log("Field: ", field);
+                          return (
+                            <FormItem className="col-span full sm:col-span-3">
+                              <FormLabel className="block text-xs font-medium leading-6 text-gray-900">
+                                Tipo
+                              </FormLabel>
+                              <Select
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                                className="w-full"
+                              >
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Selecione o tipo de campo." />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  <SelectItem value="text">Texto</SelectItem>
+                                  <SelectItem value="number">Número</SelectItem>
+                                  <SelectItem value="select">
+                                    Lista Suspensa
+                                  </SelectItem>
+                                  <SelectItem value="radio">
+                                    Múltipla escolha
+                                  </SelectItem>
+                                  <SelectItem value="checkbox">
+                                    Caixa de seleção
+                                  </SelectItem>
+                                  <SelectItem value="date">Data</SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <FormDescription>
+                                You can manage email addresses in your{" "}
+                              </FormDescription>
+                              <FormMessage />
+                            </FormItem>
+                          );
+                        }}
                       />
                       {watchAll.tickets[fieldIndex].extraFields[index].type ===
                         "checkbox" && <span> Checkbox </span>}
@@ -274,7 +277,7 @@ export default function TicketExtraFields({ fieldIndex }) {
                 label: "Peso",
                 name: "Peso",
                 type: "text",
-                value: "text",
+
                 required: false,
               })
             }
