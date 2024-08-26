@@ -8,6 +8,7 @@ module.exports = {
     "./components/**/*.{js,jsx}",
     "./app/**/*.{js,jsx}",
     "./src/**/*.{js,jsx}",
+    "./stories/**/*.{js,ts,jsx,tsx}", // Here!
   ],
   prefix: "",
   theme: {

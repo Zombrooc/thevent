@@ -8,6 +8,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 
@@ -18,35 +19,35 @@ export default function ConfirmPurchase() {
     (state) => state.ticketCart
   );
 
-  const handleConfirmPurchase = async () => {
-    const filteredTickets = await ticketCart.filter(
-      (ticket) => ticket.quantity > 0
-    );
+  // const handleConfirmPurchase = async () => {
+  // const filteredTickets = await ticketCart.filter(
+  //   (ticket) => ticket.quantity > 0
+  // );
 
-    const purchaseData = {
-      tickets: filteredTickets,
-      totalPrice,
-      event: pathname.split("/")[2],
-    };
+  // const purchaseData = {
+  //   tickets: filteredTickets,
+  //   totalPrice,
+  //   event: pathname.split("/")[2],
+  // };
 
-    const response = await fetch("/api/stripe/checkout-sessions", {
-      method: "POST",
-      body: JSON.stringify(purchaseData),
-    });
+  // const response = await fetch("/api/stripe/checkout-sessions", {
+  //   method: "POST",
+  //   body: JSON.stringify(purchaseData),
+  // });
 
-    if (response.status === 401 && response.statusText === "Unauthorized") {
-      router.push("/api/auth/login");
-    } else {
-      response
-        .json()
-        .then((session) => {
-          router.push(session.url);
-        })
-        .catch((err) => {
-          console.error("Erro ao obter URL de checkout", err);
-        });
-    }
-  };
+  // if (response.status === 401 && response.statusText === "Unauthorized") {
+  //   router.push("/api/auth/login");
+  // } else {
+  //   response
+  //     .json()
+  //     .then((session) => {
+  //       router.push(session.url);
+  //     })
+  //     .catch((err) => {
+  //       console.error("Erro ao obter URL de checkout", err);
+  //     });
+  // }
+  // };{}
 
   return (
     <Dialog>
@@ -92,8 +93,12 @@ export default function ConfirmPurchase() {
           </div>
         </div>
 
-        <Button type="button" onClick={() => handleConfirmPurchase()}>
-          Confirmar
+        <Button
+          type="button"
+          //  onClick={() => handleConfirmPurchase()}
+          asChild
+        >
+          <Link href={`${pathname}/confirm-purchase`}>Confirmar</Link>
         </Button>
       </DialogContent>
     </Dialog>

@@ -104,6 +104,7 @@ export default function CreateEventClient() {
   });
 
   async function onSubmit(data) {
+    console.log("Criando...");
     const eventData = {
       eventName: data.eventName,
       eventDescription: data.eventDescription,

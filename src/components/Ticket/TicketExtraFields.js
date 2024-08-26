@@ -1,3 +1,5 @@
+"use client";
+
 import { ChevronLeft, PlusCircle, Upload } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -29,7 +31,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import crypto from "crypto";
 
 import { useFieldArray, useFormContext } from "react-hook-form";
 
@@ -42,66 +45,115 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import React from "react";
 
 import { TrashIcon } from "@radix-ui/react-icons";
+import { TagInput } from "emblor";
 
-function SelectInputOptions({ fieldPath }) {
+function InputOptions({ fieldPath, initialData }) {
+  console.log("Initial Data", initialData);
+  // const form = useFormContext();
+
+  // const {
+  //   fields: selectInputOptions,
+  //   append: appendSelectInputOptions,
+  //   remove: removeSelectInputOptions,
+  // } = useFieldArray({
+  //   name: fieldPath,
+  //   control: form.control,
+  // });
+
+  // return (
+  //   <>
+  //     {selectInputOptions.map((child, index) => (
+  //       <FormField
+  //         key={child.id}
+  //         control={form.control}
+  //         name={`${fieldPath}.${index}`}
+  //         render={({ field }) => (
+  //           <div className="sm:col-span-3 sm:col-start-1">
+  //             <FormItem>
+  //               <FormControl>
+  //                 <Input
+  //                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
+  //                   {...field}
+  //                 />
+  //               </FormControl>
+  //               <FormMessage />
+  //               <FormDescription>
+  //                 You can manage email addresses in your{" "}
+  //               </FormDescription>
+  //             </FormItem>
+  //             <Button
+  //               type="button"
+  //               variant="destructive"
+  //               className="w-10 h-10 absolute right-4 top-4 flex justify-center align-center"
+  //               onClick={() => removeSelectInputOptions(index)}
+  //               size="icon"
+  //             >
+  //               <TrashIcon className="h-6 w-6" />
+  //             </Button>
+  //           </div>
+  //         )}
+  //       />
+  //     ))}
+  //     <Button
+  //
+  //       variant="ghost"
+  //       className="gap-1"
+  //       type="button"
+  //       onClick={() => appendSelectInputOptions({ option: "" })}
+  //     >
+  //       <PlusCircle />
+  //       Adicionar opção{" "}
+  //     </Button>
+  //   </>
   const form = useFormContext();
+  const [tags, setTags] = useState([]);
+  const [activeTagIndex, setActiveTagIndex] = useState(null);
 
-  const {
-    fields: selectInputOptions,
-    append: appendSelectInputOptions,
-    remove: removeSelectInputOptions,
-  } = useFieldArray({
-    name: fieldPath,
-    control: form.control,
-  });
+  const { setValue } = form;
+
+  useEffect(() => {
+    if (initialData) {
+      setTags(initialData);
+      setValue(fieldPath, initialData);
+    }
+  }, []);
 
   return (
     <>
-      {selectInputOptions.map((child, index) => (
-        <FormField
-          key={child.id}
-          control={form.control}
-          name={`${fieldPath}.${index}.option`}
-          render={({ field }) => (
-            <div className="sm:col-span-3 sm:col-start-1">
-              <FormItem>
-                <FormControl>
-                  <Input
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-                <FormDescription>
-                  You can manage email addresses in your{" "}
-                </FormDescription>
-              </FormItem>
-              <Button
-                type="button"
-                variant="destructive"
-                className="w-10 h-10 absolute right-4 top-4 flex justify-center align-center"
-                onClick={() => removeSelectInputOptions(index)}
-                size="icon"
-              >
-                <TrashIcon className="h-6 w-6" />
-              </Button>
-            </div>
-          )}
-        />
-      ))}
-      <Button
-        size="sm"
-        variant="ghost"
-        className="gap-1"
-        type="button"
-        onClick={() => appendSelectInputOptions({ option: "" })}
-      >
-        <PlusCircle />
-        Adicionar opção{" "}
-      </Button>
+      <FormField
+        control={form.control}
+        name={fieldPath}
+        render={({ field }) => (
+          <>
+            <FormItem className="flex flex-col items-start col-span-full">
+              <FormLabel className="block text-xs font-medium leading-6 text-gray-900">
+                Opções
+              </FormLabel>
+              <FormControl className="w-full">
+                <TagInput
+                  {...field}
+                  placeholder="Opções"
+                  tags={tags}
+                  className="w-full "
+                  setTags={(newTags) => {
+                    setTags(newTags);
+                    setValue(fieldPath, newTags);
+                  }}
+                  activeTagIndex={activeTagIndex}
+                  setActiveTagIndex={setActiveTagIndex}
+                  animation="fadeIn"
+                />
+              </FormControl>
+              <FormDescription className="text-left">
+                Digite a opção e utilize a virgula (,) para separa-los.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          </>
+        )}
+      />
     </>
   );
 }
@@ -143,7 +195,14 @@ export default function TicketExtraFields({ fieldIndex }) {
                 ref={index + 1 === row.length ? cardRef : null}
               >
                 <CardHeader>
-                  <CardTitle>Campo {index + 1}</CardTitle>
+                  <CardTitle>
+                    {" "}
+                    {(watchAll.tickets[fieldIndex].extraFields[index].name ??=
+                      `Campo ${index + 1}`) ||
+                      (watchAll.tickets[fieldIndex].extraFields[index].name ===
+                        "" &&
+                        `Campo ${index + 1}`)}
+                  </CardTitle>
                   {/* <CardDescription>
               Diga pra gente qual será o local e data do seu evento
             </CardDescription> */}
@@ -155,31 +214,10 @@ export default function TicketExtraFields({ fieldIndex }) {
                         control={form.control}
                         name={`tickets.${fieldIndex}.extraFields.${index}.name`}
                         render={({ field }) => (
-                          <div className="sm:col-span-full sm:col-start-1">
-                            <FormItem>
-                              <FormLabel className="block text-xs font-medium leading-6 text-gray-900">
-                                Nome do campo
-                              </FormLabel>
-                              <FormControl>
-                                <Input
-                                  placeholder="Inteira"
-                                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
-                                  {...field}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          </div>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name={`tickets.${fieldIndex}.extraFields.${index}.label`}
-                        render={({ field }) => (
                           <div className="sm:col-span-3 sm:col-start-1">
                             <FormItem>
                               <FormLabel className="block text-xs font-medium leading-6 text-gray-900">
-                                Etiqueta do Campo
+                                Nome do Campo
                               </FormLabel>
                               <FormControl>
                                 <Input
@@ -189,9 +227,6 @@ export default function TicketExtraFields({ fieldIndex }) {
                                 />
                               </FormControl>
                               <FormMessage />
-                              <FormDescription>
-                                You can manage email addresses in your{" "}
-                              </FormDescription>
                             </FormItem>
                           </div>
                         )}
@@ -232,9 +267,7 @@ export default function TicketExtraFields({ fieldIndex }) {
                                   <SelectItem value="date">Data</SelectItem>
                                 </SelectContent>
                               </Select>
-                              <FormDescription>
-                                You can manage email addresses in your{" "}
-                              </FormDescription>
+
                               <FormMessage />
                             </FormItem>
                           );
@@ -246,8 +279,12 @@ export default function TicketExtraFields({ fieldIndex }) {
                         "radio" && <span> Radio </span>}
                       {watchAll.tickets[fieldIndex].extraFields[index].type ===
                         "select" && (
-                        <SelectInputOptions
-                          fieldPath={`tickets.${fieldIndex}.extraFields.${index}.selectOptions`}
+                        <InputOptions
+                          fieldPath={`tickets.${fieldIndex}.extraFields.${index}.options`}
+                          initialData={
+                            watchAll.tickets[fieldIndex].extraFields[index]
+                              .options
+                          }
                         />
                       )}
                     </div>
@@ -266,93 +303,107 @@ export default function TicketExtraFields({ fieldIndex }) {
             ))}
           </>
         )}
-        <div className="grid-cols-4 grid-rows-3">
-          <Button
-            size="sm"
-            variant="ghost"
-            className="gap-1"
-            type="button"
-            onClick={() =>
-              appendExtraField({
-                label: "Peso",
-                name: "Peso",
-                type: "text",
 
-                required: false,
-              })
-            }
-          >
-            Peso
-          </Button>
-          <Button
-            size="sm"
-            variant="ghost"
-            className="gap-1"
-            type="button"
-            onClick={() =>
-              appendExtraField({
-                label: "Tamanho de Roupa",
-                name: "Tamanho de Roupa",
-                type: "text",
-                required: false,
-              })
-            }
-          >
-            Tamanho de Roupa
-          </Button>
-          <Button
-            size="sm"
-            variant="ghost"
-            className="gap-1"
-            type="button"
-            onClick={() =>
-              appendExtraField({
-                label: "Categoria",
-                name: "Categoria",
-                type: "select",
-                required: false,
-              })
-            }
-          >
-            Categoria
-          </Button>
-          <Button
-            size="sm"
-            variant="ghost"
-            className="gap-1"
-            type="button"
-            onClick={() =>
-              appendExtraField({
-                label: "Modalidade",
-                name: "Modalidade",
-                type: "select",
-                required: false,
-              })
-            }
-          >
-            Modalidade
-          </Button>
-          <Button
-            size="sm"
-            variant="ghost"
-            className="gap-1"
-            type="button"
-            onClick={() =>
-              appendExtraField({
-                label: "Gênero",
-                name: "Gênero",
-                type: "select",
-                required: false,
-              })
-            }
-          >
-            Gênero
-          </Button>
+        <div className="mt-5">
+          <span className="text-md font-semibold leading-5 text-gray-900">
+            Escolha um campo predefinido ou crie um campo personalizado
+          </span>
+          <div className="mt-4">
+            <Button
+              variant="outline"
+              className="mr-4"
+              type="button"
+              onClick={() =>
+                appendExtraField({
+                  name: "Peso",
+                  type: "text",
+                  required: false,
+                })
+              }
+            >
+              Peso
+            </Button>
+            <Button
+              variant="outline"
+              className="mr-4"
+              type="button"
+              onClick={() =>
+                appendExtraField({
+                  name: "Tamanho de Roupa",
+                  type: "text",
+                  required: false,
+                })
+              }
+            >
+              Tamanho de Roupa
+            </Button>
+            <Button
+              variant="outline"
+              className="mr-4"
+              type="button"
+              onClick={() =>
+                appendExtraField({
+                  name: "Categoria",
+                  type: "select",
+                  required: false,
+                })
+              }
+            >
+              Categoria
+            </Button>
+            <Button
+              variant="outline"
+              className="mr-4"
+              type="button"
+              onClick={() =>
+                appendExtraField({
+                  name: "Modalidade",
+                  type: "select",
+                  required: false,
+                })
+              }
+            >
+              Modalidade
+            </Button>
+            <Button
+              variant="outline"
+              className="mr-4"
+              type="button"
+              onClick={() =>
+                appendExtraField({
+                  name: "Gênero",
+                  type: "select",
+                  required: false,
+                  options: [
+                    { id: "11", text: "Feminino" },
+                    { id: "12", text: "Masculino" },
+                    { id: "13", text: "Outro" },
+                  ],
+                })
+              }
+            >
+              Gênero
+            </Button>
+            <Button
+              variant="outline"
+              className="mr-4"
+              type="button"
+              onClick={() =>
+                appendExtraField({
+                  name: "Time",
+                  type: "text",
+                  required: false,
+                })
+              }
+            >
+              Time
+            </Button>
+          </div>
         </div>
       </ScrollArea>
 
       {/* <Button
-        size="sm"
+        
         variant="ghost"
         className="gap-1"
         type="button"

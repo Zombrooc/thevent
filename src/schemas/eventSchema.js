@@ -101,7 +101,6 @@ export const eventSchema = z
         extraFields: z
           .array(
             z.object({
-              label: z.string().min(1, "O ID do campo extra é obrigatório."),
               name: z
                 .string()
                 .min(1, "O nome do campo personalizado é obrigatório."),
@@ -109,12 +108,12 @@ export const eventSchema = z
                 required_error: "por favor escolha o tipo do campo",
               }),
               required: z.boolean(),
-              selectOptions: z
-                .array(z.string())
-                .min(1, "Especifique o nome da opção")
-                .optional(),
-
-              radioOptions: z.array(z.string()).optional(),
+              options: z.array(
+                z.object({
+                  id: z.string(),
+                  text: z.string(),
+                })
+              ),
 
               checkbox: z.boolean().optional().default(false),
             })

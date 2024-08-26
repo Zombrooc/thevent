@@ -1,7 +1,7 @@
 "use client";
 
 import TicketItem from "./TicketItem";
-import ConfirmPurchase from "../ConfirmPurchase";
+import ConfirmPurchase from "./ConfirmPurchaseModal";
 import { useSelector } from "react-redux";
 // import { useUser } from "@auth0/nextjs-auth0/client";
 import Link from "next/link";
