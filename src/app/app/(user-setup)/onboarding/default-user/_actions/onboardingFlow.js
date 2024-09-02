@@ -1,6 +1,6 @@
 "use server";
 
-import { createStripeCustomer } from "@/lib/stripe";
+import { createStripeCustomer } from "@/app/services/stripe
 
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";

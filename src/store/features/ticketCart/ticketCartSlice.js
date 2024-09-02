@@ -9,7 +9,6 @@ export const ticketCartSlice = createSlice({
   reducers: {
     initializeState: (state, action) => {
       const newCartState = action.payload.map((ticket) => {
-        console.log(ticket);
         return {
           id: ticket.id,
           ticketName: ticket.ticketName,

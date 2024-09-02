@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/database";
 // import { generateQR } from "@/lib/qrCode";
-import { createStripeProduct } from "@/lib/stripe";
+import { createStripeProduct } from "@/app/services/stripe
 import { auth } from "@clerk/nextjs/server";
 
 export async function createEventAction(
