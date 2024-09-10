@@ -22,8 +22,6 @@ export async function GET(req, { params }) {
   try {
     const orders = await prisma.order.findMany(query);
 
-    console.log("Order: ", orders);
-
     if (orders.length > 0) {
       const updatedOrderWithUserDetails = await Promise.all(
         orders.map(async (order) => {

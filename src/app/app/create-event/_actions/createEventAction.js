@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/database";
 // import { generateQR } from "@/lib/qrCode";
-import { createStripeProduct } from "@/app/services/stripe
+import { createStripeProduct } from "@/lib/stripe";
 import { auth } from "@clerk/nextjs/server";
 
 export async function createEventAction(
@@ -15,6 +15,7 @@ export async function createEventAction(
   tagsData,
   addressData
 ) {
+  console.log("chegou aqui");
   const { userId } = auth();
 
   try {

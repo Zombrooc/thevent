@@ -5,7 +5,7 @@ import { clerkClient } from "@/lib/clerkClient";
 import { prisma } from "@/lib/database";
 import { auth } from "@clerk/nextjs/server";
 
-import { stripe } from "@/app/services/stripe
+import { stripe } from "@/app/services/stripe";
 
 export async function POST(req) {
   const { tickets, totalPrice, event } = await req.json();

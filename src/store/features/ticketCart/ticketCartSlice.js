@@ -7,23 +7,23 @@ export const ticketCartSlice = createSlice({
     totalPrice: 0,
   },
   reducers: {
-    initializeState: (state, action) => {
-      const newCartState = action.payload.map((ticket) => {
-        return {
-          id: ticket.id,
-          ticketName: ticket.ticketName,
-          stripeID: ticket.stripeID,
-          quantity: 0,
-          price: ticket.ticketPrice,
-          form: ticket.form,
-        };
-      });
-      return {
-        ...state,
-        tickets: newCartState,
-        totalPrice: Number("0"),
-      };
-    },
+    // initializeState: (state, action) => {
+    //   const newCartState = action.payload.map((ticket) => {
+    //     return {
+    //       id: ticket.id,
+    //       ticketName: ticket.ticketName,
+    //       stripeID: ticket.stripeID,
+    //       quantity: 0,
+    //       price: ticket.ticketPrice,
+    //       form: ticket.form,
+    //     };
+    //   });
+    //   return {
+    //     ...state,
+    //     tickets: newCartState,
+    //     totalPrice: Number("0"),
+    //   };
+    // },
     addItem: (state, action) => {
       const index = state.tickets.findIndex(
         (ticket) => ticket.id === action.payload.id
@@ -35,6 +35,7 @@ export const ticketCartSlice = createSlice({
         newCartItems[index] = {
           ...newCartItems[index],
           quantity: newCartItems[index]?.quantity + 1 || 1,
+          ticketName: action.payload.ticketName,
         };
       } else {
         newCartItems.push({
@@ -76,6 +77,10 @@ export const ticketCartSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { addItem, removeItem, initializeState } = ticketCartSlice.actions;
+export const {
+  addItem,
+  removeItem,
+  // initializeState
+} = ticketCartSlice.actions;
 
 export default ticketCartSlice.reducer;

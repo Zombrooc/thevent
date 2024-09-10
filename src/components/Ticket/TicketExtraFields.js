@@ -1,27 +1,7 @@
 "use client";
 
-import { ChevronLeft, PlusCircle, Upload } from "lucide-react";
-
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Textarea } from "@/components/ui/textarea";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { Input } from "@/components/ui/input";
 import {
@@ -32,7 +12,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useEffect, useRef, useState } from "react";
-import crypto from "crypto";
 
 import { useFieldArray, useFormContext } from "react-hook-form";
 
@@ -50,63 +29,6 @@ import { TrashIcon } from "@radix-ui/react-icons";
 import { TagInput } from "emblor";
 
 function InputOptions({ fieldPath, initialData }) {
-  console.log("Initial Data", initialData);
-  // const form = useFormContext();
-
-  // const {
-  //   fields: selectInputOptions,
-  //   append: appendSelectInputOptions,
-  //   remove: removeSelectInputOptions,
-  // } = useFieldArray({
-  //   name: fieldPath,
-  //   control: form.control,
-  // });
-
-  // return (
-  //   <>
-  //     {selectInputOptions.map((child, index) => (
-  //       <FormField
-  //         key={child.id}
-  //         control={form.control}
-  //         name={`${fieldPath}.${index}`}
-  //         render={({ field }) => (
-  //           <div className="sm:col-span-3 sm:col-start-1">
-  //             <FormItem>
-  //               <FormControl>
-  //                 <Input
-  //                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
-  //                   {...field}
-  //                 />
-  //               </FormControl>
-  //               <FormMessage />
-  //               <FormDescription>
-  //                 You can manage email addresses in your{" "}
-  //               </FormDescription>
-  //             </FormItem>
-  //             <Button
-  //               type="button"
-  //               variant="destructive"
-  //               className="w-10 h-10 absolute right-4 top-4 flex justify-center align-center"
-  //               onClick={() => removeSelectInputOptions(index)}
-  //               size="icon"
-  //             >
-  //               <TrashIcon className="h-6 w-6" />
-  //             </Button>
-  //           </div>
-  //         )}
-  //       />
-  //     ))}
-  //     <Button
-  //
-  //       variant="ghost"
-  //       className="gap-1"
-  //       type="button"
-  //       onClick={() => appendSelectInputOptions({ option: "" })}
-  //     >
-  //       <PlusCircle />
-  //       Adicionar opção{" "}
-  //     </Button>
-  //   </>
   const form = useFormContext();
   const [tags, setTags] = useState([]);
   const [activeTagIndex, setActiveTagIndex] = useState(null);

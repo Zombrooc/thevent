@@ -55,10 +55,10 @@ const incrementPageViews = async (eventId) => {
 };
 export default async function Layout({ children, params }) {
   await incrementPageViews(params.id);
-  const { eventData } = await getEventData(params.id);
+  // const { eventData } = await getEventData(params.id);
 
   return (
-    <TicketProvider initialState={eventData.tickets}>
+    <TicketProvider>
       <Navbar />
       {children}
     </TicketProvider>

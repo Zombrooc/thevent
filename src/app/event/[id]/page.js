@@ -4,7 +4,6 @@ import Image from "next/image";
 
 import TicketList from "./_components/TicketList";
 
-import TicketProvider from "@/store/features/ticketCart/TicketProvider";
 import { CalendarDaysIcon, MapPinnedIcon } from "lucide-react";
 
 const getEventData = async (id) => {

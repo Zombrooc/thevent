@@ -71,6 +71,7 @@ export default function TicketItem({ ticket, isAuth }) {
                     id: ticket.id,
                     stripeID: ticket.stripeID,
                     ticketPrice: ticket.ticketPrice,
+                    ticketName: ticket.ticketName,
                   })
                 )
               }

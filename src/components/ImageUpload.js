@@ -10,6 +10,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 
 import { storage } from "@/lib/firebase";
 import Image from "next/image";
+import { Button } from "./ui/button";
 
 export default function ImageUpload({ imageUrl, setNewImageURL }) {
   const [uploadedFile, setUploadedFile] = useState(null);
@@ -177,15 +178,16 @@ export default function ImageUpload({ imageUrl, setNewImageURL }) {
                     />
                   </div>
                 </div>
-                <button
+                <Button
                   onClick={() => {
                     setFileToUpload(null);
                     cancelUpload();
                   }}
                   className="bg-red-500 text-white px-2"
+                  type="button"
                 >
                   <X size={20} />
-                </button>
+                </Button>
               </div>
             </div>
           </ScrollArea>
@@ -212,12 +214,13 @@ export default function ImageUpload({ imageUrl, setNewImageURL }) {
                   Imagem enviada com sucesso!
                 </p>
               </div>
-              <button
+              <Button
                 onClick={() => setFileToUpload(null)}
                 className="bg-red-500 text-white px-2"
+                type="button"
               >
                 <X size={20} />
-              </button>
+              </Button>
             </div>
           </div>
         </div>

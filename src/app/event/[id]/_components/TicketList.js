@@ -8,6 +8,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { useUser } from "@clerk/nextjs";
+import { useEffect } from "react";
 
 export default function TicketList({ tickets }) {
   const pathname = usePathname();
@@ -15,6 +16,12 @@ export default function TicketList({ tickets }) {
   const { totalPrice } = useSelector((state) => state.ticketCart);
 
   const user = useUser();
+
+  // useEffect(() => {
+  //   if (ticketCart !== null) {
+  //     localStorage.setItem("ticketCart", JSON.stringify({ ...ticketCart }));
+  //   }
+  // }, [ticketCart]);
 
   return (
     <div className="col-span-2 h-full flex flex-col">

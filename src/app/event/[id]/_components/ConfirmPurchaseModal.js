@@ -10,16 +10,23 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useSelector } from "react-redux";
+import { purchaseConfirmationAction } from "../_actions/purchaseConfirmationAction";
 
 export default function ConfirmPurchase() {
-  const pathname = usePathname();
-  const router = useRouter();
+  const params = useParams();
   const { tickets: ticketCart, totalPrice } = useSelector(
     (state) => state.ticketCart
   );
+
+  const handlePurchaseConfirmation = async () => {
+    await purchaseConfirmationAction({
+      tickets: ticketCart,
+      totalPrice,
+      eventId: params.id,
+    });
+  };
 
   // const handleConfirmPurchase = async () => {
   // const filteredTickets = await ticketCart.filter(
@@ -95,12 +102,15 @@ export default function ConfirmPurchase() {
           </div>
         </div>
 
-        <Button
+        {/* <Button
           type="button"
           //  onClick={() => handleConfirmPurchase()}
           asChild
         >
           <Link href={`${pathname}/confirm-purchase`}>Confirmar</Link>
+        </Button> */}
+        <Button type="button" onClick={() => handlePurchaseConfirmation()}>
+          Confirmar
         </Button>
       </DialogContent>
     </Dialog>
