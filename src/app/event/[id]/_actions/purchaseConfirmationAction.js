@@ -34,14 +34,18 @@ export const purchaseConfirmationAction = async ({
         Number(ticket.quantity);
 
       appFee += ticketFee;
-      await orderItems.push({
-        ticket: {
-          connect: { id: ticket.id },
-        },
-        quantity: ticket.quantity,
-      });
+
+      for (let n = 0; n <= ticket.quantity; n++) {
+        await orderItems.push({
+          ticket: {
+            connect: { id: ticket.id },
+          },
+        });
+      }
     })
   );
+
+  console.log(orderItems);
 
   const order = await prisma.order.create({
     data: {

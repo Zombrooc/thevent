@@ -112,16 +112,16 @@ model Order {
 }
 
 model OrderItem {
-  id             String   @id @default(cuid())
-  order          Order    @relation(fields: [orderId], references: [id])
-  orderId        String
-  ticket         Ticket   @relation(fields: [ticketId], references: [id])
-  ticketId       String
-  checkInDone    Boolean? @default(false)
-  qrCodeURL      String?
-  userCustomData Json?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id          String   @id @default(cuid())
+  order       Order    @relation(fields: [orderId], references: [id])
+  orderId     String
+  ticket      Ticket   @relation(fields: [ticketId], references: [id])
+  ticketId    String
+  checkInDone Boolean? @default(false)
+  qrCodeURL   String?
+  userAnswers Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Analytics {
