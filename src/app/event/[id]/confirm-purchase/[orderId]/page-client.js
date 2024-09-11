@@ -64,7 +64,7 @@ export default function ConfirmPurchaseClient({ totalPrice, orderItems }) {
                         <Select
                           {...register(field.name)}
                           required={field.required}
-                          name={field.name1}
+                          name={field.name}
                         >
                           <SelectTrigger className="w-[280px]">
                             <SelectValue
@@ -89,11 +89,10 @@ export default function ConfirmPurchaseClient({ totalPrice, orderItems }) {
         ))}
 
         <div className="flex items-center justify-center gap-2">
-          <Button type="submit" className="w-full" size="sm">
+          <Button type="submit" className="w-full">
             Confirmar Informações
           </Button>
           <Button
-            size="sm"
             type="button"
             variant="ghost"
             className="mt-3 w-full text-xs font-semibold leading-6 text-gray-900"
