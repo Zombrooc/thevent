@@ -8,7 +8,6 @@ export async function generateMetadata() {
 }
 
 export default async function Layout({ children, params }) {
-  // await incrementPageViews(params.id);
   auth().protect();
 
   return <>{children}</>;

@@ -86,17 +86,6 @@ model Tags {
   Event Event[]
 }
 
-// model TagsOnEvents {
-//   Event      Event    @relation(fields: [eventId], references: [id])
-//   eventId    String
-//   tag        Tags     @relation(fields: [tagId], references: [id])
-//   tagId      String
-//   assignedAt DateTime @default(now())
-//   assignedBy String
-
-//   @@id([eventId, tagId])
-// }
-
 model Order {
   id            String      @id @default(cuid())
   userId        String

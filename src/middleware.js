@@ -15,45 +15,37 @@ const isProtectedRoute = createRouteMatcher([
   "/api/stripe/create-session",
 ]);
 
-export default clerkMiddleware(
-  (auth, req) => {
-    const pathname = req.nextUrl.pathname;
+export default clerkMiddleware((auth, req) => {
+  const pathname = req.nextUrl.pathname;
 
-    if (isProtectedRoute(req)) auth().protect();
+  if (isProtectedRoute(req)) auth().protect();
 
-    const { userId, sessionClaims } = auth();
+  const { userId, sessionClaims } = auth();
 
-    // For users visiting /onboarding, don't try to redirect
-    if (userId && isOnboardingRoute(req)) {
-      return NextResponse.next();
-    }
-
-    // Catch users who do not have `onboardingComplete: true` in their publicMetadata
-    // Redirect them to the /onboading route to complete onboarding
-    if (userId && !sessionClaims?.metadata?.onboardingComplete) {
-      const onboardingUrl = new URL("/app/onboarding/default-user/", req.url);
-      return NextResponse.redirect(onboardingUrl);
-    }
-
-    if (
-      userId &&
-      !sessionClaims?.metadata?.eventProducerOnBoardingFlowCompleted &&
-      pathname.includes("/app")
-    ) {
-      const onboardingUrl = new URL(
-        "/app/onboarding/events-producer/",
-        req.url
-      );
-      return NextResponse.redirect(onboardingUrl);
-    }
-
-    // If the user is logged in and the route is protected, let them view.
-    // if (userId && !isPublicRoute(req)) return NextResponse.next();
-  },
-  {
-    debug: true,
+  // For users visiting /onboarding, don't try to redirect
+  if (userId && isOnboardingRoute(req)) {
+    return NextResponse.next();
   }
-);
+
+  // Catch users who do not have `onboardingComplete: true` in their publicMetadata
+  // Redirect them to the /onboading route to complete onboarding
+  if (userId && !sessionClaims?.metadata?.onboardingComplete) {
+    const onboardingUrl = new URL("/app/onboarding/default-user/", req.url);
+    return NextResponse.redirect(onboardingUrl);
+  }
+
+  if (
+    userId &&
+    !sessionClaims?.metadata?.eventProducerOnBoardingFlowCompleted &&
+    pathname.includes("/app")
+  ) {
+    const onboardingUrl = new URL("/app/onboarding/events-producer/", req.url);
+    return NextResponse.redirect(onboardingUrl);
+  }
+
+  // If the user is logged in and the route is protected, let them view.
+  // if (userId && !isPublicRoute(req)) return NextResponse.next();
+});
 
 // export const config = {
 //   matcher: [

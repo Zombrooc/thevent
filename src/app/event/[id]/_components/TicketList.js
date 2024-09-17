@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { useUser } from "@clerk/nextjs";
+import { SignIn, SignInButton, useUser } from "@clerk/nextjs";
 import { useEffect } from "react";
 
 export default function TicketList({ tickets }) {
@@ -15,7 +15,9 @@ export default function TicketList({ tickets }) {
 
   const { totalPrice } = useSelector((state) => state.ticketCart);
 
-  const user = useUser();
+  const { user, isSignedIn } = useUser();
+
+  console.log(user);
 
   // useEffect(() => {
   //   if (ticketCart !== null) {
@@ -33,7 +35,7 @@ export default function TicketList({ tickets }) {
           <TicketItem ticket={ticket} key={ticket.id} isAuth={!!user} />
         ))}
 
-        {user ? (
+        {user && isSignedIn ? (
           <>
             <p className="text-lg font-semibold">
               Preço Total: R$ {totalPrice}
@@ -41,11 +43,9 @@ export default function TicketList({ tickets }) {
             <ConfirmPurchase />
           </>
         ) : (
-          <Button asChild>
-            <Link href={`/api/auth/login?returnTo=${pathname}`}>
-              Faça login para comprar os ingresso
-            </Link>
-          </Button>
+          <SignInButton forceRedirectUrl={`${pathname}`}>
+            <Button>Faça login para comprar os ingresso</Button>
+          </SignInButton>
         )}
       </div>
     </div>

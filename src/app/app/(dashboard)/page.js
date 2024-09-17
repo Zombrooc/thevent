@@ -59,12 +59,7 @@ import { SignedIn, UserButton } from "@clerk/nextjs";
 
 const getUserEventList = async () => {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_APP_URL}/api/events/by-user`,
-    {
-      next: {
-        revalidate: 0,
-      },
-    }
+    `${process.env.NEXT_PUBLIC_APP_URL}/api/events/by-user`
   );
 
   return await res.json();

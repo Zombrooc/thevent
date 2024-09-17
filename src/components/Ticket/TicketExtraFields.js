@@ -158,7 +158,6 @@ export default function TicketExtraFields({ fieldIndex }) {
                         control={form.control}
                         name={`tickets.${fieldIndex}.extraFields.${index}.type`}
                         render={({ field }) => {
-                          console.log("Field: ", field);
                           return (
                             <FormItem className="col-span full sm:col-span-3">
                               <FormLabel className="block text-xs font-medium leading-6 text-gray-900">
@@ -196,9 +195,25 @@ export default function TicketExtraFields({ fieldIndex }) {
                         }}
                       />
                       {watchAll.tickets[fieldIndex].extraFields[index].type ===
-                        "checkbox" && <span> Checkbox </span>}
+                        "checkbox" && (
+                        <InputOptions
+                          fieldPath={`tickets.${fieldIndex}.extraFields.${index}.options`}
+                          initialData={
+                            watchAll.tickets[fieldIndex].extraFields[index]
+                              .options
+                          }
+                        />
+                      )}
                       {watchAll.tickets[fieldIndex].extraFields[index].type ===
-                        "radio" && <span> Radio </span>}
+                        "radio" && (
+                        <InputOptions
+                          fieldPath={`tickets.${fieldIndex}.extraFields.${index}.options`}
+                          initialData={
+                            watchAll.tickets[fieldIndex].extraFields[index]
+                              .options
+                          }
+                        />
+                      )}
                       {watchAll.tickets[fieldIndex].extraFields[index].type ===
                         "select" && (
                         <InputOptions

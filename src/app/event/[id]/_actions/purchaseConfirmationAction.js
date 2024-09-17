@@ -22,12 +22,24 @@ export const purchaseConfirmationAction = async ({
   let orderItems = [];
   let appFee = 0;
 
-  await Promise.all(
-    tickets.map(async (ticket) => {
-      const ticketDetails = await prisma.ticket.findUnique({
-        where: { id: ticket.id },
-      });
+  // Fetch all ticket details in one query
+  const ticketIds = tickets.map((ticket) => ticket.id);
+  const ticketDetailsMap = await prisma.ticket
+    .findMany({
+      where: { id: { in: ticketIds } },
+    })
+    .then((details) => {
+      return details.reduce((map, detail) => {
+        map[detail.id] = detail;
+        return map;
+      }, {});
+    });
 
+  // Calculate fees and prepare order items
+  tickets.forEach((ticket) => {
+    const ticketDetails = ticketDetailsMap[ticket.id];
+
+    if (ticketDetails) {
       const ticketFee =
         (parseFloat(ticketDetails.ticketPrice) -
           parseFloat(ticketDetails.ticketSubTotalPrice)) *
@@ -35,17 +47,15 @@ export const purchaseConfirmationAction = async ({
 
       appFee += ticketFee;
 
-      for (let n = 0; n <= ticket.quantity; n++) {
-        await orderItems.push({
+      for (let n = 0; n < ticket.quantity; n++) {
+        orderItems.push({
           ticket: {
             connect: { id: ticket.id },
           },
         });
       }
-    })
-  );
-
-  console.log(orderItems);
+    }
+  });
 
   const order = await prisma.order.create({
     data: {

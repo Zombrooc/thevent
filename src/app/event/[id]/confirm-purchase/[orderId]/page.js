@@ -1,5 +1,4 @@
 import ConfirmPurchaseClient from "./page-client";
-// import { useSelector } from "react-redux";
 
 const getOrder = async (orderId) => {
   const res = await fetch(
@@ -19,17 +18,11 @@ const getOrder = async (orderId) => {
 };
 
 export default async function EventDetails({ params }) {
-  const { total: totalPrice, orderItems } = await getOrder(params.orderId);
-
-  // const { tickets: ticketCart, totalPrice } = useSelector(
-  //   (state) => state.ticketCart
-  // );
-
-  // console.log(ticketCart);
+  const { orderItems } = await getOrder(params.orderId);
 
   return (
     <>
-      <ConfirmPurchaseClient totalPrice={totalPrice} orderItems={orderItems} />
+      <ConfirmPurchaseClient orderItems={orderItems} />
     </>
   );
 }

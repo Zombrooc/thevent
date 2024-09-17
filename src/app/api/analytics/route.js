@@ -1,5 +1,7 @@
 import { prisma } from "@/lib/database";
+import { Redis } from "@upstash/redis";
 
+const redis = Redis.fromEnv();
 // export async function GET(req) {
 //   const { eventId } = await req.json();
 
@@ -23,29 +25,18 @@ export async function POST(req) {
   const { eventId } = await req.json();
 
   try {
-    const eventAnalytics = await prisma.analytics.findUnique({
-      where: {
-        eventId: eventId,
-      },
-    });
+    const eventAnalytics = await redis.getAll(`analytics:${eventId}`);
 
     if (eventAnalytics) {
       return Response.json(eventAnalytics);
     }
 
-    const newEventAnalytics = await prisma.analytics.create({
-      data: {
-        event: {
-          connect: {
-            id: eventId,
-          },
-        },
-        pageViews: 0,
-        totalRevenue: 0,
-        avgRevenue: 0,
-        soldTickets: 0,
-        sellQuantity: 0,
-      },
+    const newEventAnalytics = await redis.set({
+      pageViews: 0,
+      totalRevenue: 0,
+      avgRevenue: 0,
+      soldTickets: 0,
+      sellQuantity: 0,
     });
 
     return Response.json(newEventAnalytics);

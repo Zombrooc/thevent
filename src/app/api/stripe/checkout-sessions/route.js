@@ -5,64 +5,66 @@ import { clerkClient } from "@/lib/clerkClient";
 import { prisma } from "@/lib/database";
 import { auth } from "@clerk/nextjs/server";
 
-import { stripe } from "@/app/services/stripe";
+import { stripe } from "@/lib/stripe";
 
 export async function POST(req) {
-  const { tickets, totalPrice, event } = await req.json();
+  const { orderId } = await req.json();
+  console.log("API Order ID: ", orderId);
 
   const { userId, sessionClaims } = auth();
+  if (!userId || !sessionClaims) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
+  if (!orderId) {
+    return new Response("No Order Passed", { status: 400 });
+  }
+
+  const { orderItems, event, total, subTotal } = await prisma.Order.findUnique({
+    where: {
+      id: orderId,
+    },
+    include: {
+      orderItems: {
+        include: {
+          ticket: true,
+        },
+      },
+      event: true,
+    },
+  });
 
   const customer = await clerkClient.users.getUser(userId);
 
-  const user = await clerkClient.users.getUser(sessionClaims.sub);
-
-  const eventDetails = await prisma.event.findUnique({ where: { id: event } });
-
+  const eventDetails = await prisma.event.findUnique({
+    where: { id: event.id },
+  });
   const eventProducerDetails = await clerkClient.users.getUser(
     eventDetails.organizer
   );
 
-  if (!user || !sessionClaims) {
-    return new Response("Unauthorized", { status: 401 });
-  }
-
   const headersList = headers();
   const origin = headersList.get("origin");
 
-  if (!tickets || tickets.length === 0) {
-    return new Response("Nenhum ingresso fornecido.", {
-      status: 400,
-    });
-  }
+  // if (!tickets || tickets.length === 0) {
+  //   return new Response("Nenhum ingresso fornecido.", {
+  //     status: 400,
+  //   });
+  // }
 
-  let orderItems = [];
+  // let orderItems = [];
 
-  let appFee = 0;
+  let appFee = total - subTotal;
 
   const ticketData = await Promise.all(
-    tickets.map(async (ticket) => {
-      const productData = await stripe.products.retrieve(ticket.stripeID);
-
-      const ticketDetails = await prisma.ticket.findUnique({
-        where: { id: ticket.id },
-      });
-
-      const ticketFee =
-        (parseFloat(ticketDetails.ticketPrice) -
-          parseFloat(ticketDetails.ticketSubTotalPrice)) *
-        Number(ticket.quantity);
-
-      appFee += ticketFee;
-
-      await orderItems.push({
-        ticket: {
-          connect: { id: ticket.id },
-        },
-        quantity: ticket.quantity,
-      });
+    orderItems.map(async (orderItem) => {
+      console.log(orderItem);
+      const { default_price } = await stripe.products.retrieve(
+        orderItem.ticket.stripeID
+      );
       return {
-        price: productData.default_price,
-        quantity: ticket.quantity,
+        price: default_price,
+        quantity: 1,
       };
     })
   );
@@ -71,17 +73,17 @@ export async function POST(req) {
 
   try {
     session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card", "boleto"],
-      payment_method_options: {
-        boleto: {
-          expires_after_days: 3,
-        },
-      },
+      payment_method_types: ["card"],
+      // payment_method_options: {
+      //   boleto: {
+      //     expires_after_days: 3,
+      //   },
+      // },
       phone_number_collection: {
         enabled: true,
       },
       metadata: {
-        eventId: event,
+        eventId: event.id,
       },
 
       line_items: ticketData,
@@ -106,22 +108,6 @@ export async function POST(req) {
       status: err.statusCode || 500,
     });
   }
-
-  const order = await prisma.order.create({
-    data: {
-      orderItems: {
-        create: orderItems,
-      },
-      event: {
-        connect: { id: event },
-      },
-      userId: user.id,
-      total: totalPrice,
-      subTotal: totalPrice - appFee,
-      paymentId: session.id,
-      paymentStatus: session.payment_status,
-    },
-  });
 
   return Response.json({ ...session });
 }
