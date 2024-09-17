@@ -1,7 +1,7 @@
 import { headers } from "next/headers";
 // import { getSession } from "@auth0/nextjs-auth0";
 
-import { stripe } from "@/app/services/stripe
+import { stripe } from "@/lib/stripe";
 import { auth, clerkClient } from "@clerk/nextjs/server";
 
 export async function POST(req) {
