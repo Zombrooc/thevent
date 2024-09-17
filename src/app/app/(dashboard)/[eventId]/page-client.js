@@ -1,11 +1,45 @@
-export default function DashboardPageClient({ analytics, eventOrders}) {
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Activity,
+  ArrowUpRight,
+  CreditCard,
+  DollarSign,
+  EyeIcon,
+  RocketIcon,
+  Users,
+} from "lucide-react";
+import { getEventData } from "../_actions/getEventData";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import moment from "moment";
+import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+
+export default function DashboardPageClient({ analytics, eventOrders }) {
   return (
     <>
       {/* {stripeConnectInstance && (
         <ConnectComponentsProvider connectInstance={stripeConnectInstance}> */}
       <main className="flex flex-2 flex-col gap-4 p-4 md:gap-8 md:p-8">
         <div className="flex items-center">
-          <h0 className="text-lg font-semibold md:text-2xl">Visão Geral</h1>
+          <h1 className="text-lg font-semibold md:text-2xl">Visão Geral</h1>
         </div>
         <div className="grid gap-5 md:grid-cols-2 md:gap-8 lg:grid-cols-5">
           <Card>
@@ -244,6 +278,5 @@ export default function DashboardPageClient({ analytics, eventOrders}) {
       {/* </ConnectComponentsProvider>
       )} */}
     </>
-
-  )
+  );
 }
