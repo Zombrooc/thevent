@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Card,
   CardContent,
@@ -12,11 +14,8 @@ import {
   CreditCard,
   DollarSign,
   EyeIcon,
-  RocketIcon,
   Users,
 } from "lucide-react";
-import { getEventData } from "../_actions/getEventData";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Table,
   TableBody,
@@ -26,13 +25,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import moment from "moment";
-import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 export default function DashboardPageClient({ analytics, eventOrders }) {
+  const pathnmame = usePathname();
+
   return (
     <>
       {/* {stripeConnectInstance && (
