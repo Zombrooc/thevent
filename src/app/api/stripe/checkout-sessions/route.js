@@ -73,7 +73,7 @@ export async function POST(req) {
 
   try {
     session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
+      // payment_method_types: ["card"],
       // payment_method_options: {
       //   boleto: {
       //     expires_after_days: 3,
