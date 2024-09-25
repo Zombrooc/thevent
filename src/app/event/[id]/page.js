@@ -31,13 +31,14 @@ export default async function EventDetails({ params }) {
       {eventData && (
         <>
           <div className="max-w-5xl rounded-xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 ">
-            {/* <Image
+            <Image
               alt="Map"
               className="w-full object-cover"
               height="337"
               src={eventData.bannerImage}
               width="600"
-            /> */}
+              blurDataURL={eventData.bannerImage}
+            />
           </div>
           <div className="max-w-5xl min-h-screen bg-muted/40 bg-white mx-auto px-4 sm:px-6 lg:px-8 pt-12 grid grid-cols-1 gap-x-5 gap-y-3 sm:grid-cols-6  ">
             <div className="col-span-4">

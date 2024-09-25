@@ -45,21 +45,33 @@ model Address {
 }
 
 model Ticket {
-  id                   String      @id @default(cuid())
+  id                   String             @id @default(cuid())
   eventId              String?
   endSellingAt         DateTime
   startSellingAt       DateTime
   ticketDescription    String
   ticketName           String
   ticketPrice          Float
-  ticketSubTotalPrice  Float       @default(0)
+  ticketSubTotalPrice  Float              @default(0)
   ticketStockAvailable Int
+  availableTickets     AvailableTickets[]
   stripeID             String?
-  Event                Event?      @relation(fields: [eventId], references: [id])
-  createdAt            DateTime    @default(now())
-  updatedAt            DateTime    @updatedAt
+  Event                Event?             @relation(fields: [eventId], references: [id])
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
   orderItem            OrderItem[]
   form                 Form?
+}
+
+model AvailableTickets {
+  id            String   @id @default(cuid())
+  ticket        Ticket   @relation(fields: [ticketId], references: [id])
+  ticketId      String
+  status        String   @default("available")
+  claimBy       String?
+  reservationId String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 model SEOMeta {
@@ -97,7 +109,7 @@ model Order {
   orderItems    OrderItem[]
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
-  eventId       String      @default("cluxya4480000282dwasofhto")
+  eventId       String
 }
 
 model OrderItem {

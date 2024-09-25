@@ -17,8 +17,6 @@ export default function TicketList({ tickets }) {
 
   const { user, isSignedIn } = useUser();
 
-  console.log(user);
-
   // useEffect(() => {
   //   if (ticketCart !== null) {
   //     localStorage.setItem("ticketCart", JSON.stringify({ ...ticketCart }));

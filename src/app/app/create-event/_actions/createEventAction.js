@@ -18,6 +18,8 @@ export async function createEventAction(
   console.log("chegou aqui");
   const { userId } = auth();
 
+  console.log(ticketsData);
+
   try {
     const sanitizedTickets = await Promise.all(
       ticketsData.map(async (ticket) => {
@@ -45,6 +47,11 @@ export async function createEventAction(
           ticketDescription,
           ticketStockAvailable: Number(ticketStockAvailable),
           ticketSubTotalPrice: parseFloat(ticketPrice),
+          availableTickets: {
+            create: Array(ticketStockAvailable).fill({
+              status: "available",
+            }),
+          },
           form: {
             create: {
               fields: extraFields,
@@ -73,15 +80,6 @@ export async function createEventAction(
         },
         tags: {
           create: tagsData,
-        },
-        analytics: {
-          create: {
-            pageViews: 0,
-            avgRevenue: 0,
-            sellQuantity: 0,
-            soldTickets: 0,
-            totalRevenue: 0,
-          },
         },
       },
     });

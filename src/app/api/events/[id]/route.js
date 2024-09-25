@@ -4,7 +4,9 @@ export async function GET(req, { params }) {
   const { id } = params;
 
   const eventData = await prisma.event.findUnique({
-    where: { id: id },
+    where: {
+      id,
+    },
     include: {
       address: true,
       tags: true,

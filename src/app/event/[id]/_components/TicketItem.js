@@ -17,6 +17,8 @@ import {
   addItem,
   removeItem,
 } from "@/store/features/ticketCart/ticketCartSlice";
+import { getTicketStock } from "../_actions/getTicketStock";
+import { useEffect, useState } from "react";
 
 const selectTicketItem = createSelector(
   [(state) => state.ticketCart.tickets, (state, ticketId) => ticketId],
@@ -24,9 +26,24 @@ const selectTicketItem = createSelector(
 );
 
 export default function TicketItem({ ticket, isAuth }) {
+  const [hasStock, setHasStock] = useState(false);
   const ticketItem = useSelector((state) => selectTicketItem(state, ticket.id));
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    const getStock = async () => {
+      const ticketStockOnRedis = await getTicketStock(ticket.id);
+
+      console.log("ticketStockOnRedis: ", ticketStockOnRedis);
+
+      if (ticketStockOnRedis && ticketStockOnRedis.stock > 0) {
+        setHasStock(true);
+      }
+    };
+
+    getStock();
+  }, [ticket]);
 
   return (
     <Card className=" flex flex-col justify-between">
@@ -44,45 +61,50 @@ export default function TicketItem({ ticket, isAuth }) {
             {ticket.ticketPrice})
           </span>
         </div>
-        {isAuth ? (
-          <div className="flex items-center justify-center space-x-2 mt-4">
-            <Button
-              variant="outline"
-              size="icon"
-              className="h-8 w-8 shrink-0 rounded-full"
-              disabled={Number(ticketItem[0]?.quantity) === 0}
-              onClick={() => dispatch(removeItem({ id: ticket.id }))}
-            >
-              <MinusIcon className="h-4 w-4" />
-              <span className="sr-only">Remover Ingresso</span>
-            </Button>
-            <div className="flex-1 text-center">
+        {isAuth &&
+          (hasStock ? (
+            <div className="flex items-center justify-center space-x-2 mt-4">
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-8 w-8 shrink-0 rounded-full"
+                disabled={Number(ticketItem[0]?.quantity) === 0}
+                onClick={() => dispatch(removeItem({ id: ticket.id }))}
+              >
+                <MinusIcon className="h-4 w-4" />
+                <span className="sr-only">Remover Ingresso</span>
+              </Button>
+              <div className="flex-1 text-center">
+                <div className="text-2xl font-bold tracking-tighter">
+                  {ticketItem[0]?.quantity || "0"}
+                </div>
+              </div>
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-8 w-8 shrink-0 rounded-full"
+                onClick={() =>
+                  dispatch(
+                    addItem({
+                      id: ticket.id,
+                      stripeID: ticket.stripeID,
+                      ticketPrice: ticket.ticketPrice,
+                      ticketName: ticket.ticketName,
+                    })
+                  )
+                }
+              >
+                <PlusIcon className="h-4 w-4" />
+                <span className="sr-only">Adicionar Ingresso</span>
+              </Button>
+            </div>
+          ) : (
+            <div className="flex-1 text-center mt-2">
               <div className="text-2xl font-bold tracking-tighter">
-                {ticketItem[0]?.quantity || "0"}
+                Esgotado
               </div>
             </div>
-            <Button
-              variant="outline"
-              size="icon"
-              className="h-8 w-8 shrink-0 rounded-full"
-              onClick={() =>
-                dispatch(
-                  addItem({
-                    id: ticket.id,
-                    stripeID: ticket.stripeID,
-                    ticketPrice: ticket.ticketPrice,
-                    ticketName: ticket.ticketName,
-                  })
-                )
-              }
-            >
-              <PlusIcon className="h-4 w-4" />
-              <span className="sr-only">Adicionar Ingresso</span>
-            </Button>
-          </div>
-        ) : (
-          ""
-        )}
+          ))}
       </CardContent>
     </Card>
   );
