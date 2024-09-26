@@ -19,18 +19,18 @@ const getTicketStock = async (ticketId) => {
       );
 
       source = "postgres";
-      const ticket = await prisma.ticket.findUnique({
-        where: { id: ticketId },
-        include: { availableTickets: true },
+      const ticketCount = await prisma.availableTickets.count({
+        where: { ticketId, status: "available" },
       });
 
-      console.log(ticket);
-
-      if (ticket) {
-        stock = ticket.availableTickets;
+      if (ticketCount) {
+        stock = ticketCount;
 
         // Atualizar o Redis com o valor do PostgreSQL
-        await redis.set(stockKey, stock);
+        await redis.set(stockKey, stock, {
+          nx: true, // Só define se a chave não existir
+          ex: 10,
+        });
         console.log(
           `Redis atualizado com estoque do PostgreSQL para o ingresso ${ticketId}`
         );
@@ -40,7 +40,7 @@ const getTicketStock = async (ticketId) => {
       }
     }
 
-    return { stock: stock, source };
+    return { stock, source };
   } catch (error) {
     console.error(`Erro ao verificar estoque do ingresso ${ticketId}:`, error);
     throw error;
