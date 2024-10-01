@@ -130,6 +130,13 @@ export default function CreateEvent() {
       };
     });
 
+    console.log("Event Data: ", {
+      bannerImage,
+      eventData,
+      ticketsData,
+      tagsData,
+      address,
+    });
     await createEventAction(
       bannerImage,
       eventData,

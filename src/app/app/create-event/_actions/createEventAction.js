@@ -1,12 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
-
 import { redirect } from "next/navigation";
-import { prisma } from "@/lib/database";
-// import { generateQR } from "@/lib/qrCode";
-import { createStripeProduct } from "@/lib/stripe";
-import { auth } from "@clerk/nextjs/server";
 
 export async function createEventAction(
   bannerImage,
@@ -15,77 +9,104 @@ export async function createEventAction(
   tagsData,
   addressData
 ) {
-  console.log("chegou aqui");
-  const { userId } = auth();
-
-  console.log(ticketsData);
+  // const { userId } = auth();
 
   try {
-    const sanitizedTickets = await Promise.all(
-      ticketsData.map(async (ticket) => {
-        const {
-          ticketName,
-          ticketPrice,
-          ticketDescription,
-          ticketStockAvailable,
-          startEndingSelling,
-          extraFields,
-        } = ticket;
-
-        const updatedTicketPrice =
-          parseFloat(ticketPrice) +
-          parseFloat(ticketPrice) * process.env.APP_FEE_PERCENT;
-
-        const stripeID = await createStripeProduct(
-          ticketName,
-          updatedTicketPrice
-        );
-
-        return {
-          ticketName,
-          ticketPrice: parseFloat(updatedTicketPrice),
-          ticketDescription,
-          ticketStockAvailable: Number(ticketStockAvailable),
-          ticketSubTotalPrice: parseFloat(ticketPrice),
-          availableTickets: {
-            create: Array(ticketStockAvailable).fill({
-              status: "available",
-            }),
-          },
-          form: {
-            create: {
-              fields: extraFields,
-            },
-          },
-          stripeID: stripeID,
-          startSellingAt: startEndingSelling.from,
-          endSellingAt: startEndingSelling.to,
-        };
-      })
+    const eventRes = await fetch(
+      `${process.env.NEXT_PUBLIC_APP_URL}/api/events`,
+      {
+        method: "POST",
+        body: JSON.stringify({
+          bannerImage,
+          eventData,
+          ticketsData,
+          tagsData,
+          addressData,
+        }),
+      }
     );
 
-    const event = await prisma.event.create({
-      data: {
-        bannerImage,
-        eventName: eventData.eventName,
-        eventDescription: eventData.eventDescription,
-        organizer: userId,
-        eventDateStart: eventData.eventDateStartEnd.from,
-        eventDateEnd: eventData.eventDateStartEnd.to,
-        address: {
-          create: addressData,
-        },
-        tickets: {
-          create: sanitizedTickets,
-        },
-        tags: {
-          create: tagsData,
-        },
-      },
-    });
+    const data = await eventRes.json();
+    if (data.eventURL) {
+      redirect(eventURL);
+    }
+    //   const sanitizedTickets = await Promise.all(
+    //     ticketsData.map(async (ticket) => {
+    //       const {
+    //         ticketName,
+    //         ticketPrice,
+    //         ticketDescription,
+    //         ticketStockAvailable,
+    //         startEndingSelling,
+    //         extraFields,
+    //       } = ticket;
 
-    revalidatePath("/");
-    redirect(`/event/${event.id}`);
+    //       const updatedTicketPrice =
+    //         parseFloat(ticketPrice) +
+    //         parseFloat(ticketPrice) * process.env.APP_FEE_PERCENT;
+
+    //       const ticketID = cuid();
+
+    //       const stripeID = await createStripeProduct(
+    //         ticketName,
+    //         updatedTicketPrice,
+    //         ticketPrice,
+    //         ticketStockAvailable,
+    //         ticketID
+    //       );
+
+    //       const multi = redis.multi();
+    //       for (const ticket of ticketTypes) {
+    //         multi.set(`ticket:${ticket.id}:stock`, ticketDefaultAvailableStock);
+    //       }
+    //       await multi.exec();
+
+    //       let updatedTicketData = {
+    //         id: ticketID,
+    //         ticketName,
+    //         ticketPrice: parseFloat(updatedTicketPrice),
+    //         ticketDescription,
+    //         ticketDefaultAvailableStock: Number(ticketStockAvailable),
+    //         ticketSubTotalPrice: parseFloat(ticketPrice),
+    //         stripeID: stripeID,
+    //         startSellingAt: startEndingSelling.from,
+    //         endSellingAt: startEndingSelling.to,
+    //       };
+
+    //       if (extraFields) {
+    //         updatedTicketData.form = {
+    //           create: {
+    //             fields: extraFields,
+    //           },
+    //         };
+    //       }
+
+    //       return updatedTicketData;
+    //     })
+    //   );
+
+    //   const event = await prisma.event.create({
+    //     data: {
+    //       bannerImage,
+    //       eventName: eventData.eventName,
+    //       eventDescription: eventData.eventDescription,
+    //       organizer: userId,
+    //       eventDateStart: eventData.eventDateStartEnd.from,
+    //       eventDateEnd: eventData.eventDateStartEnd.to,
+    //       address: {
+    //         create: addressData,
+    //       },
+    //       tickets: {
+    //         create: sanitizedTickets,
+    //       },
+    //       tags: {
+    //         create: tagsData,
+    //       },
+    //     },
+    //   });
+
+    //   revalidatePath("/");
+    //   redirect(`/event/${event.id}`);
   } catch (error) {
     throw error;
   }

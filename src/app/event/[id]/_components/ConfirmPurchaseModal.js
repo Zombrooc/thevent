@@ -22,7 +22,7 @@ export default function ConfirmPurchase() {
 
   const handlePurchaseConfirmation = async () => {
     await purchaseConfirmationAction({
-      tickets: ticketCart,
+      ticketCart,
       totalPrice,
       eventId: params.id,
     });

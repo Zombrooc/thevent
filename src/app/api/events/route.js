@@ -1,6 +1,10 @@
 import { prisma } from "@/lib/database";
 import { createStripeProduct } from "@/lib/stripe";
 import { auth } from "@clerk/nextjs/server";
+import { Redis } from "@upstash/redis";
+import cuid from "cuid";
+
+const redis = Redis.fromEnv();
 
 export async function GET(req) {
   const events = await prisma.event.findMany({
@@ -26,9 +30,11 @@ export async function POST(req) {
   const { bannerImage, eventData, ticketsData, tagsData, addressData } =
     await req.json();
 
-  console.log(eventData);
-
   const { userId } = auth();
+
+  if (!userId) {
+    throw new Error("Unauthorized");
+  }
 
   try {
     const sanitizedTickets = await Promise.all(
@@ -46,26 +52,40 @@ export async function POST(req) {
           parseFloat(ticketPrice) +
           parseFloat(ticketPrice) * process.env.APP_FEE_PERCENT;
 
+        const ticketID = cuid();
+
+        redis.set(`ticket:${ticketID}:stock`, ticketStockAvailable);
+
         const stripeID = await createStripeProduct(
           ticketName,
-          updatedTicketPrice
+          updatedTicketPrice,
+          ticketPrice,
+          ticketStockAvailable,
+          ticketID
         );
 
-        return {
+        let updatedTicketData = {
+          id: ticketID,
           ticketName,
           ticketPrice: parseFloat(updatedTicketPrice),
           ticketDescription,
-          ticketStockAvailable: Number(ticketStockAvailable),
+          ticketDefaultAvailableStock: Number(ticketStockAvailable),
           ticketSubTotalPrice: parseFloat(ticketPrice),
-          form: {
-            create: {
-              fields: extraFields,
-            },
-          },
+
           stripeID: stripeID,
           startSellingAt: startEndingSelling.from,
           endSellingAt: startEndingSelling.to,
         };
+
+        if (extraFields) {
+          updatedTicketData.form = {
+            create: {
+              fields: extraFields,
+            },
+          };
+        }
+
+        return updatedTicketData;
       })
     );
 
@@ -86,23 +106,11 @@ export async function POST(req) {
         tags: {
           create: tagsData,
         },
-        analytics: {
-          create: {
-            pageViews: 0,
-            avgRevenue: 0,
-            sellQuantity: 0,
-            soldTickets: 0,
-            totalRevenue: 0,
-          },
-        },
       },
     });
 
-    revalidatePath("/");
-    redirect(`/event/${event.id}`);
-
     return Response.json({
-      status: 200,
+      eventURL: `${process.env.NEXT_PUBLIC_APP_URL}/event/${event.id}`,
     });
   } catch (error) {
     throw error;

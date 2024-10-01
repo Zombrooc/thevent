@@ -5,16 +5,31 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
   httpClient: Stripe.createFetchHttpClient(),
 });
 
-export const createStripeProduct = async (ticketName, ticketPrice) => {
-  const product = await stripe.products.create({
+export const normalizeStripePrice = (price) => {
+  return price / 100;
+};
+
+export const createStripeProduct = async (
+  ticketName,
+  ticketPrice,
+  ticketSubTotalPrice,
+  ticketDefaultAvailableStock,
+  ticketID
+) => {
+  const { id } = await stripe.products.create({
+    id: ticketID,
     name: ticketName,
     default_price_data: {
       unit_amount: Math.round(ticketPrice * 100),
       currency: "BRL",
     },
+    metadata: {
+      ticketSubTotalPrice: Math.round(ticketSubTotalPrice * 100),
+      ticketDefaultAvailableStock,
+    },
     expand: ["default_price"],
   });
-  return product.id;
+  return id;
 };
 
 export const getStripeCustomerByEmail = async (email) => {
@@ -41,6 +56,32 @@ export const getPaymentIntnet = async (paymentIntnet) => {
   return paymentIntent;
 };
 
+export const getStripeProduct = async (stripeProductId) => {
+  const productDetails = await stripe.products.retrieve(stripeProductId);
+
+  return productDetails;
+};
+
+export const getStripeProductsByIDArrays = async (stripeProductIDs) => {
+  const { data: retrievedData } = await stripe.products.list({
+    ids: stripeProductIDs,
+  });
+
+  const productList = await Promise.all(
+    retrievedData.map(async ({ name: ticketName, default_price, metadata }) => {
+      const { unit_amount: ticketPrice } =
+        await stripe.prices.retrieve(default_price);
+
+      return {
+        ticketName,
+        ticketPrice,
+        ...metadata,
+      };
+    })
+  );
+
+  return productList;
+};
 // export const createStripeAccount = async (email, fullName) => {
 
 // const account = await stripe.accounts.create({

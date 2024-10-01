@@ -9,24 +9,22 @@ datasource db {
 }
 
 model Event {
-  id               String     @id @default(cuid())
-  addressId        String?
+  id               String       @id @default(cuid())
   eventDescription String
   eventName        String
   organizer        String
-  sEOMetaId        String?
   eventDateEnd     DateTime
   eventDateStart   DateTime
   bannerImage      String
   address          Address?
-  SEOMeta          SEOMeta?
   tags             Tags[]
   tickets          Ticket[]
   orders           Order[]
-  eventStatus      String     @default("active")
-  createdAt        DateTime   @default(now())
-  updatedAt        DateTime   @updatedAt
-  analytics        Analytics?
+  eventStatus      EVENT_STATUS @default(ACTIVE)
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  SEOMeta          SEOMeta?
+  Analytics        Analytics?
 }
 
 model Address {
@@ -45,33 +43,35 @@ model Address {
 }
 
 model Ticket {
-  id                   String             @id @default(cuid())
-  eventId              String?
-  endSellingAt         DateTime
-  startSellingAt       DateTime
-  ticketDescription    String
-  ticketName           String
-  ticketPrice          Float
-  ticketSubTotalPrice  Float              @default(0)
-  ticketStockAvailable Int
-  availableTickets     AvailableTickets[]
-  stripeID             String?
-  Event                Event?             @relation(fields: [eventId], references: [id])
-  createdAt            DateTime           @default(now())
-  updatedAt            DateTime           @updatedAt
-  orderItem            OrderItem[]
-  form                 Form?
+  id                          String        @id @default(cuid())
+  eventId                     String?
+  endSellingAt                DateTime
+  startSellingAt              DateTime
+  ticketDescription           String
+  ticketName                  String
+  ticketPrice                 Float
+  ticketSubTotalPrice         Float         @default(0)
+  ticketDefaultAvailableStock Int
+  usedTickets                 UsedTickets[]
+  stripeID                    String
+  Event                       Event?        @relation(fields: [eventId], references: [id])
+  createdAt                   DateTime      @default(now())
+  updatedAt                   DateTime      @updatedAt
+  orderItem                   OrderItem[]
+  form                        Form?
 }
 
-model AvailableTickets {
-  id            String   @id @default(cuid())
-  ticket        Ticket   @relation(fields: [ticketId], references: [id])
+model UsedTickets {
+  id            String        @id @default(cuid())
+  ticket        Ticket        @relation(fields: [ticketId], references: [id])
   ticketId      String
-  status        String   @default("available")
-  claimBy       String?
+  status        TICKET_STATUS
   reservationId String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  expiresAt     DateTime?
+  customData    Json? // Para armazenar dados personalizados do ticket
+  version       Int           @default(0)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 }
 
 model SEOMeta {
@@ -147,4 +147,17 @@ model Form {
   fields    Json // Armazena a estrutura do formulário em JSON
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+enum TICKET_STATUS {
+  RESERVED
+  SUCCESSFUL
+  FAILED
+}
+
+enum EVENT_STATUS {
+  ACTIVE
+  ARCHIVED
+  DISABLED
+  CANCELED
 }

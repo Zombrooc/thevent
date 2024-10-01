@@ -33,13 +33,11 @@ export default function TicketItem({ ticket, isAuth }) {
 
   useEffect(() => {
     const getStock = async () => {
-      const ticketStockOnRedis = await getTicketStock(ticket.id);
+      const hasStock = await getTicketStock(ticket.id);
 
-      console.log("ticketStockOnRedis: ", ticketStockOnRedis);
+      console.log("ticketStockOnRedis: ", hasStock);
 
-      if (ticketStockOnRedis && ticketStockOnRedis.stock > 0) {
-        setHasStock(true);
-      }
+      setHasStock(hasStock);
     };
 
     getStock();

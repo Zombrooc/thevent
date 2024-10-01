@@ -8,41 +8,75 @@ const redis = Redis.fromEnv();
 const getTicketStock = async (ticketId) => {
   try {
     // Tentar obter o estoque do Redis
-    const stockKey = `ticket:${ticketId}:stock`;
-    let stock = await redis.get(stockKey);
+    const stockKey = `ticket:${ticketId}`;
+    let ticketDetails = await redis.get(stockKey);
     let source = "redis";
 
-    // Se não encontrado no Redis, buscar no PostgreSQL
-    if (stock === null) {
-      console.log(
-        `Estoque não encontrado no Redis para o ingresso ${ticketId}. Verificando no PostgreSQL...`
-      );
+    let hasStock = ticketDetails?.hasStock;
+
+    if (ticketDetails === null) {
+      // console.log(
+      //   `Estoque não encontrado no Redis para o ingresso ${ticketId}. Verificando no PostgreSQL...`
+      // );
 
       source = "postgres";
-      const ticketCount = await prisma.availableTickets.count({
-        where: { ticketId, status: "available" },
+
+      const ticketDetails = await prisma.ticket.findUnique({
+        where: {
+          id: ticketId,
+        },
+        include: {
+          _count: {
+            select: {
+              usedTickets: {
+                where: {
+                  ticketId: ticketId,
+                  OR: [{ status: "RESERVED" }, { status: "SUCCESSFUL" }],
+                },
+              },
+            },
+          },
+        },
       });
 
-      if (ticketCount) {
-        stock = ticketCount;
+      const {
+        _count,
+        ticketDefaultaAvailableStock,
+        ticketPrice,
+        ticketName,
+        ticketSubTotalPrice,
+        stripeID,
+      } = ticketDetails;
 
-        // Atualizar o Redis com o valor do PostgreSQL
-        await redis.set(stockKey, stock, {
-          nx: true, // Só define se a chave não existir
-          ex: 10,
-        });
-        console.log(
-          `Redis atualizado com estoque do PostgreSQL para o ingresso ${ticketId}`
-        );
-      } else {
-        console.warn(`Ingresso ${ticketId} não encontrado no PostgreSQL`);
-        return null;
-      }
+      hasStock =
+        ticketDefaultaAvailableStock - _count.usedTickets >= 0 ? true : false;
+
+      // Atualizar o Redis com o valor do PostgreSQL
+      await redis.set(
+        stockKey,
+        {
+          ticketPrice,
+          ticketName,
+          ticketSubTotalPrice,
+          hasStock,
+          stripeID,
+          ticketDefaultaAvailableStock,
+          usedTickets: _count.usedTickets,
+        },
+        {
+          nx: true,
+          ex: 60 * 60,
+        }
+      );
+      // console.log(
+      //   `Redis atualizado com estoque do PostgreSQL para o ingresso ${ticketId}`
+      // );
     }
+    // console.log(`Redis encontrado para o ingresso ${ticketId}`);
 
-    return { stock, source };
+    return { hasStock, source };
   } catch (error) {
-    console.error(`Erro ao verificar estoque do ingresso ${ticketId}:`, error);
+    // console.error(`Erro ao verificar estoque do ingresso ${ticketId}:`, error);
     throw error;
   }
 };
