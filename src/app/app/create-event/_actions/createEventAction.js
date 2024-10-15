@@ -28,7 +28,7 @@ export async function createEventAction(
 
     const data = await eventRes.json();
     if (data.eventURL) {
-      redirect(eventURL);
+      redirect(data.eventURL);
     }
     //   const sanitizedTickets = await Promise.all(
     //     ticketsData.map(async (ticket) => {

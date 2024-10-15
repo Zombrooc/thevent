@@ -1,11 +1,11 @@
 import { prisma } from "@/lib/database";
 
 export async function GET(req, { params }) {
-  const { id } = params;
+  const { eventID } = params;
 
   const eventData = await prisma.event.findUnique({
     where: {
-      id,
+      id: eventID,
     },
     include: {
       address: true,

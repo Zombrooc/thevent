@@ -2,16 +2,6 @@ import Navbar from "@/components/Navbar";
 import { constructMetadata } from "@/lib/constructMetadata";
 import TicketProvider from "@/store/features/ticketCart/TicketProvider";
 
-// export async function generateStaticParams() {
-//   const eventRes = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/events`);
-
-//   const { events } = await eventRes.json();
-
-//   return events.map((event) => ({
-//     id: event.id,
-//   }));
-// }
-
 const getEventData = async (id) => {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_APP_URL}/api/events/${id}`,
@@ -47,7 +37,6 @@ const incrementPageViews = async (eventId) => {
     `${process.env.NEXT_PUBLIC_APP_URL}/api/analytics/${eventId}/increment-views`,
     {
       method: "POST",
-      cache: "no-cache",
     }
   );
 

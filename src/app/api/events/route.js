@@ -17,9 +17,11 @@ export async function GET(req) {
     },
   });
 
+  console.log(events);
+
   if (events) {
     return Response.json({
-      events: events,
+      events,
     });
   }
 
@@ -35,6 +37,8 @@ export async function POST(req) {
   if (!userId) {
     throw new Error("Unauthorized");
   }
+
+  const multi = redis.multi();
 
   try {
     const sanitizedTickets = await Promise.all(
@@ -53,8 +57,6 @@ export async function POST(req) {
           parseFloat(ticketPrice) * process.env.APP_FEE_PERCENT;
 
         const ticketID = cuid();
-
-        redis.set(`ticket:${ticketID}:stock`, ticketStockAvailable);
 
         const stripeID = await createStripeProduct(
           ticketName,
@@ -77,7 +79,10 @@ export async function POST(req) {
           endSellingAt: startEndingSelling.to,
         };
 
+        multi.set(`ticket:${ticketID}:available`, ticketStockAvailable);
+
         if (extraFields) {
+          multi.set(`ticket:${ticketID}:forms`, extraFields);
           updatedTicketData.form = {
             create: {
               fields: extraFields,
@@ -88,6 +93,8 @@ export async function POST(req) {
         return updatedTicketData;
       })
     );
+
+    await multi.exec();
 
     const event = await prisma.event.create({
       data: {

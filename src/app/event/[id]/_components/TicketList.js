@@ -3,12 +3,9 @@
 import TicketItem from "./TicketItem";
 import ConfirmPurchase from "./ConfirmPurchaseModal";
 import { useSelector } from "react-redux";
-// import { useUser } from "@auth0/nextjs-auth0/client";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { SignIn, SignInButton, useUser } from "@clerk/nextjs";
-import { useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { SignInButton, useUser } from "@clerk/nextjs";
 
 export default function TicketList({ tickets }) {
   const pathname = usePathname();

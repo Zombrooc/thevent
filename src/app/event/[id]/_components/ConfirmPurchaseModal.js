@@ -24,7 +24,7 @@ export default function ConfirmPurchase() {
     await purchaseConfirmationAction({
       ticketCart,
       totalPrice,
-      eventId: params.id,
+      eventID: params.id,
     });
   };
 

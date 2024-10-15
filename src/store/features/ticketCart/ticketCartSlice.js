@@ -35,7 +35,6 @@ export const ticketCartSlice = createSlice({
         newCartItems[index] = {
           ...newCartItems[index],
           quantity: newCartItems[index]?.quantity + 1 || 1,
-          ticketName: action.payload.ticketName,
         };
       } else {
         newCartItems.push({
@@ -43,6 +42,7 @@ export const ticketCartSlice = createSlice({
           stripeID: action.payload.stripeID,
           quantity: 1,
           price: action.payload.ticketPrice,
+          ticketName: action.payload.ticketName,
         });
       }
 

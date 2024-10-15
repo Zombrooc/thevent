@@ -83,7 +83,9 @@ export async function POST(req) {
         enabled: true,
       },
       metadata: {
-        eventId: event.id,
+        eventID: event.id,
+        orderID: orderId,
+        userID: userId,
       },
 
       line_items: ticketData,

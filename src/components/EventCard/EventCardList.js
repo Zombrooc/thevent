@@ -3,11 +3,13 @@ import EventCardItem from "./EventCardItem";
 const getEvents = async () => {
   let eventsRes = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/events`, {
     next: {
-      revalidate: 3600,
+      revalidate: 0,
     },
   });
 
   const { events } = await eventsRes.json();
+
+  console.log(events);
 
   return events;
 };

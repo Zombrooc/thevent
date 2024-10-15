@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/database";
 
 export async function PATCH(req) {
-  const { orderItems, userAnswers } = await req.json();
+  const { userAnswers, orderItems } = await req.json();
 
   if (!orderItems || !userAnswers) {
     return new Response("Missing Arguments", {
@@ -9,20 +9,25 @@ export async function PATCH(req) {
     });
   }
 
-  const updates = await orderItems.map(({ id }) => {
-    return prisma.orderItem.update({
-      where: {
-        id,
-      },
-      data: {
-        userAnswers: userAnswers[id],
-      },
-    });
-  });
+  const updates = orderItems
+    .filter(({ forms }) => (forms ? true : false))
+    .map(({ id }) =>
+      prisma.orderItem.update({
+        where: {
+          id,
+        },
+        data: {
+          userAnswers: userAnswers.id,
+        },
+      })
+    );
+
+  console.log("Updates: ", updates);
 
   try {
     const results = await prisma.$transaction(updates);
 
+    console.log("Result: ", results);
     if (results) {
       return Response.json(
         { done: true },

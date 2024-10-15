@@ -57,9 +57,22 @@ export const getPaymentIntnet = async (paymentIntnet) => {
 };
 
 export const getStripeProduct = async (stripeProductId) => {
-  const productDetails = await stripe.products.retrieve(stripeProductId);
+  const {
+    id,
+    name: ticketName,
+    default_price,
+    metadata,
+  } = await stripe.products.retrieve(stripeProductId);
 
-  return productDetails;
+  const { unit_amount: ticketPrice } =
+    await stripe.prices.retrieve(default_price);
+
+  return {
+    id,
+    ticketName,
+    ticketPrice,
+    ...metadata,
+  };
 };
 
 export const getStripeProductsByIDArrays = async (stripeProductIDs) => {
@@ -68,16 +81,19 @@ export const getStripeProductsByIDArrays = async (stripeProductIDs) => {
   });
 
   const productList = await Promise.all(
-    retrievedData.map(async ({ name: ticketName, default_price, metadata }) => {
-      const { unit_amount: ticketPrice } =
-        await stripe.prices.retrieve(default_price);
+    retrievedData.map(
+      async ({ id, name: ticketName, default_price, metadata }) => {
+        const { unit_amount: ticketPrice } =
+          await stripe.prices.retrieve(default_price);
 
-      return {
-        ticketName,
-        ticketPrice,
-        ...metadata,
-      };
-    })
+        return {
+          id,
+          ticketName,
+          ticketPrice,
+          ...metadata,
+        };
+      }
+    )
   );
 
   return productList;

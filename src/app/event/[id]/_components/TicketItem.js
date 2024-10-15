@@ -17,13 +17,15 @@ import {
   addItem,
   removeItem,
 } from "@/store/features/ticketCart/ticketCartSlice";
-import { getTicketStock } from "../_actions/getTicketStock";
 import { useEffect, useState } from "react";
 
 const selectTicketItem = createSelector(
   [(state) => state.ticketCart.tickets, (state, ticketId) => ticketId],
   (tickets, ticketId) => tickets.filter((ticket) => ticket.id === ticketId)
 );
+
+// import { Redis } from "@upstash/redis";
+import { getCurrentStock } from "@/lib/actions/getCurrentStock";
 
 export default function TicketItem({ ticket, isAuth }) {
   const [hasStock, setHasStock] = useState(false);
@@ -33,11 +35,9 @@ export default function TicketItem({ ticket, isAuth }) {
 
   useEffect(() => {
     const getStock = async () => {
-      const hasStock = await getTicketStock(ticket.id);
+      const currentStock = await getCurrentStock(ticket.id);
 
-      console.log("ticketStockOnRedis: ", hasStock);
-
-      setHasStock(hasStock);
+      setHasStock(currentStock);
     };
 
     getStock();

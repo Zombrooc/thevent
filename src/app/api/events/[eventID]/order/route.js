@@ -1,13 +1,18 @@
 import { prisma } from "@/lib/database";
+import { auth } from "@clerk/nextjs/server";
+import { Redis } from "@upstash/redis";
+
+const redis = Redis.fromEnv();
 
 export async function POST(req) {
+  const { eventID } = params;
   const orderContent = await req.json();
 
-  // const { userId } = auth();
+  const { userId } = auth();
 
-  // if (!userId) {
-  //   return Response.json({ message: "Unauthorized" }).status(401);
-  // }
+  if (!userId) {
+    return Reponse.json({ message: "Unauthorized" }).status(401);
+  }
 
   try {
     const order = await prisma.order.create({

@@ -6,9 +6,9 @@ import TicketList from "./_components/TicketList";
 
 import { CalendarDaysIcon, MapPinnedIcon } from "lucide-react";
 
-const getEventData = async (id) => {
+const getEventData = async (eventID) => {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_APP_URL}/api/events/${id}`,
+    `${process.env.NEXT_PUBLIC_APP_URL}/api/events/${eventID}`,
     {
       next: {
         revalidate: 3600,
@@ -17,7 +17,10 @@ const getEventData = async (id) => {
   );
 
   if (res.status === 200) {
-    return await res.json();
+    const events = await res.json();
+
+    console.log(events);
+    return events;
   } else {
     return { error: 404 };
   }
