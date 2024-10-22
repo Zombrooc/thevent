@@ -66,6 +66,12 @@ export const purchaseConfirmationAction = async ({
         ticket.id
       );
 
+      const availableQuantity = redis.get(`ticket:${ticket.id}:available`);
+
+      if (ticket.quantity > availableQuantity) {
+        throw new Error(`${ticket.id} is out of stock`);
+      }
+
       redisReservationFlow.set(
         `reservation:${ticket.id}:${userId}`,
         parseInt(ticket.quantity),

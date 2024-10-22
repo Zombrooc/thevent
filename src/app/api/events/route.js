@@ -74,7 +74,7 @@ export async function POST(req) {
           ticketDefaultAvailableStock: Number(ticketStockAvailable),
           ticketSubTotalPrice: parseFloat(ticketPrice),
 
-          stripeID: stripeID,
+          stripeID,
           startSellingAt: startEndingSelling.from,
           endSellingAt: startEndingSelling.to,
         };
