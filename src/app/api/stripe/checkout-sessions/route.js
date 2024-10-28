@@ -30,6 +30,7 @@ export async function POST(req) {
           ticket: true,
         },
       },
+      reservedTickets: true,
       event: true,
     },
   });
@@ -84,7 +85,10 @@ export async function POST(req) {
       },
       metadata: {
         eventID: event.id,
-        orderID: orderId,
+        order: {
+          id: orderId,
+          reservedTickets,
+        },
         userID: userId,
       },
 

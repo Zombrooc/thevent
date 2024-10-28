@@ -19,7 +19,6 @@ const getEventData = async (eventID) => {
   if (res.status === 200) {
     const events = await res.json();
 
-    console.log(events);
     return events;
   } else {
     return { error: 404 };

@@ -35,7 +35,7 @@ export default function TicketItem({ ticket, isAuth }) {
 
   useEffect(() => {
     const getStock = async () => {
-      const currentStock = await hasStock(ticket.id);
+      const currentStock = await getCurrentStock(ticket.id);
 
       setHasStock(currentStock);
     };

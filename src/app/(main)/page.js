@@ -12,6 +12,7 @@ import EventCardList from "@/components/EventCard/EventCardList";
 import { Suspense } from "react";
 import { BentoGrid, BentoGridItem } from "@/components/BentoGrid";
 import { Skeleton } from "@/components/ui/skeleton";
+import Container from "@/components/Container";
 
 const bentogridItems = [
   {
@@ -103,7 +104,7 @@ export default async function Home() {
     <>
       <div className="min-h-full min-w-full ">
         <div className="overflow-hidden">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-12">
+          <Container>
             <div className="relative mx-auto max-w-4xl grid space-y-4 sm:space-y-10">
               <div className="mt-5 max-w-2xl text-center mx-auto">
                 <h1 className="block font-bold text-gray-800 text-5xl md:text-5xl lg:text-6xl dark:text-gray-200">
@@ -123,11 +124,11 @@ export default async function Home() {
               </div>
               <SearchEventInput />
             </div>
-          </div>
+          </Container>
         </div>
       </div>
 
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<Container>Loading...</Container>}>
         <EventCardList />
       </Suspense>
 

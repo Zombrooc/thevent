@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE "Order" ADD COLUMN     "subTotal" INTEGER NOT NULL DEFAULT 0;

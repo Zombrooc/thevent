@@ -20,7 +20,6 @@ export default function ConfirmPurchaseClient({ orderItems }) {
   const { setValue, register, handleSubmit } = useForm();
   const { orderId } = useParams();
   const router = useRouter();
-  console.log("Order Items: ", orderItems);
 
   const onSubmit = async (data) => {
     console.log("Data: ", data);
@@ -39,7 +38,7 @@ export default function ConfirmPurchaseClient({ orderItems }) {
     const { done } = await res.json();
 
     if (done) {
-      const response = await fetch("/api/stripe/checkout-sessions", {
+      const response = await fetch(`/api/stripe/checkout-sessions`, {
         method: "POST",
         body: JSON.stringify({ orderId }),
       });

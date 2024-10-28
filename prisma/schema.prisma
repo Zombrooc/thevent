@@ -43,35 +43,36 @@ model Address {
 }
 
 model Ticket {
-  id                          String        @id @default(cuid())
+  id                          String              @id @default(cuid())
   eventId                     String?
   endSellingAt                DateTime
   startSellingAt              DateTime
   ticketDescription           String
   ticketName                  String
   ticketPrice                 Float
-  ticketSubTotalPrice         Float         @default(0)
+  ticketSubTotalPrice         Float               @default(0)
   ticketDefaultAvailableStock Int
-  usedTickets                 UsedTickets[]
+  reservedTickets             TicketReservation[]
   stripeID                    String
-  Event                       Event?        @relation(fields: [eventId], references: [id])
-  createdAt                   DateTime      @default(now())
-  updatedAt                   DateTime      @updatedAt
+  Event                       Event?              @relation(fields: [eventId], references: [id])
+  createdAt                   DateTime            @default(now())
+  updatedAt                   DateTime            @updatedAt
   orderItem                   OrderItem[]
   form                        Form?
 }
 
-model UsedTickets {
-  id            String        @id @default(cuid())
-  ticket        Ticket        @relation(fields: [ticketId], references: [id])
-  ticketId      String
-  status        TICKET_STATUS
-  reservationId String?
-  expiresAt     DateTime?
-  customData    Json? // Para armazenar dados personalizados do ticket
-  version       Int           @default(0)
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+model TicketReservation {
+  id         String        @id @default(cuid())
+  ticket     Ticket        @relation(fields: [ticketId], references: [id])
+  ticketId   String
+  status     TICKET_STATUS
+  expiresAt  DateTime
+  customData Json? // Para armazenar dados personalizados do ticket
+  version    Int           @default(0)
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+  Order      Order?        @relation(fields: [orderId], references: [id])
+  orderId    String?
 }
 
 model SEOMeta {
@@ -99,17 +100,18 @@ model Tags {
 }
 
 model Order {
-  id            String      @id @default(cuid())
-  userId        String
-  paymentId     String?     @unique
-  total         Int
-  subTotal      Int         @default(0)
-  paymentStatus String
-  event         Event       @relation(fields: [eventId], references: [id])
-  orderItems    OrderItem[]
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-  eventId       String
+  id              String              @id @default(cuid())
+  userId          String
+  paymentId       String?             @unique
+  total           Int
+  subTotal        Int                 @default(0)
+  paymentStatus   String
+  event           Event               @relation(fields: [eventId], references: [id])
+  orderItems      OrderItem[]
+  reservedTickets TicketReservation[]
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+  eventId         String
 }
 
 model OrderItem {
@@ -160,4 +162,5 @@ enum EVENT_STATUS {
   ARCHIVED
   DISABLED
   CANCELED
+  DRAFT
 }

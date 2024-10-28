@@ -104,9 +104,36 @@ async function handleStripeWebhook(body) {
       // const subId = body.data?.object?.subscription;
       // const stripeInvoiceId = body.data?.object?.invoice;
       // const userId = body.data?.object?.metadata?.userId;
-      const meta = body.data?.object?.metadata;
+      const metadata = body.data?.object?.metadata;
       // const stripe_invoice = body.data?.object?.invoice;
       const type = body.type;
+
+      const { orderID, userID, eventID} = metadata
+
+      await prisma.$transaction(
+        async (tx) => {
+          // Code running in a transaction...
+        },
+        {
+          isolationLevel: Prisma.TransactionIsolationLevel.Serializable, // optional, default defined by database configuration
+          maxWait: 5000, // default: 2000
+          timeout: 10000, // default: 5000
+        }
+      )
+
+      const update = await prisma.$transaction(|[
+
+        prisma.order.update({
+          where: {
+            orderId: orderID
+          },
+          data: {
+            paymentId: payment_intent,
+            paymentStatus: status
+          }
+        })
+
+      ])
       // const { subTotal, orderItems } = await prisma.Order.findUnique({
       //   where: { paymentId: id },
       //   include: {

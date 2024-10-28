@@ -24,3 +24,9 @@ export async function POST(req) {
     });
   }
 }
+
+export async function GET(req) {
+  const orders = await prisma.order.findMany();
+
+  return Response.json({ orders });
+}

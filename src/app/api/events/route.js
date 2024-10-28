@@ -17,15 +17,13 @@ export async function GET(req) {
     },
   });
 
-  console.log(events);
-
-  if (events) {
-    return Response.json({
-      events,
-    });
+  if (!events) {
+    return Response.json({ events: [] });
   }
 
-  return Response.json({ events: [] });
+  return Response.json({
+    events,
+  });
 }
 
 export async function POST(req) {
@@ -73,7 +71,6 @@ export async function POST(req) {
           ticketDescription,
           ticketDefaultAvailableStock: Number(ticketStockAvailable),
           ticketSubTotalPrice: parseFloat(ticketPrice),
-
           stripeID,
           startSellingAt: startEndingSelling.from,
           endSellingAt: startEndingSelling.to,

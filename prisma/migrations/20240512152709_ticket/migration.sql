@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE "Ticket" ADD COLUMN     "ticketSubTotalPrice" DOUBLE PRECISION NOT NULL DEFAULT 0;

@@ -9,8 +9,6 @@ const getEvents = async () => {
 
   const { events } = await eventsRes.json();
 
-  console.log(events);
-
   return events;
 };
 

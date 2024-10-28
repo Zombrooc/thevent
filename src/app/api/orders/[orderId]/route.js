@@ -1,5 +1,4 @@
 import { prisma } from "@/lib/database";
-import { getUserDetails } from "@/lib/getUserDetails";
 
 export async function GET(req, { params }) {
   const { orderId } = params;
@@ -9,22 +8,22 @@ export async function GET(req, { params }) {
       id: orderId,
     },
     include: {
-      orderItems,
+      orderItems: {
+        include: { ticket: { select: { id: true, ticketName: true } } },
+      },
     },
   };
 
   try {
-    const order = await prisma.order.findMany(query);
+    const order = await prisma.order.findUnique(query);
 
-    if (orders) {
-      return Response.json({
-        order,
-      });
+    if (order) {
+      return Response.json(order);
     }
 
     return Response.json({
-      order: null,
-    });
+      error: "Order not found",
+    }).status(404);
   } catch (e) {
     return new Response({
       status: e.statusCode,
