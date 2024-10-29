@@ -2,7 +2,7 @@ import { headers } from "next/headers";
 // import { getSession } from "@auth0/nextjs-auth0";
 
 import { clerkClient } from "@/lib/clerkClient";
-import { prisma } from "@/lib/database";
+import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 
 import { stripe } from "@/lib/stripe";
@@ -20,20 +20,23 @@ export async function POST(req) {
     return new Response("No Order Passed", { status: 400 });
   }
 
-  const { orderItems, event, total, subTotal } = await prisma.Order.findUnique({
-    where: {
-      id: orderId,
-    },
-    include: {
-      orderItems: {
-        include: {
-          ticket: true,
-        },
+  const { orderItems, event, total, subTotal, reservedTickets } =
+    await prisma.Order.findUnique({
+      where: {
+        id: orderId,
       },
-      reservedTickets: true,
-      event: true,
-    },
-  });
+      include: {
+        orderItems: {
+          include: {
+            ticket: true,
+          },
+        },
+        reservedTickets: true,
+        event: true,
+      },
+    });
+
+  const reservedTicketsIDs = await reservedTickets.map(({ id }) => id);
 
   const customer = await clerkClient.users.getUser(userId);
 
@@ -85,10 +88,10 @@ export async function POST(req) {
       },
       metadata: {
         eventID: event.id,
-        order: {
+        order: JSON.stringify({
           id: orderId,
-          reservedTickets,
-        },
+          reservedTickets: reservedTicketsIDs,
+        }),
         userID: userId,
       },
 

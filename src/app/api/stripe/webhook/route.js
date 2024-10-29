@@ -12,6 +12,10 @@
  */
 import Stripe from "stripe";
 import { NextApiRequest, NextApiResponse } from "next";
+import { RESERVATION_STATUS } from "@prisma/client";
+import { Redis } from "@upstash/redis";
+
+const redis = Redis.fromEnv()
 
 const EventName = [
   // Checkout: https://stripe.com/docs/payments/checkout
@@ -79,7 +83,7 @@ async function handleStripeWebhook(body) {
       );
 
     case "checkout.session.async_payment_succeeded":
-      const order = await prisma.Order.update({
+      const updatedOrder  = await prisma.Order.update({
         where: {
           paymentId: id,
           eventId: meta.eventId,
@@ -108,11 +112,51 @@ async function handleStripeWebhook(body) {
       // const stripe_invoice = body.data?.object?.invoice;
       const type = body.type;
 
-      const { orderID, userID, eventID} = metadata
+      const { order, userID, eventID } = metadata;
+
+      const { id: orderID, reservedTickets } = JSON.parse(order);
 
       await prisma.$transaction(
         async (tx) => {
-          // Code running in a transaction...
+          await tx.order.update({
+            where: {
+              id: orderID
+            },
+            data: {
+              paymentId: payment_intent,
+              paymentStatus: status
+            },
+
+          });
+          await tx.reservedTickets.updateMany({
+            where: {
+              AND: [
+                {orderId: orderID},
+                { id: {in: [reservedTickets]}}
+
+              ]
+            },
+            data: {
+              status: RESERVATION_STATUS.SUCCESSFUL,
+              version: {
+                increment: 1
+              }
+            }
+          });
+
+          const orderItems = await tx.orderItems.findMany({
+            where: {
+              orderId: orderID
+            }
+          });
+
+          await Promise.all(await orderItems.map(({ticketId: ticketID}) => {
+            await redis.decrby(`ticket:${ticketID}:available`)
+          }))
+
+
+
+
         },
         {
           isolationLevel: Prisma.TransactionIsolationLevel.Serializable, // optional, default defined by database configuration

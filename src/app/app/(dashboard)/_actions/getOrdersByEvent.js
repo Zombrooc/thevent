@@ -1,6 +1,6 @@
 "use server";
 
-import { prisma } from "@/lib/database";
+import { prisma } from "@/lib/prisma";
 import { getUserDetails } from "@/lib/getUserDetails";
 
 export const getOrdersByEvent = async (eventId) => {

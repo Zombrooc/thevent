@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/database";
+import { prisma } from "@/lib/prisma";
 
 export async function PATCH(req) {
   const { userAnswers, orderItems } = await req.json();
@@ -9,7 +9,7 @@ export async function PATCH(req) {
     });
   }
 
-  const updates = orderItems
+  const updates = await orderItems
     .filter(({ forms }) => (forms ? true : false))
     .map(({ id }) =>
       prisma.orderItem.update({

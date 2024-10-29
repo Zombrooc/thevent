@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/database";
+import { prisma } from "@/lib/prisma";
 import { createStripeProduct } from "@/lib/stripe";
 import { auth } from "@clerk/nextjs/server";
 import { Redis } from "@upstash/redis";

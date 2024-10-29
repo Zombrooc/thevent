@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/database";
+import { prisma } from "@/lib/prisma";
 import { createSlice } from "@reduxjs/toolkit";
 
 export const eventListSlice = createSlice({

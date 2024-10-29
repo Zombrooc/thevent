@@ -1,6 +1,7 @@
 import Image from "next/image";
-import moment from "moment";
 import Link from "next/link";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 export default function EventCardItem({ event }) {
   return (
@@ -22,9 +23,14 @@ export default function EventCardItem({ event }) {
             {event.eventName}
           </h3>
           <span className="block mb-1 text-xs font-semibold uppercase text-slate-700 dark:text-blue-300">
-            {moment(event.eventDateStart).format("DD/MM/YYYY")} -{" "}
-            {moment(event.eventDateEnd).format("DD/MM/YYYY")} |{" "}
-            {event.address?.city || ""}, {event.address?.state || ""}
+            {format(new Date(event.eventDateStart), "dd/MM/yyyy", {
+              locale: ptBR,
+            })}{" "}
+            -{" "}
+            {format(new Date(event.eventDateEnd), "dd/MM/yyyy", {
+              locale: ptBR,
+            })}{" "}
+            |{event.address?.city || ""}, {event.address?.state || ""}
           </span>
           {/* <p className="mt-3 text-gray-500">
                 A software that develops products for software developers and

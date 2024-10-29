@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/badge";
-import moment from "moment";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 import Image from "next/image";
 
 import TicketList from "./_components/TicketList";
@@ -60,7 +61,21 @@ export default async function EventDetails({ params }) {
                     <div className="flex items-center gap-2 text-sm">
                       <CalendarDaysIcon className="h-6 w-6" />
                       <time>
-                        {moment(eventData.eventDataStart).format("DD/MM/YYYY")}
+                        {format(
+                          new Date(eventData.eventDateStart),
+                          "dd/MM/yyyy",
+                          {
+                            locale: ptBR,
+                          }
+                        )}{" "}
+                        {eventData?.eventDateEnd &&
+                          format(
+                            new Date(eventData.eventDateEnd),
+                            "dd/MM/yyyy",
+                            {
+                              locale: ptBR,
+                            }
+                          )}
                       </time>
                     </div>
                     <div className="flex items-center gap-2 text-sm">

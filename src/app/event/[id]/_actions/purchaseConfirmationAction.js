@@ -1,6 +1,6 @@
 "use server";
 
-import { prisma } from "@/lib/database";
+import { prisma } from "@/lib/prisma";
 import { add } from "date-fns";
 import cuid from "cuid";
 import { auth } from "@clerk/nextjs/server";
@@ -8,7 +8,7 @@ import { redirect } from "next/navigation";
 import { getStripeProduct, normalizeStripePrice } from "@/lib/stripe";
 import { qstashClient } from "@/lib/qstash";
 // import { Redis } from "@upstash/redis";
-import { TICKET_STATUS } from "@prisma/client";
+import { RESERVATION_STATUS } from "@prisma/client";
 
 // const redis = Redis.fromEnv();
 
@@ -42,7 +42,10 @@ export const purchaseConfirmationAction = async ({
                   { version: 0 },
                   {
                     status: {
-                      in: [TICKET_STATUS.RESERVED, TICKET_STATUS.SUCCESSFUL],
+                      in: [
+                        RESERVATION_STATUS.RESERVED,
+                        RESERVATION_STATUS.SUCCESSFUL,
+                      ],
                     },
                   },
                 ],
@@ -91,7 +94,7 @@ export const purchaseConfirmationAction = async ({
         });
 
         reservationQueries.push({
-          status: TICKET_STATUS.RESERVED,
+          status: RESERVATION_STATUS.RESERVED,
           ticket: { connect: { id: ticketID } },
           expiresAt: add(new Date(), {
             minutes: 15,

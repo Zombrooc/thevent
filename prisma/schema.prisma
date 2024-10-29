@@ -49,8 +49,8 @@ model Ticket {
   startSellingAt              DateTime
   ticketDescription           String
   ticketName                  String
-  ticketPrice                 Float
-  ticketSubTotalPrice         Float               @default(0)
+  ticketPrice                 Decimal
+  ticketSubTotalPrice         Decimal             @default(0)
   ticketDefaultAvailableStock Int
   reservedTickets             TicketReservation[]
   stripeID                    String
@@ -62,16 +62,16 @@ model Ticket {
 }
 
 model TicketReservation {
-  id         String        @id @default(cuid())
-  ticket     Ticket        @relation(fields: [ticketId], references: [id])
+  id         String             @id @default(cuid())
+  ticket     Ticket             @relation(fields: [ticketId], references: [id])
   ticketId   String
-  status     TICKET_STATUS
+  status     RESERVATION_STATUS
   expiresAt  DateTime
   customData Json? // Para armazenar dados personalizados do ticket
-  version    Int           @default(0)
-  createdAt  DateTime      @default(now())
-  updatedAt  DateTime      @updatedAt
-  Order      Order?        @relation(fields: [orderId], references: [id])
+  version    Int                @default(0)
+  createdAt  DateTime           @default(now())
+  updatedAt  DateTime           @updatedAt
+  Order      Order?             @relation(fields: [orderId], references: [id])
   orderId    String?
 }
 
@@ -103,8 +103,8 @@ model Order {
   id              String              @id @default(cuid())
   userId          String
   paymentId       String?             @unique
-  total           Int
-  subTotal        Int                 @default(0)
+  total           Decimal
+  subTotal        Decimal             @default(0)
   paymentStatus   String
   event           Event               @relation(fields: [eventId], references: [id])
   orderItems      OrderItem[]
@@ -151,7 +151,7 @@ model Form {
   updatedAt DateTime @updatedAt
 }
 
-enum TICKET_STATUS {
+enum RESERVATION_STATUS {
   RESERVED
   SUCCESSFUL
   FAILED

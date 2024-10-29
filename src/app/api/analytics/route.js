@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/database";
+import { prisma } from "@/lib/prisma";
 import { Redis } from "@upstash/redis";
 
 const redis = Redis.fromEnv();
