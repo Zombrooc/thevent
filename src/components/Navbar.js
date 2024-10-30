@@ -1,296 +1,121 @@
 "use client";
 
-import {
-  ClerkProvider,
-  SignInButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
-} from "@clerk/nextjs";
+// import {
+//   ClerkProvider,
+//   SignInButton,
+//   SignedIn,
+//   SignedOut,
+//   UserButton,
+// } from "@clerk/nextjs";
 import Link from "next/link";
-import { Disclosure, Menu, Transition } from "@headlessui/react";
-import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
+
+// import { usePathname } from "next/navigation";
+// import UserAvatar from "./User";
+
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import Image from "next/image";
-import { cn } from "@/lib/utils";
-import { usePathname } from "next/navigation";
-import User from "./User";
+import { Settings, LogOut, Plus, LayoutDashboard, User } from "lucide-react";
 
-const navigation = [
-  { name: "Inicío", href: "/" },
-  {
-    name: "Evento",
-    sub: [
-      {
-        name: "Beach Tennis",
-        href: "#",
-        current: false,
-      },
-      {
-        name: "Tênis",
-        href: "#",
-        current: false,
-      },
-      {
-        name: "Corrida",
-        href: "#",
-        current: false,
-      },
-      {
-        name: "Trial",
-        href: "#",
-        current: false,
-      },
-      {
-        name: "Muay Thai",
-        href: "#",
-        current: false,
-      },
-    ],
-  },
-];
+// const navigation = [
+//   { name: "Inicío", href: "/" },
+//   {
+//     name: "Evento",
+//     sub: [
+//       {
+//         name: "Beach Tennis",
+//         href: "#",
+//         current: false,
+//       },
+//       {
+//         name: "Tênis",
+//         href: "#",
+//         current: false,
+//       },
+//       {
+//         name: "Corrida",
+//         href: "#",
+//         current: false,
+//       },
+//       {
+//         name: "Trial",
+//         href: "#",
+//         current: false,
+//       },
+//       {
+//         name: "Muay Thai",
+//         href: "#",
+//         current: false,
+//       },
+//     ],
+//   },
+// ];
 
 export default function Navbar() {
-  const pathname = usePathname();
+  // const pathname = usePathname();
 
-  const isCurrentPage = (href) => pathname === href;
+  // const isCurrentPage = (href) => pathname === href;
 
   return (
-    <Disclosure as="nav">
-      {({ open }) => (
-        <>
-          <div className="mx-auto  px-2 sm:px-6 lg:px-8">
-            <div className="relative flex h-16 items-center justify-between">
-              <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
-                {/* Mobile menu button*/}
-                <Disclosure.Button className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-primary hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
-                  <span className="absolute -inset-0.5" />
-                  <span className="sr-only">Open main menu</span>
-                  {open ? (
-                    <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
-                  ) : (
-                    <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
-                  )}
-                </Disclosure.Button>
-              </div>
-              <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-                <div className="flex flex-shrink-0 items-center">
-                  <Image
-                    className="h-8 w-auto"
-                    width="32"
-                    height="32"
-                    src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=500"
-                    alt="Your Company"
-                  />
-                </div>
-                <div className="hidden sm:ml-6 sm:block">
-                  <div className="flex space-x-4">
-                    {navigation.map((item) => {
-                      const isCurrent = item.href
-                        ? isCurrentPage(item.href)
-                        : false;
-                      if (item.href) {
-                        return (
-                          <Link
-                            key={item.name}
-                            href={item.href}
-                            className={cn(
-                              isCurrent
-                                ? "bg-primary text-white"
-                                : "text-gray-700 hover:bg-primary hover:text-white",
-                              "rounded-md px-3 py-2 text-sm font-medium"
-                            )}
-                            aria-current={isCurrent ? "page" : undefined}
-                          >
-                            {item.name}
-                          </Link>
-                        );
-                      } else {
-                        return (
-                          <DropdownMenu key={item.name}>
-                            <DropdownMenuTrigger className="text-gray-700 rounded-md px-3 py-2 text-sm font-medium hover:bg-primary hover:text-white">
-                              {item.name}
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent>
-                              {item.sub.map((subItem) => {
-                                return (
-                                  <Link href={subItem.href} key={subItem.name}>
-                                    <DropdownMenuItem
-                                      className={cn(
-                                        isCurrent
-                                          ? "bg-primary text-white"
-                                          : "text-gray-700 hover:bg-primary hover:text-white",
-                                        "rounded-md px-3 py-2 text-sm font-medium"
-                                      )}
-                                      aria-current={
-                                        isCurrent ? "page" : undefined
-                                      }
-                                    >
-                                      {subItem.name}
-                                    </DropdownMenuItem>
-                                  </Link>
-                                );
-                              })}
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        );
-                      }
-                    })}
-                  </div>
-                </div>
-              </div>
-              <div className="absolute inset-y-0 right-0 flex items-center sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                {pathname !== "/app/create-event" && (
-                  <>
-                    <Link
-                      href="/app/"
-                      variant="outline"
-                      className="flex justify-center items-center text-sm font-semibold leading-6 mr-2 bg-primary text-white py-2 px-4 rounded-md "
-                    >
-                      Dashboard
-                    </Link>
-                    <Link
-                      href="/app/create-event"
-                      variant="outline"
-                      className="flex justify-center items-center text-sm font-semibold leading-6 mr-2 bg-primary text-white py-2 px-4 rounded-md "
-                    >
-                      Criar evento
-                    </Link>
-                  </>
-                )}
-                <DropdownMenu>
-                  <DropdownMenuTrigger className="relative rounded-full p-1 text-gray-700 hover:bg-primary hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
-                    <span className="absolute -inset-1.5" />
-                    <span className="sr-only">View notifications</span>
-                    <BellIcon className="h-6 w-6" aria-hidden="true" />
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <Link href="/">
-                      <DropdownMenuItem>teste notify</DropdownMenuItem>
-                    </Link>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-                {/* Profile dropdown */}
-                {/* {user !== undefined ? (
-                  <div className="ml-3">
-                    <UserNav user={user} />
-                  </div>
-                ) : (
-                  <Link
-                    href="/api/auth/login"
-                    className="text-sm font-semibold leading-6 text-gray-800 ml-3 hover:bg-primary hover:text-white py-2 px-4 rounded-md"
-                  >
-                    Entrar <span aria-hidden="true">&rarr;</span>
-                  </Link>
-                )} */}
-                {/* <SignedOut>
-                  <SignInButton className="text-sm font-semibold leading-6 text-gray-800 ml-5 hover:bg-primary hover:text-white py-2 px-4 rounded-md">
-                    {" "}
-                    Entrar
-                  </SignInButton>
-                </SignedOut>
-                <SignedIn>
-                  <UserButton className="text-sm font-semibold leading-6 text-gray-800 ml-5 hover:bg-primary hover:text-white py-2 px-4 rounded-md" />
-                </SignedIn> */}
-                <User />
+    <header className="top-0 left-0 w-screen fixed md:top-4 md:left-1/2 md:-translate-x-1/2 md:w-[70%] border bg-background/80 backdrop-blur-sm md:rounded-full z-50">
+      <div className="flex h-16 items-center px-6">
+        <Link href="/" className="flex items-center">
+          <span className="text-xl font-bold">THEVENT</span>
+        </Link>
 
-                {/* <Menu as="div" className="relative ml-3">
-                  <div>
-                    <Menu.Button className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
-                      <span className="absolute -inset-1.5" />
-                      <span className="sr-only">Open user menu</span>
-                      <img
-                        className="h-8 w-8 rounded-full"
-                        src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                        alt=""
-                      />
-                    </Menu.Button>
-                  </div>
-                  <Transition
-                    as={Fragment}
-                    enter="transition ease-out duration-100"
-                    enterFrom="transform opacity-0 scale-95"
-                    enterTo="transform opacity-100 scale-100"
-                    leave="transition ease-in duration-75"
-                    leaveFrom="transform opacity-100 scale-100"
-                    leaveTo="transform opacity-0 scale-95"
-                  >
-                    <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                      <Menu.Item>
-                        {({ active }) => (
-                          <a
-                            href="#"
-                            className={cn(
-                              active ? "bg-gray-100" : "",
-                              "block px-4 py-2 text-sm text-gray-700"
-                            )}
-                          >
-                            Your Profile
-                          </a>
-                        )}
-                      </Menu.Item>
-                      <Menu.Item>
-                        {({ active }) => (
-                          <a
-                            href="#"
-                            className={cn(
-                              active ? "bg-gray-100" : "",
-                              "block px-4 py-2 text-sm text-gray-700"
-                            )}
-                          >
-                            Settings
-                          </a>
-                        )}
-                      </Menu.Item>
-                      <Menu.Item>
-                        {({ active }) => (
-                          <a
-                            href="#"
-                            className={cn(
-                              active ? "bg-gray-100" : "",
-                              "block px-4 py-2 text-sm text-gray-700"
-                            )}
-                          >
-                            Sign out
-                          </a>
-                        )}
-                      </Menu.Item>
-                    </Menu.Items>
-                  </Transition>
-                </Menu> */}
-              </div>
-            </div>
+        <div className="ml-auto flex items-center gap-4">
+          <div className="hidden sm:flex sm:gap-4">
+            <Button variant="outline">Login</Button>
+            <Button>Sign up</Button>
           </div>
 
-          <Disclosure.Panel className="sm:hidden">
-            <div className="space-y-1 px-2 pb-3 pt-2">
-              {navigation.map((item) => (
-                <Disclosure.Button
-                  key={item.name}
-                  as="a"
-                  href={item.href}
-                  className={cn(
-                    item.current
-                      ? "bg-primary text-white"
-                      : "text-gray-300 hover:bg-primary hover:text-white",
-                    "block rounded-md px-3 py-2 text-base font-medium"
-                  )}
-                  aria-current={item.current ? "page" : undefined}
-                >
-                  {item.name}
-                </Disclosure.Button>
-              ))}
-            </div>
-          </Disclosure.Panel>
-        </>
-      )}
-    </Disclosure>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                <Avatar className="h-8 w-8">
+                  <AvatarImage
+                    src="/placeholder.svg?height=32&width=32"
+                    alt="@username"
+                  />
+                  <AvatarFallback>
+                    <User className="h-4 w-4" />
+                  </AvatarFallback>
+                </Avatar>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56" align="end">
+              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                <LayoutDashboard className="mr-2 h-4 w-4" />
+                <span>Dashboard</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Plus className="mr-2 h-4 w-4" />
+                <span>Create Event</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Settings className="mr-2 h-4 w-4" />
+                <span>Settings</span>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                <LogOut className="mr-2 h-4 w-4" />
+                <span>Log out</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </div>
+    </header>
   );
 }
