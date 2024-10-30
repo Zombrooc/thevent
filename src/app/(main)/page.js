@@ -1,5 +1,3 @@
-"use client";
-
 import Image from "next/image";
 
 // import running from "@/assets/running.jpg";
@@ -9,44 +7,12 @@ import Image from "next/image";
 // import karate from "@/assets/karate.jpg";
 // import mtb from "@/assets/mtb.jpg";
 
-import Link from "next/link";
-
-import { cn } from "@/lib/utils";
 // import User from "./User";
 
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 
-import { useRef } from "react";
-
-const sportCategories = [
-  {
-    name: "Running",
-    // icon: Running,
-    image: "/placeholder.svg?height=100&width=100",
-    color: "bg-red-100 dark:bg-red-900/20",
-  },
-  {
-    name: "MTB",
-    // icon: Bike,
-    image: "/placeholder.svg?height=100&width=100",
-    color: "bg-green-100 dark:bg-green-900/20",
-  },
-  {
-    name: "Speed Bike",
-    // icon: Bike,
-    image: "/placeholder.svg?height=100&width=100",
-    color: "bg-blue-100 dark:bg-blue-900/20",
-  },
-  {
-    name: "Other",
-    // icon: Dumbbell,
-    image: "/placeholder.svg?height=100&width=100",
-    color: "bg-purple-100 dark:bg-purple-900/20",
-  },
-];
+import EventCardGridList from "@/components/EventCardGrid/EventCardGridList";
+import CategorySlider from "./_components/CategorySlider";
 
 const featuredEvents = [
   {
@@ -171,17 +137,6 @@ const featuredEvents = [
 // ];
 
 export default function Home() {
-  const scrollContainerRef = useRef(null);
-
-  const scroll = (direction) => {
-    if (scrollContainerRef.current) {
-      const scrollAmount = direction === "left" ? -200 : 200;
-      scrollContainerRef.current.scrollBy({
-        left: scrollAmount,
-        behavior: "smooth",
-      });
-    }
-  };
   return (
     <>
       {/* <>
@@ -248,114 +203,34 @@ export default function Home() {
         </div>
         <div className="relative z-10 mx-auto max-w-5xl text-center">
           <h1 className="text-4xl font-bold tracking-tight sm:text-6xl">
-            Your Next Sports Event
-            <span className="block text-primary">Starts Here</span>
+            Sua próxima vitória
+            <span className="block text-primary">Começa Aqui</span>
           </h1>
           <p className="mt-6 text-lg text-muted-foreground sm:text-xl">
-            Create, discover, and participate in sports events near you. From
-            marathons to championships, find your next challenge.
+            Crie, descubra e participe de competições perto de você. De
+            maratonas a campeonatos, encontre seu próximo desafio.
           </p>
           <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:justify-center">
             <Button size="lg" className="text-lg">
-              Create Event
+              Criar Evento
             </Button>
             <Button size="lg" variant="outline" className="text-lg">
-              Explore Events
+              Explorar Eventos
             </Button>
           </div>
         </div>
       </section>
 
       {/* Sports Categories Carousel */}
-      <section className="relative px-6 py-12 sm:px-8">
-        <div className="mx-auto max-w-7xl">
-          <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold sm:text-3xl">
-              Sports Categories
-            </h2>
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => scroll("left")}
-                className="hidden sm:flex"
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => scroll("right")}
-                className="hidden sm:flex"
-              >
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-          {/* <ScrollArea
-            className="mt-6 whitespace-nowrap"
-            ref={scrollContainerRef}
-          >
-            <div className="flex gap-6">
-              {sportCategories.map((category) => {
-                // const Icon = category.icon;
-                return (
-                  <div
-                    key={category.name}
-                    className="inline-flex flex-col items-center gap-3"
-                  >
-                    <div
-                      className={cn(
-                        "group relative aspect-square w-24 overflow-hidden rounded-full transition-all hover:shadow-lg",
-                        category.color
-                      )}
-                    >
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <Icon className="h-10 w-10 transition-transform group-hover:scale-110" />
-                      </div>
-                    </div>
-                    <span className="text-sm font-medium">{category.name}</span>
-                  </div>
-                );
-              })}
-            </div>
-            <ScrollBar orientation="horizontal" className="hidden" />
-          </ScrollArea> */}
-        </div>
-      </section>
+      <CategorySlider />
 
       {/* Featured Events Bento Grid */}
       <section className="px-6 py-12 sm:px-8">
         <div className="mx-auto max-w-7xl">
-          <h2 className="text-2xl font-bold sm:text-3xl">Featured Events</h2>
-          <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {featuredEvents.map((event) => (
-              <Link key={event.title} href="#" className="group">
-                <Card className="overflow-hidden">
-                  <div className="aspect-[4/3] overflow-hidden">
-                    <Image
-                      src={event.image}
-                      alt={event.title}
-                      width={600}
-                      height={400}
-                      className="object-cover transition-transform duration-300 group-hover:scale-105"
-                    />
-                  </div>
-                  <div className="p-4">
-                    <h3 className="font-semibold">{event.title}</h3>
-                    <div className="mt-2 flex items-center gap-4 text-sm text-muted-foreground">
-                      <span>{event.category}</span>
-                      <span>•</span>
-                      <span>{event.date}</span>
-                    </div>
-                    <p className="mt-1 text-sm text-muted-foreground">
-                      {event.location}
-                    </p>
-                  </div>
-                </Card>
-              </Link>
-            ))}
-          </div>
+          <h2 className="text-2xl font-bold sm:text-3xl">
+            Eventos em Destaque{" "}
+          </h2>
+          <EventCardGridList />
         </div>
       </section>
 

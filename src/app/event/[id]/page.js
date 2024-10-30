@@ -47,7 +47,7 @@ export default async function EventDetails({ params }) {
             <div className="col-span-4">
               <div className="w-full">
                 <div className="space-y-2">
-                  <div className="flex rounded-lg px-3 py-1 text-base ">
+                  <div className="flex rounded-lg py-1 text-base ">
                     {eventData?.tags.map((tag, index) => (
                       <Badge key={index} className="mr-2 capitalize">
                         {tag.tag}
