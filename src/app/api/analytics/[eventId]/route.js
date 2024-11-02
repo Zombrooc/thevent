@@ -2,7 +2,8 @@ import { Redis } from "@upstash/redis";
 
 const redis = Redis.fromEnv();
 
-export async function GET(req, { params }) {
+export async function GET(req, props) {
+  const params = await props.params;
   const { eventId } = params;
 
   const pageViews = await redis.get(`pageViews:${eventId}`);

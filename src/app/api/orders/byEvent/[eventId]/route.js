@@ -1,7 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { getUserDetails } from "@/lib/getUserDetails";
 
-export async function GET(req, { params }) {
+export async function GET(req, props) {
+  const params = await props.params;
   const { eventId } = params;
   const searchParams = req.nextUrl.searchParams;
   const isDashboardHome = searchParams.get("isDashboardHome");

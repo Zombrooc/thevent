@@ -56,6 +56,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import moment from "moment";
 import { currentUser } from "@clerk/nextjs/server";
 import { SignedIn, UserButton } from "@clerk/nextjs";
+import UserAvatar from "@/components/UserAvatar";
 
 const getUserEventList = async () => {
   const res = await fetch(
@@ -121,9 +122,7 @@ export default async function Dashboard() {
             className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
           />
         </div>
-        <SignedIn>
-          <UserButton className="text-sm font-semibold leading-6 text-gray-800 ml-5 hover:bg-primary hover:text-white py-2 px-4 rounded-md" />
-        </SignedIn>
+        <UserAvatar />
       </header>
 
       {userEvents.length > 0 ? (

@@ -33,7 +33,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useState, use } from "react";
 import { addDays } from "date-fns";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -81,7 +81,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 import TicketExtraFields from "@/components/Ticket/TicketExtraFields";
 
-export default function EditEvent({ params }) {
+export default function EditEvent(props) {
+  const params = use(props.params);
   const [bannerImage, setBannerImage] = useState(null);
   const [eventData, setEventData] = useState(null);
 

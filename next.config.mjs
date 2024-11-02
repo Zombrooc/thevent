@@ -27,11 +27,13 @@ const nextConfig = {
         hostname: "firebasestorage.googleapis.com",
         pathname: "/v0/b/thevent-3a1a8.appspot.com/**",
       },
+      {
+        protocol: "https",
+        hostname: "placeholder.pics",
+        pathname: "/svg/**",
+      },
     ],
     dangerouslyAllowSVG: true,
-  },
-  experimental: {
-    instrumentationHook: true,
   },
 };
 

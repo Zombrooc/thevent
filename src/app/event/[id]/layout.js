@@ -19,7 +19,8 @@ const getEventData = async (id) => {
   }
 };
 
-export async function generateMetadata({ params }) {
+export async function generateMetadata(props) {
+  const params = await props.params;
   const { eventData: event, error } = await getEventData(params.id);
 
   if (error === 404) {
@@ -42,7 +43,13 @@ const incrementPageViews = async (eventId) => {
 
   return;
 };
-export default async function Layout({ children, params }) {
+export default async function Layout(props) {
+  const params = await props.params;
+
+  const {
+    children
+  } = props;
+
   await incrementPageViews(params.id);
   // const { eventData } = await getEventData(params.id);
 

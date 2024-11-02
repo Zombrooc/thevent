@@ -1,9 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
-import React, { useState } from "react";
+import React, { useState, use } from "react";
 import { useRouter } from "next/navigation";
 
-export default function Refresh({ params }) {
+export default function Refresh(props) {
+  const params = use(props.params);
   const router = useRouter();
   const connectedAccountId = params?.id;
   const [accountLinkCreatePending, setAccountLinkCreatePending] =

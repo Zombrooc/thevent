@@ -47,7 +47,7 @@ export async function POST(req) {
     eventDetails.organizer
   );
 
-  const headersList = headers();
+  const headersList = await headers();
   const origin = headersList.get("origin");
 
   // if (!tickets || tickets.length === 0) {

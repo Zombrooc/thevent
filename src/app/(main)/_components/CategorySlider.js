@@ -10,25 +10,25 @@ const sportCategories = [
   {
     name: "Running",
     // icon: Running,
-    image: "/placeholder.svg?height=100&width=100",
+    image: "https://placeholder.pics/svg/100x100",
     color: "bg-red-100 dark:bg-red-900/20",
   },
   {
     name: "MTB",
     // icon: Bike,
-    image: "/placeholder.svg?height=100&width=100",
+    image: "https://placeholder.pics/svg/100x100",
     color: "bg-green-100 dark:bg-green-900/20",
   },
   {
     name: "Speed Bike",
     // icon: Bike,
-    image: "/placeholder.svg?height=100&width=100",
+    image: "https://placeholder.pics/svg/100x100",
     color: "bg-blue-100 dark:bg-blue-900/20",
   },
   {
     name: "Other",
     // icon: Dumbbell,
-    image: "/placeholder.svg?height=100&width=100",
+    image: "https://placeholder.pics/svg/100x100",
     color: "bg-purple-100 dark:bg-purple-900/20",
   },
 ];
@@ -85,9 +85,9 @@ export default function CategorySlider() {
                       category.color
                     )}
                   >
-                    {/* <div className="absolute inset-0 flex items-center justify-center">
-                      <Icon className="h-10 w-10 transition-transform group-hover:scale-110" />
-                    </div> */}
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      {/* <Icon className="h-10 w-10 transition-transform group-hover:scale-110" /> */}
+                    </div>
                   </div>
                   <span className="text-sm font-medium">{category.name}</span>
                 </div>

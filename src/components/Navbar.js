@@ -24,7 +24,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { Settings, LogOut, Plus, LayoutDashboard, User } from "lucide-react";
+import {
+  Settings,
+  LogOut,
+  Plus,
+  LayoutDashboard,
+  User,
+  LayoutDashboardIcon,
+} from "lucide-react";
+import UserAvatar from "./UserAvatar";
 
 // const navigation = [
 //   { name: "Inicío", href: "/" },
@@ -67,53 +75,46 @@ export default function Navbar() {
 
   return (
     <header className="top-0 left-0 w-screen fixed md:top-4 md:left-1/2 md:-translate-x-1/2 md:w-[70%] border bg-background/80 backdrop-blur-sm md:rounded-full z-50">
-      <div className="flex h-16 items-center px-6">
+      <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link href="/" className="flex items-center">
           <span className="text-xl font-bold">THEVENT</span>
         </Link>
 
-        <div className="ml-auto flex items-center gap-4">
-          <div className="hidden sm:flex sm:gap-4">
-            <Button variant="outline">Login</Button>
-            <Button>Sign up</Button>
-          </div>
+        <nav className="hidden md:flex space-x-4">
+          <Link
+            href="#"
+            className="text-sm font-medium text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-primary"
+          >
+            Features
+          </Link>
+          <Link
+            href="#"
+            className="text-sm font-medium text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-primary"
+          >
+            Pricing
+          </Link>
+          <Link
+            href="#"
+            className="text-sm font-medium text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-primary"
+          >
+            About
+          </Link>
+          <Link
+            href="#"
+            className="text-sm font-medium text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-primary"
+          >
+            Contact
+          </Link>
+        </nav>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                <Avatar className="h-8 w-8">
-                  <AvatarImage
-                    src="/placeholder.svg?height=32&width=32"
-                    alt="@username"
-                  />
-                  <AvatarFallback>
-                    <User className="h-4 w-4" />
-                  </AvatarFallback>
-                </Avatar>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56" align="end">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <LayoutDashboard className="mr-2 h-4 w-4" />
-                <span>Dashboard</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Plus className="mr-2 h-4 w-4" />
-                <span>Create Event</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Settings className="mr-2 h-4 w-4" />
-                <span>Settings</span>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <LogOut className="mr-2 h-4 w-4" />
-                <span>Log out</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+        <div className="flex items-center gap-4">
+          <Button asChild>
+            <Link href="/app">
+              {" "}
+              <LayoutDashboardIcon /> Dashboard
+            </Link>
+          </Button>
+          <UserAvatar />
         </div>
       </div>
     </header>

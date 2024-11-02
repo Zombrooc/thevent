@@ -1,7 +1,8 @@
 import { headers } from "next/headers";
 
 export default function robots() {
-  const headersList = headers();
+  const headersList = /* @next-codemod-error Manually await this call and refactor the function to be async */
+  headers();
   let domain = headersList.get("host");
 
   if (domain === "thevent.com.br") {

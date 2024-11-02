@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -66,7 +66,8 @@ import { getOrdersByEvent } from "../../_actions/getOrdersByEvent";
 import moment from "moment";
 import { getOrderDetails } from "../../_actions/getOrderDetails";
 
-export default function Orders({ params }) {
+export default function Orders(props) {
+  const params = use(props.params);
   const [orders, setOrders] = useState(null);
   const [orderDetails, setOrderDetails] = useState(null);
 

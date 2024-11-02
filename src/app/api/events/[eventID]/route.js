@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 
-export async function GET(req, { params }) {
+export async function GET(req, props) {
+  const params = await props.params;
   const { eventID } = params;
 
   const eventData = await prisma.event.findUnique({

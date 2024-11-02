@@ -17,7 +17,7 @@ import CategorySlider from "./_components/CategorySlider";
 const featuredEvents = [
   {
     title: "City Marathon 2024",
-    image: "/placeholder.svg?height=400&width=600",
+    image: "https://placeholder.pics/svg/600x400",
     category: "Running",
     date: "March 15, 2024",
     location: "Downtown",
@@ -26,7 +26,8 @@ const featuredEvents = [
   },
   {
     title: "Mountain Bike Challenge",
-    image: "/placeholder.svg?height=400&width=600",
+
+    image: "https://placeholder.pics/svg/600x400",
     category: "MTB",
     date: "April 2, 2024",
     location: "Mountain Trail",
@@ -35,7 +36,7 @@ const featuredEvents = [
   },
   {
     title: "Speed Bike Race",
-    image: "/placeholder.svg?height=400&width=600",
+    image: "https://placeholder.pics/svg/600x400",
     category: "Speed Bike",
     date: "May 10, 2024",
     location: "City Circuit",
@@ -241,7 +242,7 @@ export default function Home() {
           <div className="mt-6 relative rounded-xl overflow-hidden">
             <div className="aspect-[16/9] bg-muted relative">
               <Image
-                src="/placeholder.svg?height=900&width=1600"
+                src="https://placeholder.pics/svg/1600x900"
                 alt="Map"
                 fill
                 className="object-cover"

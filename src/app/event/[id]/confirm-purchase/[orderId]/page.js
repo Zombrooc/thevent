@@ -66,7 +66,8 @@ const getOrder = async (orderId) => {
   }
 };
 
-export default async function EventDetails({ params }) {
+export default async function EventDetails(props) {
+  const params = await props.params;
   const { orderId } = params;
   const { orderItems } = await getOrder(orderId);
 
