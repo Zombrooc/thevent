@@ -15,12 +15,12 @@ const isProtectedRoute = createRouteMatcher([
   "/api/stripe/create-session",
 ]);
 
-export default clerkMiddleware((auth, req) => {
+export default clerkMiddleware(async (auth, req) => {
   const pathname = req.nextUrl.pathname;
 
-  if (isProtectedRoute(req)) auth().protect();
+  if (isProtectedRoute(req)) await auth.protect();
 
-  const { userId, sessionClaims } = auth();
+  const { userId, sessionClaims } = await auth();
 
   // For users visiting /onboarding, don't try to redirect
   if (userId && isOnboardingRoute(req)) {

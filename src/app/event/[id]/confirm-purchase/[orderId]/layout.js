@@ -8,7 +8,7 @@ export async function generateMetadata() {
 }
 
 export default async function Layout({ children, params }) {
-  auth().protect();
+  await auth.protect();
 
   return <>{children}</>;
 }

@@ -6,7 +6,7 @@ import { auth, clerkClient } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
 export const onboardingFlow = async () => {
-  const { sessionClaims } = auth();
+  const { sessionClaims } = await auth();
 
   const { sub, email, fullName } = sessionClaims;
 

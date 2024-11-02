@@ -3,7 +3,7 @@ import { auth, clerkClient } from "@clerk/nextjs/server";
 import { stripe } from "@/lib/stripe";
 
 export async function POST(req) {
-  const { sessionClaims } = auth();
+  const { sessionClaims } = await auth();
 
   const { sub } = sessionClaims;
 

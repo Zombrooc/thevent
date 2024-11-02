@@ -30,7 +30,7 @@ export async function POST(req) {
   const { bannerImage, eventData, ticketsData, tagsData, addressData } =
     await req.json();
 
-  const { userId } = auth();
+  const { userId } = await auth();
 
   if (!userId) {
     throw new Error("Unauthorized");

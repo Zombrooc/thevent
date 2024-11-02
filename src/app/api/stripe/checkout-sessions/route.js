@@ -11,7 +11,7 @@ export async function POST(req) {
   const { orderId } = await req.json();
   console.log("API Order ID: ", orderId);
 
-  const { userId, sessionClaims } = auth();
+  const { userId, sessionClaims } = await auth();
   if (!userId || !sessionClaims) {
     return new Response("Unauthorized", { status: 401 });
   }
