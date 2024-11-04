@@ -114,7 +114,7 @@ export default function Navbar() {
               <LayoutDashboardIcon /> Dashboard
             </Link>
           </Button>
-          <UserAvatar />
+          {/* <UserAvatar /> */}
         </div>
       </div>
     </header>
