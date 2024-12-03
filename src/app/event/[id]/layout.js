@@ -46,9 +46,7 @@ const incrementPageViews = async (eventId) => {
 export default async function Layout(props) {
   const params = await props.params;
 
-  const {
-    children
-  } = props;
+  const { children } = props;
 
   await incrementPageViews(params.id);
   // const { eventData } = await getEventData(params.id);

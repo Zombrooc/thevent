@@ -1,7 +1,3 @@
-// import { withMiddlewareAuthRequired } from "@auth0/nextjs-auth0/edge";
-
-// export default withMiddlewareAuthRequired();
-
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
@@ -11,8 +7,8 @@ const isOnboardingRoute = createRouteMatcher([
 ]);
 const isProtectedRoute = createRouteMatcher([
   "/app(.*)",
-  "/app/create-event",
   "/api/stripe/create-session",
+  "/event/(.*)/confirm-purchase/(.*)",
 ]);
 
 export default clerkMiddleware(async (auth, req) => {

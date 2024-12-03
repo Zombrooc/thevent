@@ -3,7 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { add } from "date-fns";
 import cuid from "cuid";
-import { auth } from "@clerk/nextjs/server";
+// import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { getStripeProduct, normalizeStripePrice } from "@/lib/stripe";
 import { qstashClient } from "@/lib/qstash";
@@ -12,16 +12,16 @@ import { RESERVATION_STATUS } from "@prisma/client";
 
 // const redis = Redis.fromEnv();
 
-export const purchaseConfirmationAction = async ({
+export const startPurchaseAction = async ({
   ticketCart,
   totalPrice,
   eventID,
 }) => {
-  const { userId } = await auth();
+  // const { userId } = await auth();
 
-  if (!userId) {
-    throw new Error("Unauthorized");
-  }
+  // if (!userId) {
+  //   RedirectToSignIn;
+  // }
 
   if (!ticketCart || ticketCart.length === 0) {
     throw new Error("Nenhum ingresso fornecido.");
@@ -123,7 +123,6 @@ export const purchaseConfirmationAction = async ({
     event: {
       connect: { id: eventID },
     },
-    userId,
     total: totalPrice,
     subTotal: totalPrice - appFee,
     paymentStatus: "unpaid",

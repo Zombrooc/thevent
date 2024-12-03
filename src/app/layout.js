@@ -5,8 +5,8 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/toaster";
 import { constructMetadata } from "@/lib/constructMetadata";
-import { ClerkProvider } from "@clerk/nextjs";
-import { ptBR } from "@clerk/localizations";
+// import { ClerkProvider } from "@clerk/nextjs";
+// import { ptBR } from "@clerk/localizations";
 
 const fontSans = FontSans({
   subsets: ["latin"],

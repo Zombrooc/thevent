@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 
 import { LayoutDashboardIcon } from "lucide-react";
 import UserAvatar from "./UserAvatar";
@@ -46,12 +46,9 @@ export default async function Navbar() {
 
         <div className="flex items-center gap-4">
           {userId && (
-            <Button asChild>
-              <Link href="/app">
-                {" "}
-                <LayoutDashboardIcon /> Dashboard
-              </Link>
-            </Button>
+            <Link href="/app" className={buttonVariants()}>
+              <LayoutDashboardIcon /> Dashboard
+            </Link>
           )}
           <UserAvatar />
         </div>
