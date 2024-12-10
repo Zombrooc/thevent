@@ -4,12 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && prisma migrate deploy && next build",
-    "start": "next start",
     "lint": "next lint",
     "postinstall": "prisma generate",
     "studio": "prisma studio --browser none",
-    "tunnel": "ngrok http --url=touching-organic-wren.ngrok-free.app 3000"
+    "tunnel": "ngrok http --url=touching-organic-wren.ngrok-free.app 3000",
+    "build": "next build",
+    "start": "next start",
+    "vercel-build": "prisma generate && prisma migrate deploy && next build",
+    "prisma:generate": "prisma generate"
   },
   "dependencies": {
     "@baselime/node-opentelemetry": "^0.5.8",
