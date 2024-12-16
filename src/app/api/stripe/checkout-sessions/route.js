@@ -12,6 +12,7 @@ export async function POST(req) {
   console.log("API Order ID: ", orderId);
 
   const { userId, sessionClaims } = await auth();
+
   if (!userId || !sessionClaims) {
     return new Response("Unauthorized", { status: 401 });
   }
@@ -46,9 +47,6 @@ export async function POST(req) {
   const eventProducerDetails = await clerkClient.users.getUser(
     eventDetails.organizer
   );
-
-  const headersList = await headers();
-  const origin = headersList.get("origin");
 
   // if (!tickets || tickets.length === 0) {
   //   return new Response("Nenhum ingresso fornecido.", {
@@ -108,8 +106,8 @@ export async function POST(req) {
         },
       },
       customer: customer.privateMetadata.stripeId,
-      success_url: `${origin}/return?success=true`,
-      cancel_url: `${origin}/return?canceled=true`,
+      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/return?success=true`,
+      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/return?canceled=true`,
     });
   } catch (err) {
     console.log("Error: ", err.message);

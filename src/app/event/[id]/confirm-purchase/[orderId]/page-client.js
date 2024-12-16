@@ -43,18 +43,18 @@ export default function ConfirmPurchaseClient({ orderItems }) {
         body: JSON.stringify({ orderId }),
       });
 
-      if (response.status === 401 && response.statusText === "Unauthorized") {
-        router.push("/api/auth/login");
-      } else {
-        response
-          .json()
-          .then((session) => {
-            router.push(session.url);
-          })
-          .catch((err) => {
-            console.error("Erro ao obter URL de checkout", err);
-          });
-      }
+      // if (response.status === 401 && response.statusText === "Unauthorized") {
+      //   auth
+      // } else {
+      response
+        .json()
+        .then((session) => {
+          router.push(session.url);
+        })
+        .catch((err) => {
+          console.error("Erro ao obter URL de checkout", err);
+        });
+      // }
     }
   };
 

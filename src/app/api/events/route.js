@@ -3,6 +3,7 @@ import { createStripeProduct } from "@/lib/stripe";
 import { auth } from "@clerk/nextjs/server";
 import { Redis } from "@upstash/redis";
 import cuid from "cuid";
+import { revalidatePath } from "next/cache";
 
 const redis = Redis.fromEnv();
 
@@ -112,6 +113,8 @@ export async function POST(req) {
         },
       },
     });
+
+    revalidatePath("/");
 
     return Response.json({
       eventURL: `${process.env.NEXT_PUBLIC_APP_URL}/event/${event.id}`,

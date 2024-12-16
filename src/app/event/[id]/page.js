@@ -27,9 +27,22 @@ const getEventData = async (eventID) => {
   }
 };
 
-export default async function EventDetails(props) {
-  const params = await props.params;
-  const { eventData, error } = await getEventData(params.id);
+const incrementPageViews = async (eventId) => {
+  await fetch(
+    `${process.env.NEXT_PUBLIC_APP_URL}/api/analytics/${eventId}/increment-views`,
+    {
+      method: "POST",
+    }
+  );
+
+  return;
+};
+
+export default async function EventDetails({ params }) {
+  const { id } = await params;
+
+  const { eventData, error } = await getEventData(id);
+  await incrementPageViews(id);
 
   const { userId } = await auth();
 

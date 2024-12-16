@@ -6,8 +6,9 @@ const isOnboardingRoute = createRouteMatcher([
   "/app/onboarding/events-producer",
 ]);
 const isProtectedRoute = createRouteMatcher([
+  "/orders(.*)",
   "/app(.*)",
-  "/api/stripe/create-session",
+  "/api/stripe/create-checkout-session",
   "/event/(.*)/confirm-purchase/(.*)",
 ]);
 

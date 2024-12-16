@@ -1,6 +1,7 @@
 import { Redis } from "@upstash/redis";
 import { redirect } from "next/navigation";
 import ConfirmPurchaseClient from "./page-client";
+import { auth } from "@clerk/nextjs/server";
 
 const redis = Redis.fromEnv();
 
@@ -23,7 +24,7 @@ const getOrder = async (orderId) => {
         const { ticketName } = orderItem.ticket;
         const forms = await redis.get(`ticket:${orderItem.ticketId}:forms`);
 
-        if (forms?.length >= 0) {
+        if (forms?.length > 0) {
           formQuantity++;
           return {
             ...orderItem,
@@ -38,29 +39,29 @@ const getOrder = async (orderId) => {
       })
     );
 
+    console.log("formQuantity, ", formQuantity);
+
     if (formQuantity === 0) {
+      const { getToken } = await auth();
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_APP_URL}/api/stripe/checkout-sessions`,
         {
           method: "POST",
           body: JSON.stringify({ orderId }),
+          headers: { authorization: `Bearer ${await getToken()}` },
         }
       );
 
       if (response.status === 401 && response.statusText === "Unauthorized") {
         redirect("/api/auth/login");
       } else {
-        response
-          .json()
-          .then((session) => {
-            redirect(session.url);
-          })
-          .catch((err) => {
-            console.error("Erro ao obter URL de checkout", err);
-          });
+        const { url } = response.json();
+
+        redirect(url);
       }
+    } else {
+      return { orderItems: orderItemsWithForms };
     }
-    return { orderItems: orderItemsWithForms };
   } else {
     return { error: 404 };
   }
@@ -71,9 +72,10 @@ export default async function EventDetails(props) {
   const { orderId } = params;
   const { orderItems } = await getOrder(orderId);
 
-  return (
-    <>
-      <ConfirmPurchaseClient orderItems={orderItems} />
-    </>
-  );
+    return (
+      <>
+        <ConfirmPurchaseClient orderItems={orderItems} />
+      </>
+    );
+  }
 }

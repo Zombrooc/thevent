@@ -10,10 +10,12 @@
  * @version 1.0.0
  * @url https://github.com/tego101/nextjs-14-stripe-webhooks
  */
-import Stripe from "stripe";
-import { NextApiRequest, NextApiResponse } from "next";
 import { RESERVATION_STATUS } from "@prisma/client";
 import { Redis } from "@upstash/redis";
+import { stripe } from "@/lib/stripe";
+import { prisma } from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
+import { headers } from "next/headers";
 
 const redis = Redis.fromEnv();
 
@@ -105,9 +107,11 @@ async function handleStripeWebhook(body) {
 
       const metadata = body.data?.object?.metadata;
 
-      const { order } = metadata;
+      const { order, eventID } = metadata;
 
       const { id: orderID, reservedTickets } = JSON.parse(order);
+
+      const { amount } = await stripe.paymentIntents.retrieve(payment_intent);
 
       await prisma.$transaction(
         async (tx) => {
@@ -138,6 +142,8 @@ async function handleStripeWebhook(body) {
             },
           });
 
+          await redis.incrby(`totalSold:${eventID}`, amount / 100);
+
           await Promise.all(
             orderItems.map(({ ticketId: ticketID }) => {
               redis.decrby(`ticket:${ticketID}:available`);
@@ -150,6 +156,8 @@ async function handleStripeWebhook(body) {
           timeout: 10000, // default: 5000
         }
       );
+
+      console.log("chegou aqui");
 
       return new Response(JSON.stringify({ message: "Checkout completed!" }), {
         status: 200,
@@ -167,22 +175,30 @@ async function POST(request) {
     // Request Body.
     const rawBody = await request.text();
 
+    console.log("Raw Body: ", rawBody);
+
     let event;
 
     // Verify the webhook signature
     try {
-      const stripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+      console.log("Webhook Secret: ", stripeWebhookSecret);
       if (!stripeWebhookSecret) {
         throw new Error("STRIPE_WEBHOOK_SECRET not set");
       }
 
-      const sig = request.headers.get("Stripe-Signature");
+      const sig = (await headers()).get("Stripe-Signature");
+
+      console.log("Sginature: ", sig);
       if (!sig) {
         throw new Error("Stripe Signature missing");
       }
 
       // Assuming you have a Stripe instance configured
-      event = Stripe.webhooks.constructEvent(rawBody, sig, stripeWebhookSecret);
+      event = stripe.webhooks.constructEvent(
+        rawBody,
+        sig,
+        process.env.STRIPE_WEBHOOK_SECRET
+      );
     } catch (err) {
       console.error(`⚠️  Webhook signature verification failed.`, err.message);
       return new Response(
@@ -199,6 +215,7 @@ async function POST(request) {
       status: webhookResponse?.status || 200,
     });
   } catch (error) {
+    console.log(error.message);
     console.error("Error in Stripe webhook handler:", error);
     return new Response(JSON.stringify({ error: "Webhook handler failed." }), {
       status: 500, // Changed to 500, indicating a server error

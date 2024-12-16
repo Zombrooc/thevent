@@ -33,6 +33,8 @@ export async function generateMetadata() {
 }
 
 export default async function DashboardLayout({ children, params }) {
+  const { eventId } = await params;
+
   return (
     // <EventListProvider initialState={eventList}>
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
@@ -61,7 +63,7 @@ export default async function DashboardLayout({ children, params }) {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  href={`/app/${params.eventId}/orders`}
+                  href={`/app/${eventId}/orders`}
                   className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-accent-foreground  transition-colors hover:text-foreground md:h-8 md:w-8"
                 >
                   <ShoppingCart className="h-5 w-5" />
@@ -73,7 +75,7 @@ export default async function DashboardLayout({ children, params }) {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  href={`/app/${params.eventId}/edit-event`}
+                  href={`/app/${eventId}/edit-event`}
                   className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                 >
                   <Pencil className="h-5 w-5" />

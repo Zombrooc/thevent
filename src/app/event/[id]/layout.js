@@ -33,23 +33,8 @@ export async function generateMetadata(props) {
   }
 }
 
-const incrementPageViews = async (eventId) => {
-  await fetch(
-    `${process.env.NEXT_PUBLIC_APP_URL}/api/analytics/${eventId}/increment-views`,
-    {
-      method: "POST",
-    }
-  );
-
-  return;
-};
 export default async function Layout(props) {
-  const params = await props.params;
-
   const { children } = props;
-
-  await incrementPageViews(params.id);
-  // const { eventData } = await getEventData(params.id);
 
   return (
     <TicketProvider>
