@@ -25,7 +25,7 @@ const selectTicketItem = createSelector(
 );
 
 // import { Redis } from "@upstash/redis";
-import { getCurrentStock } from "@/lib/actions/getCurrentStock";
+import { getCurrentStock } from "@/lib/actions/stockManager";
 
 export default function TicketItem({ ticket }) {
   const [hasStock, setHasStock] = useState(false);

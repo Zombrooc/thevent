@@ -72,10 +72,9 @@ export default async function EventDetails(props) {
   const { orderId } = params;
   const { orderItems } = await getOrder(orderId);
 
-    return (
-      <>
-        <ConfirmPurchaseClient orderItems={orderItems} />
-      </>
-    );
-  }
+  return (
+    <>
+      <ConfirmPurchaseClient orderItems={orderItems} />
+    </>
+  );
 }
