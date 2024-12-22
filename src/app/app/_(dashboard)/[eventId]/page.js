@@ -1,9 +1,10 @@
 import { Suspense } from "react";
 import DashboardPageClient from "./page-client";
+import { getUrl } from "@/lib/getUrl";
 
 const getAnalytics = async (eventId) => {
   const analyticsRes = await fetch(
-    `${process.env.VERCEL_PROJECT_PRODUCTION_URL}/api/analytics/${eventId}`,
+    new URL(getUrl(`/api/analytics/${eventId}`)),
     {
       next: {
         revalidate: 0,
@@ -18,7 +19,7 @@ const getAnalytics = async (eventId) => {
 
 const getOrders = async (eventId) => {
   const ordersRes = await fetch(
-    `${process.env.VERCEL_PROJECT_PRODUCTION_URL}/api/orders/byEvent/${eventId}?isDashboardHome=true`,
+    new URL(getUrl(`/api/orders/byEvent/${eventId}?isDashboardHome=true`)),
     {
       next: {
         revalidate: 0,

@@ -1,16 +1,14 @@
 import Navbar from "@/components/Navbar";
 import { constructMetadata } from "@/lib/constructMetadata";
+import { getUrl } from "@/lib/getUrl";
 import TicketProvider from "@/store/features/ticketCart/TicketProvider";
 
 const getEventData = async (id) => {
-  const res = await fetch(
-    `${process.env.VERCEL_PROJECT_PRODUCTION_URL}/api/events/${id}`,
-    {
-      next: {
-        revalidate: 3600,
-      },
-    }
-  );
+  const res = await fetch(new URL(getUrl(`/api/events/${id}`)), {
+    next: {
+      revalidate: 3600,
+    },
+  });
 
   if (res.status === 200) {
     return await res.json();

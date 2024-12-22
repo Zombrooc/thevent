@@ -1,14 +1,12 @@
+import { getUrl } from "@/lib/getUrl";
 import EventCardItem from "./EventCardItem";
 
 const getEvents = async () => {
-  let eventsRes = await fetch(
-    `${process.env.VERCEL_PROJECT_PRODUCTION_URL}/api/events`,
-    {
-      next: {
-        revalidate: 3600,
-      },
-    }
-  );
+  let eventsRes = await fetch(new URL(getUrl(`/api/events`)), {
+    next: {
+      revalidate: 3600,
+    },
+  });
 
   const { events } = await eventsRes.json();
 

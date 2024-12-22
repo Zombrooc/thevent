@@ -1,5 +1,6 @@
 "use server";
 
+import { getUrl } from "@/lib/getUrl";
 import { redirect } from "next/navigation";
 
 export async function createEventAction(
@@ -12,19 +13,16 @@ export async function createEventAction(
   // const { userId } = auth();
 
   try {
-    const eventRes = await fetch(
-      `${process.env.VERCEL_PROJECT_PRODUCTION_URL}/api/events`,
-      {
-        method: "POST",
-        body: JSON.stringify({
-          bannerImage,
-          eventData,
-          ticketsData,
-          tagsData,
-          addressData,
-        }),
-      }
-    );
+    const eventRes = await fetch(new URL(getUrl(`/api/events`)), {
+      method: "POST",
+      body: JSON.stringify({
+        bannerImage,
+        eventData,
+        ticketsData,
+        tagsData,
+        addressData,
+      }),
+    });
 
     const data = await eventRes.json();
     if (data.eventURL) {

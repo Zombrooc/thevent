@@ -57,11 +57,10 @@ import moment from "moment";
 import { currentUser } from "@clerk/nextjs/server";
 import { SignedIn, UserButton } from "@clerk/nextjs";
 import UserAvatar from "@/components/UserAvatar";
+import { getUrl } from "@/lib/getUrl";
 
 const getUserEventList = async () => {
-  const res = await fetch(
-    `${process.env.VERCEL_PROJECT_PRODUCTION_URL}/api/events/by-user`
-  );
+  const res = await fetch(new URL(getUrl(`/api/events/by-user`)));
 
   return await res.json();
 };

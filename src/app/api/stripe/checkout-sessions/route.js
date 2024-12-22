@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 
 import { stripe } from "@/lib/stripe";
+import { getUrl } from "@/lib/getUrl";
 
 export async function POST(req) {
   const { orderId } = await req.json();
@@ -106,8 +107,8 @@ export async function POST(req) {
         },
       },
       customer: customer.privateMetadata.stripeId,
-      success_url: `${process.env.VERCEL_PROJECT_PRODUCTION_URL}/return?success=true`,
-      cancel_url: `${process.env.VERCEL_PROJECT_PRODUCTION_URL}/return?canceled=true`,
+      success_url: new URL(getUrl(`/return?success=true`)),
+      cancel_url: new URL(getUrl(`/return?canceled=true`)),
     });
   } catch (err) {
     console.log("Error: ", err.message);

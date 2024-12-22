@@ -7,10 +7,11 @@ import TicketList from "./_components/TicketList";
 
 import { CalendarDaysIcon, MapPinnedIcon } from "lucide-react";
 import { Suspense } from "react";
+import { getUrl } from "@/lib/getUrl";
 
 const getEventData = async (eventID) => {
   const res = await fetch(
-    `${process.env.VERCEL_PROJECT_PRODUCTION_URL}/api/events/${eventID}`,
+    new URL(getUrl(`/api/events/${eventID}`),
     {
       next: {
         revalidate: 3600,
@@ -29,7 +30,11 @@ const getEventData = async (eventID) => {
 
 const incrementPageViews = async (eventId) => {
   await fetch(
-    `${process.env.VERCEL_PROJECT_PRODUCTION_URL}/api/analytics/${eventId}/increment-views`,
+    new URL(
+      getUrl(
+        `/api/analytics/${eventId}/increment-views`
+      )
+    ),
     {
       method: "POST",
     }

@@ -65,6 +65,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getOrdersByEvent } from "../../_actions/getOrdersByEvent";
 import moment from "moment";
 import { getOrderDetails } from "../../_actions/getOrderDetails";
+import { getUrl } from "@/lib/getUrl";
 
 export default function Orders(props) {
   const params = use(props.params);
@@ -74,7 +75,7 @@ export default function Orders(props) {
   useEffect(() => {
     const getData = async () => {
       const res = await fetch(
-        `${process.env.VERCEL_PROJECT_PRODUCTION_URL}/api/orders/${params?.eventId}`
+        new URL(getUrl(`/api/orders/${params?.eventId}`))
       );
 
       setOrders(await res.json());

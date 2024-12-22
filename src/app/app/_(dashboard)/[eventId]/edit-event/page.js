@@ -80,6 +80,7 @@ import { eventSchema as FormSchema } from "@/schemas/eventSchema";
 import { Skeleton } from "@/components/ui/skeleton";
 
 import TicketExtraFields from "@/components/Ticket/TicketExtraFields";
+import { getUrl } from "@/lib/getUrl";
 
 export default function EditEvent(props) {
   const params = use(props.params);
@@ -93,7 +94,7 @@ export default function EditEvent(props) {
   useEffect(() => {
     const getData = async () => {
       let eventRes = await fetch(
-        `${process.env.VERCEL_PROJECT_PRODUCTION_URL}/api/events/${params?.eventId}`,
+        new URL(getUrl(`/api/events/${params?.eventId}`)),
         {
           next: {
             revalidate: 0,

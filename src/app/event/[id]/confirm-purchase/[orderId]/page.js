@@ -2,18 +2,16 @@ import { Redis } from "@upstash/redis";
 import { redirect } from "next/navigation";
 import ConfirmPurchaseClient from "./page-client";
 import { auth } from "@clerk/nextjs/server";
+import { getUrl } from "@/lib/getUrl";
 
 const redis = Redis.fromEnv();
 
 const getOrder = async (orderId) => {
-  const orderResponse = await fetch(
-    `${process.env.VERCEL_PROJECT_PRODUCTION_URL}/api/orders/${orderId}`,
-    {
-      next: {
-        revalidate: 0,
-      },
-    }
-  );
+  const orderResponse = await fetch(new URL(getUrl(`/api/orders/${orderId}`)), {
+    next: {
+      revalidate: 0,
+    },
+  });
 
   if (orderResponse.status === 200) {
     const { orderItems } = await orderResponse.json();
@@ -44,7 +42,7 @@ const getOrder = async (orderId) => {
     if (formQuantity === 0) {
       const { getToken } = await auth();
       const response = await fetch(
-        `${process.env.VERCEL_PROJECT_PRODUCTION_URL}/api/stripe/checkout-sessions`,
+        new URL(getUrl(`/api/stripe/checkout-sessions`)),
         {
           method: "POST",
           body: JSON.stringify({ orderId }),

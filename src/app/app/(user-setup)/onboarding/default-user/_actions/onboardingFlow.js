@@ -1,5 +1,6 @@
 "use server";
 
+import { getUrl } from "@/lib/getUrl";
 import { createStripeCustomer } from "@/lib/stripe";
 
 import { auth, clerkClient } from "@clerk/nextjs/server";
@@ -26,5 +27,5 @@ export const onboardingFlow = async () => {
     throw new Error(e);
   }
 
-  redirect(`${process.env.VERCEL_PROJECT_PRODUCTION_URL}/`);
+  redirect(new URL(getUrl()));
 };

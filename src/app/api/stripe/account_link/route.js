@@ -3,6 +3,7 @@ import { headers } from "next/headers";
 
 import { stripe } from "@/lib/stripe";
 import { auth, clerkClient } from "@clerk/nextjs/server";
+import { getUrl } from "@/lib/getUrl";
 
 export async function POST(req) {
   const { account } = await req.json();
@@ -10,8 +11,12 @@ export async function POST(req) {
   try {
     const accountLink = await stripe.accountLinks.create({
       account: account,
-      refresh_url: `${process.env.VERCEL_PROJECT_PRODUCTION_URL}/app/onboarding/events-producer/refresh/${account}`,
-      return_url: `${process.env.VERCEL_PROJECT_PRODUCTION_URL}/app/onboarding/events-producer/return/${account}`,
+      refresh_url: new URL(
+        getUrl(`/app/onboarding/events-producer/refresh/${account}`)
+      ),
+      return_url: new URL(
+        getUrl(`/app/onboarding/events-producer/return/${account}`)
+      ),
       type: "account_onboarding",
     });
 

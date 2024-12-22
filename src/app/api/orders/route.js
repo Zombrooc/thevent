@@ -9,6 +9,7 @@ import { getStripeProduct, normalizeStripePrice } from "@/lib/stripe";
 import { qstashClient } from "@/lib/qstash";
 import { Redis } from "@upstash/redis";
 import { getCurrentStockFromDB } from "@/lib/actions/stockManager";
+import { getUrl } from "@/lib/getUrl";
 
 const redis = Redis.fromEnv();
 
@@ -110,7 +111,7 @@ export async function POST(req) {
 
   if (order) {
     const response = await fetch(
-      `${process.env.VERCEL_PROJECT_PRODUCTION_URL}/api/stripe/checkout-sessions`,
+      new URL(getUrl(`/api/stripe/checkout-sessions`)),
       {
         method: "POST",
         body: JSON.stringify({ orderId: order.id }),
@@ -125,7 +126,7 @@ export async function POST(req) {
     throw new Error("Unable to create a new order");
   }
   // await qstashClient.publishJSON({
-  //   url: `${process.env.VERCEL_PROJECT_PRODUCTION_URL}/api/orders`,
+  //   url: `${process.env.NEXT_PUBLIC_APP_URL}/api/orders`,
   //   body: orderContent,
   // });
 

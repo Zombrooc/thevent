@@ -142,12 +142,14 @@
 //     throw new Error("Unable to create a new order");
 //   }
 //   // await qstashClient.publishJSON({
-//   //   url: `${process.env.VERCEL_PROJECT_PRODUCTION_URL}/api/orders`,
+//   //   url: `${process.env.NEXT_PUBLIC_APP_URL}/api/orders`,
 //   //   body: orderContent,
 //   // });
 // };
 
 "use server";
+
+import { getUrl } from "@/lib/getUrl";
 
 // import { auth } from "@clerk/nextjs/dist/types/server";
 
@@ -167,7 +169,7 @@ export const startPurchaseAction = async ({
   console.log("Chegou aqui");
 
   try {
-    await fetch(`${process.env.VERCEL_PROJECT_PRODUCTION_URL}/api/orders`, {
+    await fetch(new URL(getUrl(`/api/orders`)), {
       method: "POST",
       body: JSON.stringify({ ticketCart, totalPrice, eventID }),
     });
@@ -291,7 +293,7 @@ export const startPurchaseAction = async ({
   //   throw new Error("Unable to create a new order");
   // }
   // await qstashClient.publishJSON({
-  //   url: `${process.env.VERCEL_PROJECT_PRODUCTION_URL}/api/orders`,
+  //   url: `${process.env.NEXT_PUBLIC_APP_URL}/api/orders`,
   //   body: orderContent,
   // });
 };

@@ -1,3 +1,4 @@
+import { getUrl } from "@/lib/getUrl";
 import { prisma } from "@/lib/prisma";
 import { createStripeProduct } from "@/lib/stripe";
 import { auth } from "@clerk/nextjs/server";
@@ -117,7 +118,7 @@ export async function POST(req) {
     revalidatePath("/");
 
     return Response.json({
-      eventURL: `${process.env.VERCEL_PROJECT_PRODUCTION_URL}/event/${event.id}`,
+      eventURL: new URL(getUrl(`/event/${event.id}`)),
     });
   } catch (error) {
     throw error;
