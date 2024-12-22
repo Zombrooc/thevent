@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { Button } from "@/components/ui/button";
 import { startPurchaseAction } from "../_actions/startPurchaseAction";
 import { useParams } from "next/navigation";
+import { useRouter } from "next/router";
 
 export default function TicketList({ tickets }) {
   const router = useRouter();
