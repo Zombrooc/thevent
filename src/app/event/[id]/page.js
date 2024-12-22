@@ -6,7 +6,7 @@ import Image from "next/image";
 import TicketList from "./_components/TicketList";
 
 import { CalendarDaysIcon, MapPinnedIcon } from "lucide-react";
-import { auth } from "@clerk/nextjs/server";
+import { Suspense } from "react";
 
 const getEventData = async (eventID) => {
   const res = await fetch(
@@ -43,8 +43,6 @@ export default async function EventDetails({ params }) {
 
   const { eventData, error } = await getEventData(id);
   await incrementPageViews(id);
-
-  const { userId } = await auth();
 
   return (
     <>
@@ -120,7 +118,9 @@ export default async function EventDetails({ params }) {
             </div>
             {/* <TicketProvider initialState={eventData.tickets}> */}
 
-            <TicketList tickets={eventData.tickets} isAuth={!!userId} />
+            <Suspense fallback={<span> Loading... </span>}>
+              <TicketList tickets={eventData.tickets} />
+            </Suspense>
 
             {/* </TicketProvider> */}
           </div>

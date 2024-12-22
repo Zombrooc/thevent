@@ -149,15 +149,7 @@
 
 "use server";
 
-import { prisma } from "@/lib/prisma";
-import { add } from "date-fns";
-import cuid from "cuid";
-// import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
-import { getStripeProduct, normalizeStripePrice } from "@/lib/stripe";
-import { qstashClient } from "@/lib/qstash";
-// import { Redis } from "@upstash/redis";
-import { RESERVATION_STATUS } from "@prisma/client";
+// import { auth } from "@clerk/nextjs/dist/types/server";
 
 // const redis = Redis.fromEnv();
 
@@ -166,24 +158,24 @@ export const startPurchaseAction = async ({
   totalPrice,
   eventID,
 }) => {
-  // const { userId } = await auth();
-
-  // if (!userId) {
-  //   RedirectToSignIn;
-  // }
+  const { userId, redirectToSignIn } = await auth();
 
   if (!ticketCart || ticketCart.length === 0) {
     throw new Error("Nenhum ingresso fornecido.");
   }
 
-  const currentStock = await Promise.all(
-    ticketCart.map(({ id: ticketID }) => {
-      fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/ticket/${ticketID}/stocks`);
-    })
-  );
+  console.log("Chegou aqui");
 
-  connsole.log("Current Stock: ", currentStock);
+  try {
+    await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/orders`, {
+      method: "POST",
+      body: JSON.stringify({ ticketCart, totalPrice, eventID }),
+    });
+  } catch (error) {
+    console.error(error);
 
+    throw new Error("Smething Wrong", error);
+  }
   // const getStockTransaction = await ticketCart.map(({ id: ticketID }) => {
   //   return prisma.ticket.findUnique({
   //     where: {

@@ -7,6 +7,8 @@ export async function POST(req, props) {
   const params = await props.params;
   const { eventId } = params;
 
+  console.log(eventId);
+
   try {
     await redis.incr(`pageViews:${eventId}`);
 

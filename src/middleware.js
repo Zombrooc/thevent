@@ -6,10 +6,11 @@ const isOnboardingRoute = createRouteMatcher([
   "/app/onboarding/events-producer",
 ]);
 const isProtectedRoute = createRouteMatcher([
-  "/orders(.*)",
   "/app(.*)",
-  "/api/stripe/checkout-session",
+  // "/api/stripe/checkout-session",
+  "/api/orders(.*)",
   "/event/(.*)/confirm-purchase/(.*)",
+  "/event/(.*)/resume-purchase/(.*)",
 ]);
 
 export default clerkMiddleware(async (auth, req) => {

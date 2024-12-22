@@ -12,9 +12,9 @@ export const getCurrentStock = async (ticketID) => {
   return !!currentStock;
 };
 
-export const getCurrentStockFromDB = async (ticketIDs) => {
-  const stockTransaction = await ticketIDs.map((ticketID) => {
-    return prisma.ticket.findUnique({
+export const getCurrentStockFromDB = async (ticketID) => {
+  const { _count, ticketDefaultAvailableStock } =
+    await prisma.ticket.findUnique({
       where: {
         id: ticketID,
       },
@@ -42,9 +42,13 @@ export const getCurrentStockFromDB = async (ticketIDs) => {
         ticketDefaultAvailableStock: true,
       },
     });
-  });
 
-  const currentStock = await prisma.$transaction(stockTransaction);
+  const currentStock = ticketDefaultAvailableStock - _count.reservedTickets;
 
-  return currentStock;
+  return {
+    reserved: _count.reservedTickets,
+    ticketDefaultAvailableStock,
+    currentStock,
+    hasStock: currentStock > 0 ? true : false,
+  };
 };

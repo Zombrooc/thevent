@@ -6,7 +6,9 @@ import { Button } from "@/components/ui/button";
 import { startPurchaseAction } from "../_actions/startPurchaseAction";
 import { useParams } from "next/navigation";
 
-export default function TicketList({ tickets, isAuth }) {
+export default function TicketList({ tickets }) {
+  const router = useRouter();
+
   const params = useParams();
   const { id: eventID } = params;
 
@@ -20,13 +22,22 @@ export default function TicketList({ tickets, isAuth }) {
   //   }
   // }, [ticketCart]);
 
-  const startPurchaseFlow = async () => {
-    await startPurchaseAction({
-      ticketCart,
-      totalPrice,
-      eventID,
-    });
-  };
+  // const handlePurchase = async () => {
+  //   if (!isAuth) {
+  //     redirectToSignIn({
+  //       signInForceRedirectUrl: `${eventID}/resume-purchase`,
+  //       signUpForceRedirectUrl: `${eventID}/resume-purchase`,
+  //     });
+
+  //     return;
+  //   }
+
+  //   await startPurchaseAction({
+  //     ticketCart,
+  //     totalPrice,
+  //     eventID,
+  //   });
+  // };
 
   return (
     <div className="col-span-2 h-full flex flex-col">
@@ -35,11 +46,14 @@ export default function TicketList({ tickets, isAuth }) {
       </h2>
       <div className=" mt-4 flex flex-col gap-4">
         {tickets.map((ticket) => (
-          <TicketItem ticket={ticket} key={ticket.id} isAuth={isAuth} />
+          <TicketItem ticket={ticket} key={ticket.id} />
         ))}
         <>
           <p className="text-lg font-semibold">Preço Total: R$ {totalPrice}</p>
-          <Button type="button" onClick={() => startPurchaseFlow()}>
+          <Button
+            type="button"
+            onClick={() => router.push(`${eventID}/resume-purchase`)}
+          >
             Comprar
           </Button>
         </>
