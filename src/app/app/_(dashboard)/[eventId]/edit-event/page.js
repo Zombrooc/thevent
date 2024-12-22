@@ -93,7 +93,7 @@ export default function EditEvent(props) {
   useEffect(() => {
     const getData = async () => {
       let eventRes = await fetch(
-        `${process.env.NEXT_PUBLIC_APP_URL}/api/events/${params?.eventId}`,
+        `${process.env.VERCEL_PROJECT_PRODUCTION_URL}/api/events/${params?.eventId}`,
         {
           next: {
             revalidate: 0,

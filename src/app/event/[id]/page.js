@@ -10,7 +10,7 @@ import { Suspense } from "react";
 
 const getEventData = async (eventID) => {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_APP_URL}/api/events/${eventID}`,
+    `${process.env.VERCEL_PROJECT_PRODUCTION_URL}/api/events/${eventID}`,
     {
       next: {
         revalidate: 3600,
@@ -29,7 +29,7 @@ const getEventData = async (eventID) => {
 
 const incrementPageViews = async (eventId) => {
   await fetch(
-    `${process.env.NEXT_PUBLIC_APP_URL}/api/analytics/${eventId}/increment-views`,
+    `${process.env.VERCEL_PROJECT_PRODUCTION_URL}/api/analytics/${eventId}/increment-views`,
     {
       method: "POST",
     }

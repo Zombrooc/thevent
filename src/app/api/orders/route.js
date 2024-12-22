@@ -110,7 +110,7 @@ export async function POST(req) {
 
   if (order) {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_APP_URL}/api/stripe/checkout-sessions`,
+      `${process.env.VERCEL_PROJECT_PRODUCTION_URL}/api/stripe/checkout-sessions`,
       {
         method: "POST",
         body: JSON.stringify({ orderId: order.id }),
@@ -125,7 +125,7 @@ export async function POST(req) {
     throw new Error("Unable to create a new order");
   }
   // await qstashClient.publishJSON({
-  //   url: `${process.env.NEXT_PUBLIC_APP_URL}/api/orders`,
+  //   url: `${process.env.VERCEL_PROJECT_PRODUCTION_URL}/api/orders`,
   //   body: orderContent,
   // });
 

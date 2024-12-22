@@ -13,7 +13,7 @@ export async function createEventAction(
 
   try {
     const eventRes = await fetch(
-      `${process.env.NEXT_PUBLIC_APP_URL}/api/events`,
+      `${process.env.VERCEL_PROJECT_PRODUCTION_URL}/api/events`,
       {
         method: "POST",
         body: JSON.stringify({

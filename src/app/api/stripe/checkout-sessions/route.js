@@ -106,8 +106,8 @@ export async function POST(req) {
         },
       },
       customer: customer.privateMetadata.stripeId,
-      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/return?success=true`,
-      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/return?canceled=true`,
+      success_url: `${process.env.VERCEL_PROJECT_PRODUCTION_URL}/return?success=true`,
+      cancel_url: `${process.env.VERCEL_PROJECT_PRODUCTION_URL}/return?canceled=true`,
     });
   } catch (err) {
     console.log("Error: ", err.message);

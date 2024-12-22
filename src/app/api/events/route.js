@@ -117,7 +117,7 @@ export async function POST(req) {
     revalidatePath("/");
 
     return Response.json({
-      eventURL: `${process.env.NEXT_PUBLIC_APP_URL}/event/${event.id}`,
+      eventURL: `${process.env.VERCEL_PROJECT_PRODUCTION_URL}/event/${event.id}`,
     });
   } catch (error) {
     throw error;

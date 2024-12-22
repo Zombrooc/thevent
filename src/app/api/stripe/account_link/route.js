@@ -10,8 +10,8 @@ export async function POST(req) {
   try {
     const accountLink = await stripe.accountLinks.create({
       account: account,
-      refresh_url: `${process.env.NEXT_PUBLIC_APP_URL}/app/onboarding/events-producer/refresh/${account}`,
-      return_url: `${process.env.NEXT_PUBLIC_APP_URL}/app/onboarding/events-producer/return/${account}`,
+      refresh_url: `${process.env.VERCEL_PROJECT_PRODUCTION_URL}/app/onboarding/events-producer/refresh/${account}`,
+      return_url: `${process.env.VERCEL_PROJECT_PRODUCTION_URL}/app/onboarding/events-producer/return/${account}`,
       type: "account_onboarding",
     });
 

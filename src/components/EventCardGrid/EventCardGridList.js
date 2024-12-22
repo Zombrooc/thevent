@@ -1,11 +1,14 @@
 import EventCardItem from "./EventCardItem";
 
 const getEvents = async () => {
-  let eventsRes = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/events`, {
-    next: {
-      revalidate: 3600,
-    },
-  });
+  let eventsRes = await fetch(
+    `${process.env.VERCEL_PROJECT_PRODUCTION_URL}/api/events`,
+    {
+      next: {
+        revalidate: 3600,
+      },
+    }
+  );
 
   const { events } = await eventsRes.json();
 

@@ -60,7 +60,7 @@ import UserAvatar from "@/components/UserAvatar";
 
 const getUserEventList = async () => {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_APP_URL}/api/events/by-user`
+    `${process.env.VERCEL_PROJECT_PRODUCTION_URL}/api/events/by-user`
   );
 
   return await res.json();

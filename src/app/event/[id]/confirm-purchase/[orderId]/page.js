@@ -7,7 +7,7 @@ const redis = Redis.fromEnv();
 
 const getOrder = async (orderId) => {
   const orderResponse = await fetch(
-    `${process.env.NEXT_PUBLIC_APP_URL}/api/orders/${orderId}`,
+    `${process.env.VERCEL_PROJECT_PRODUCTION_URL}/api/orders/${orderId}`,
     {
       next: {
         revalidate: 0,
@@ -44,7 +44,7 @@ const getOrder = async (orderId) => {
     if (formQuantity === 0) {
       const { getToken } = await auth();
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_APP_URL}/api/stripe/checkout-sessions`,
+        `${process.env.VERCEL_PROJECT_PRODUCTION_URL}/api/stripe/checkout-sessions`,
         {
           method: "POST",
           body: JSON.stringify({ orderId }),

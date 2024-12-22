@@ -3,7 +3,7 @@ import DashboardPageClient from "./page-client";
 
 const getAnalytics = async (eventId) => {
   const analyticsRes = await fetch(
-    `${process.env.NEXT_PUBLIC_APP_URL}/api/analytics/${eventId}`,
+    `${process.env.VERCEL_PROJECT_PRODUCTION_URL}/api/analytics/${eventId}`,
     {
       next: {
         revalidate: 0,
@@ -18,7 +18,7 @@ const getAnalytics = async (eventId) => {
 
 const getOrders = async (eventId) => {
   const ordersRes = await fetch(
-    `${process.env.NEXT_PUBLIC_APP_URL}/api/orders/byEvent/${eventId}?isDashboardHome=true`,
+    `${process.env.VERCEL_PROJECT_PRODUCTION_URL}/api/orders/byEvent/${eventId}?isDashboardHome=true`,
     {
       next: {
         revalidate: 0,

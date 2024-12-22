@@ -74,7 +74,7 @@ export default function Orders(props) {
   useEffect(() => {
     const getData = async () => {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_APP_URL}/api/orders/${params?.eventId}`
+        `${process.env.VERCEL_PROJECT_PRODUCTION_URL}/api/orders/${params?.eventId}`
       );
 
       setOrders(await res.json());

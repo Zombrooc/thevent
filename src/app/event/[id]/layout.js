@@ -4,7 +4,7 @@ import TicketProvider from "@/store/features/ticketCart/TicketProvider";
 
 const getEventData = async (id) => {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_APP_URL}/api/events/${id}`,
+    `${process.env.VERCEL_PROJECT_PRODUCTION_URL}/api/events/${id}`,
     {
       next: {
         revalidate: 3600,

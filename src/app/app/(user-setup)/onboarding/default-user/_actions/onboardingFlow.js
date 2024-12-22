@@ -26,5 +26,5 @@ export const onboardingFlow = async () => {
     throw new Error(e);
   }
 
-  redirect(`${process.env.NEXT_PUBLIC_APP_URL}/`);
+  redirect(`${process.env.VERCEL_PROJECT_PRODUCTION_URL}/`);
 };
