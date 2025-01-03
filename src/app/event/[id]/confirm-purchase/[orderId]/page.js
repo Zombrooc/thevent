@@ -16,14 +16,12 @@ const getOrder = async (orderId) => {
   if (orderResponse.status === 200) {
     const { orderItems } = await orderResponse.json();
 
-    let formQuantity = 0;
     const orderItemsWithForms = await Promise.all(
       orderItems.map(async (orderItem) => {
         const { ticketName } = orderItem.ticket;
         const forms = await redis.get(`ticket:${orderItem.ticketId}:forms`);
 
         if (forms?.length > 0) {
-          formQuantity++;
           return {
             ...orderItem,
             ticketName,
@@ -37,29 +35,7 @@ const getOrder = async (orderId) => {
       })
     );
 
-    console.log("formQuantity, ", formQuantity);
-
-    if (formQuantity === 0) {
-      const { getToken } = await auth();
-      const response = await fetch(
-        new URL(getUrl(`/api/stripe/checkout-sessions`)),
-        {
-          method: "POST",
-          body: JSON.stringify({ orderId }),
-          headers: { authorization: `Bearer ${await getToken()}` },
-        }
-      );
-
-      if (response.status === 401 && response.statusText === "Unauthorized") {
-        redirect("/api/auth/login");
-      } else {
-        const { url } = response.json();
-
-        redirect(url);
-      }
-    } else {
-      return { orderItems: orderItemsWithForms };
-    }
+    return { orderItems: orderItemsWithForms };
   } else {
     return { error: 404 };
   }

@@ -3,9 +3,8 @@
 import TicketItem from "./TicketItem";
 import { useSelector } from "react-redux";
 import { Button } from "@/components/ui/button";
-import { startPurchaseAction } from "../_actions/startPurchaseAction";
-import { useParams } from "next/navigation";
-import { useRouter } from "next/router";
+import { useParams, useRouter } from "next/navigation";
+import { insertIntoCookies } from "../_actions/handleCookies";
 
 export default function TicketList({ tickets }) {
   const router = useRouter();
@@ -40,6 +39,12 @@ export default function TicketList({ tickets }) {
   //   });
   // };
 
+  const handlePurchase = async () => {
+    await insertIntoCookies("ticketCart", { ticketCart, totalPrice });
+
+    router.push(`${eventID}/resume-purchase`);
+  };
+
   return (
     <div className="col-span-2 h-full flex flex-col">
       <h2 className=" mt-10 text-3xl font-semibold leading-7 text-gray-900">
@@ -51,10 +56,7 @@ export default function TicketList({ tickets }) {
         ))}
         <>
           <p className="text-lg font-semibold">Preço Total: R$ {totalPrice}</p>
-          <Button
-            type="button"
-            onClick={() => router.push(`${eventID}/resume-purchase`)}
-          >
+          <Button type="button" onClick={() => handlePurchase()}>
             Comprar
           </Button>
         </>

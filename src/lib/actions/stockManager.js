@@ -24,7 +24,6 @@ export const getCurrentStockFromDB = async (ticketID) => {
             reservedTickets: {
               where: {
                 AND: [
-                  { ticketId: ticketID },
                   { version: 0 },
                   {
                     status: {

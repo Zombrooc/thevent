@@ -10,14 +10,11 @@ import { Suspense } from "react";
 import { getUrl } from "@/lib/getUrl";
 
 const getEventData = async (eventID) => {
-  const res = await fetch(
-    new URL(getUrl(`/api/events/${eventID}`),
-    {
-      next: {
-        revalidate: 3600,
-      },
-    }
-  );
+  const res = await fetch(new URL(getUrl(`/api/events/${eventID}`)), {
+    next: {
+      revalidate: 3600,
+    },
+  });
 
   if (res.status === 200) {
     const events = await res.json();
@@ -29,16 +26,9 @@ const getEventData = async (eventID) => {
 };
 
 const incrementPageViews = async (eventId) => {
-  await fetch(
-    new URL(
-      getUrl(
-        `/api/analytics/${eventId}/increment-views`
-      )
-    ),
-    {
-      method: "POST",
-    }
-  );
+  await fetch(new URL(getUrl(`/api/analytics/${eventId}/increment-views`)), {
+    method: "POST",
+  });
 
   return;
 };

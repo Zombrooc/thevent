@@ -3,7 +3,7 @@ import { RESERVATION_STATUS } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { add } from "date-fns";
 import cuid from "cuid";
-// import { auth } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { getStripeProduct, normalizeStripePrice } from "@/lib/stripe";
 import { qstashClient } from "@/lib/qstash";
@@ -16,7 +16,7 @@ const redis = Redis.fromEnv();
 export async function POST(req) {
   const { ticketCart, totalPrice, eventID } = await req.json();
 
-  console.log("Ticket Cart: ", ticketCart);
+  const { getToken } = await auth();
 
   if (!ticketCart || ticketCart.length === 0) {
     throw new Error("Nenhum ingresso fornecido.");
@@ -54,7 +54,7 @@ export async function POST(req) {
       const forms = await redis.get(`ticket:${ticketID}:forms`);
 
       if (forms?.length > 0 && forms) {
-        hasFormss = true;
+        hasForms = true;
       }
 
       const { ticketPrice, ticketSubTotalPrice } =
@@ -106,7 +106,10 @@ export async function POST(req) {
   });
 
   if (hasForms && order) {
-    redirect(`/event/${eventID}/confirm-purchase/${order.id}`);
+    return Response.json({
+      success: true,
+      url: new URL(getUrl(`/event/${eventID}/confirm-purchase/${order.id}`)),
+    });
   }
 
   if (order) {
@@ -115,13 +118,16 @@ export async function POST(req) {
       {
         method: "POST",
         body: JSON.stringify({ orderId: order.id }),
-        // headers: { authorization: `Bearer ${await getToken()}` },
+        headers: { authorization: `Bearer ${await getToken()}` },
       }
     );
 
-    const { url } = response.json();
+    const { url } = await response.json();
 
-    redirect(url);
+    return Response.json({
+      success: true,
+      url,
+    });
   } else {
     throw new Error("Unable to create a new order");
   }

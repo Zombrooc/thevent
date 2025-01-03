@@ -10,7 +10,7 @@ const isProtectedRoute = createRouteMatcher([
   // "/api/stripe/checkout-session",
   "/api/orders(.*)",
   "/event/(.*)/confirm-purchase/(.*)",
-  "/event/(.*)/resume-purchase/(.*)",
+  "/event/(.*)/resume-purchase",
 ]);
 
 export default clerkMiddleware(async (auth, req) => {

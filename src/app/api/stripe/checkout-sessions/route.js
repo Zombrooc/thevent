@@ -107,8 +107,8 @@ export async function POST(req) {
         },
       },
       customer: customer.privateMetadata.stripeId,
-      success_url: new URL(getUrl(`/return?success=true`)),
-      cancel_url: new URL(getUrl(`/return?canceled=true`)),
+      success_url: `${new URL(getUrl(`/return?success=true`))}`,
+      cancel_url: `${new URL(getUrl(`/return?canceled=true`))}`,
     });
   } catch (err) {
     console.log("Error: ", err.message);

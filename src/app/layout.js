@@ -1,5 +1,3 @@
-import { Inter as FontSans } from "next/font/google";
-
 import "./globals.css";
 
 import { cn } from "@/lib/utils";
@@ -8,9 +6,12 @@ import { constructMetadata } from "@/lib/constructMetadata";
 // import { ClerkProvider } from "@clerk/nextjs";
 // import { ptBR } from "@clerk/localizations";
 
-const fontSans = FontSans({
-  subsets: ["latin"],
-  variable: "--font-sans",
+import localFont from "next/font/local";
+
+// Font files can be colocated inside of `app`
+const inter = localFont({
+  src: "../assets/fonts/Inter.ttf",
+  variable: "--font-inter",
 });
 
 export const metadata = constructMetadata();
@@ -19,7 +20,7 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="pt-BR">
       <body
-        className={cn("min-h-screen font-sans antialiased", fontSans.variable)}
+        className={cn("min-h-screen font-sans antialiased", inter.variable)}
       >
         {/* <UserProvider> */}
         <div className="fixed left-0 top-0 -z-10">
