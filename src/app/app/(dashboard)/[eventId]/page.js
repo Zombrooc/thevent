@@ -17,9 +17,9 @@ const getAnalytics = async (eventId) => {
   return analytics;
 };
 
-const getOrders = async (eventId) => {
+const getLatestFiveOrders = async (eventId) => {
   const ordersRes = await fetch(
-    new URL(getUrl(`/api/orders/byEvent/${eventId}?isDashboardHome=true`)),
+    new URL(getUrl(`/api/events/${eventId}/orders?take=5`)),
     {
       next: {
         revalidate: 0,
@@ -27,7 +27,9 @@ const getOrders = async (eventId) => {
     }
   );
 
-  const { orders: eventOrders } = await ordersRes.json();
+  const orders = await ordersRes.json();
+
+  console.log("Event Orders: ", orders);
 
   return eventOrders;
 };
@@ -37,7 +39,7 @@ export default async function EventDetail(props) {
   const { eventId } = params;
 
   const analytics = await getAnalytics(eventId);
-  const eventOrders = await getOrders(eventId);
+  const eventOrders = await getLatestFiveOrders(eventId);
 
   return (
     <DashboardPageClient analytics={analytics} eventOrders={eventOrders} />

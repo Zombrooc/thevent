@@ -1,5 +1,4 @@
 import { Redis } from "@upstash/redis";
-import { redirect } from "next/navigation";
 import ConfirmPurchaseClient from "./page-client";
 import { auth } from "@clerk/nextjs/server";
 import { getUrl } from "@/lib/getUrl";
@@ -7,7 +6,12 @@ import { getUrl } from "@/lib/getUrl";
 const redis = Redis.fromEnv();
 
 const getOrder = async (orderId) => {
+  const { getToken } = await auth();
+
   const orderResponse = await fetch(new URL(getUrl(`/api/orders/${orderId}`)), {
+    headers: {
+      authorization: `Bearer ${await getToken()}`,
+    },
     next: {
       revalidate: 0,
     },
@@ -41,9 +45,8 @@ const getOrder = async (orderId) => {
   }
 };
 
-export default async function EventDetails(props) {
-  const params = await props.params;
-  const { orderId } = params;
+export default async function EventDetails({ params }) {
+  const { orderId } = await params;
   const { orderItems } = await getOrder(orderId);
 
   return (

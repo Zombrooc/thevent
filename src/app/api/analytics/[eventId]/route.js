@@ -6,20 +6,7 @@ export async function GET(req, props) {
   const params = await props.params;
   const { eventId } = params;
 
-  const pageViews = await redis.get(`pageViews:${eventId}`);
+  const analytics = await redis.json.get(`analytics:${eventId}`);
 
-  try {
-    const eventAnalytics = await prisma.analytics.findUnique({
-      where: {
-        eventId: eventId,
-      },
-    });
-
-    return Response.json({ ...eventAnalytics, pageViews: pageViews });
-  } catch (err) {
-    return new Response({
-      status: err.statusCode,
-      message: err.message,
-    });
-  }
+  return Response.json({ analytics: analytics });
 }

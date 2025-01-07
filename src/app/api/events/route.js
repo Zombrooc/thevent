@@ -115,6 +115,12 @@ export async function POST(req) {
       },
     });
 
+    redis.json.set(`analytics:${event.id}`, {
+      pageViews: 0,
+      totalSold: 0,
+      avgSold: 0,
+    });
+
     revalidatePath("/");
 
     return Response.json({

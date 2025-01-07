@@ -1,8 +1,7 @@
 import { prisma } from "@/lib/prisma";
 
-export async function GET(req, props) {
-  const params = await props.params;
-  const { orderId } = params;
+export async function GET(req, { params }) {
+  const { orderId } = await params;
 
   let query = {
     where: {

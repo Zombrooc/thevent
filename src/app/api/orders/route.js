@@ -10,31 +10,18 @@ import { qstashClient } from "@/lib/qstash";
 import { Redis } from "@upstash/redis";
 import { getCurrentStockFromDB } from "@/lib/actions/stockManager";
 import { getUrl } from "@/lib/getUrl";
+import { getUserDetails } from "@/lib/getUserDetails";
 
 const redis = Redis.fromEnv();
 
 export async function POST(req) {
   const { ticketCart, totalPrice, eventID } = await req.json();
 
-  const { getToken } = await auth();
+  const { userId, getToken } = await auth();
 
   if (!ticketCart || ticketCart.length === 0) {
     throw new Error("Nenhum ingresso fornecido.");
   }
-
-  // const currentStock = await Promise.all(
-  //   ticketCart.map(({ id: ticketID }) => {
-  //     return;
-  //   })
-  // );
-
-  // console.log("Current Stock: ", currentStock);
-
-  // await ticketCart.map(({ quantity }, index) => {
-  //   if (currentStock[index].currentStock < quantity) {
-  //     throw new Error("Estoque insuficiente");
-  //   }
-  // });
 
   let appFee = 0;
 
@@ -84,6 +71,7 @@ export async function POST(req) {
   );
 
   const orderContent = {
+    userId: userId,
     orderItems: {
       create: orderItemsCreationQueries,
     },
@@ -153,7 +141,54 @@ export async function POST(req) {
 }
 
 export async function GET(req) {
-  const orders = await prisma.order.findMany();
+  const searchParams = req.nextUrl.searchParams;
 
-  return Response.json({ orders });
+  const take = searchParams.get("take");
+  const eventID = searchParams.get("eventID");
+
+  let query = {
+    orderBy: {
+      createdAt: "desc",
+    },
+  };
+
+  if (eventID) query.where.event = { id: eventID };
+  if (take) query.take = take;
+
+  console.log("Query: ", query);
+
+  try {
+    const orders = await prisma.order.findMany(query);
+
+    console.log("Orders: ", orders);
+
+    if (orders.length > 0) {
+      const updatedOrderWithUserDetails = await Promise.all(
+        orders.map(async (order) => {
+          const userDetails = await getUserDetails(order?.userId);
+
+          return {
+            ...order,
+            user: {
+              ...userDetails,
+            },
+          };
+        })
+      );
+
+      return Response.json({
+        orders: updatedOrderWithUserDetails,
+      });
+    }
+
+    return Response.json({
+      orders: [],
+    });
+  } catch (e) {
+    console.error(e);
+    return new Response({
+      status: e.statusCode,
+      body: e.message,
+    });
+  }
 }

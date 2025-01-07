@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { CheckCircledIcon } from "@radix-ui/react-icons";
+import Link from "next/link";
 
 export default function SuccessPage() {
   return (
@@ -41,7 +42,9 @@ export default function SuccessPage() {
             <div className="text-right font-bold">R$99.00</div>
           </div>
 
-          <Button className="w-full"> Continuar procurando desafios </Button>
+          <Button className="w-full" asChild>
+            <Link href="/"> Continuar procurando desafios</Link>
+          </Button>
         </CardContent>
       </Card>
     </div>
