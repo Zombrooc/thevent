@@ -67,7 +67,7 @@
     "cuid": "^3.0.0",
     "date-fns": "^4.1.0",
     "embla-carousel-react": "^8.0.0",
-    "emblor": "^1.4.6",
+    "emblor": "^1.4.8",
     "firebase": "^10.11.0",
     "framer-motion": "^11.0.24",
     "input-otp": "^1.2.4",
