@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 
 import EventCardGridList from "@/components/EventCardGrid/EventCardGridList";
 import CategorySlider from "./_components/CategorySlider";
+import Link from "next/link";
 
 const featuredEvents = [
   {
@@ -68,8 +69,8 @@ export default function Home() {
             maratonas a campeonatos, encontre seu próximo desafio.
           </p>
           <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:justify-center">
-            <Button size="lg" className="text-lg">
-              Criar Evento
+            <Button size="lg" className="text-lg" asChild>
+              <Link href="/app/create-event">Criar Evento</Link>
             </Button>
             <Button size="lg" variant="outline" className="text-lg">
               Explorar Eventos

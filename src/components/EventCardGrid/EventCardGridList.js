@@ -2,7 +2,6 @@ import { getUrl } from "@/lib/getUrl";
 import EventCardItem from "./EventCardItem";
 
 const getEvents = async () => {
-  console.log(new URL(getUrl("/api/events")));
   let eventsRes = await fetch(new URL(getUrl(`/api/events`)), {
     next: {
       revalidate: 3600,

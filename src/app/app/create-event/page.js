@@ -91,10 +91,6 @@ export default function CreateEvent() {
 
   const { setValue, formState } = form;
 
-  useEffect(() => {
-    console.log(formState?.errors);
-  }, [formState]);
-
   const {
     fields,
     append: appendTicket,
@@ -431,7 +427,7 @@ export default function CreateEvent() {
                                               className={cn(
                                                 "w-[300px] justify-start text-left font-normal",
                                                 !field.value &&
-                                                  "text-muted-foreground"
+                                                "text-muted-foreground"
                                               )}
                                               type="button"
                                             >
@@ -628,7 +624,7 @@ export default function CreateEvent() {
                                                     className={cn(
                                                       "w-[300px] justify-start text-left font-normal",
                                                       !field.value &&
-                                                        "text-muted-foreground"
+                                                      "text-muted-foreground"
                                                     )}
                                                     type="button"
                                                   >
@@ -842,8 +838,8 @@ export default function CreateEvent() {
                               onClearAll={() => {
                                 setTags([]);
                               }}
-                              // enableAutocomplete
-                              // autocompleteOptions={autoCompleteOptions}
+                            // enableAutocomplete
+                            // autocompleteOptions={autoCompleteOptions}
                             />
                           </FormControl>
                           <FormDescription>
