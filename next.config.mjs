@@ -32,6 +32,11 @@ const nextConfig = {
         hostname: "placeholder.pics",
         pathname: "/svg/**",
       },
+      {
+        protocol: "https",
+        hostname: "placehold.co",
+        pathname: "**",
+      },
     ],
     dangerouslyAllowSVG: true,
   },
